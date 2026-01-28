@@ -1329,7 +1329,7 @@ func (s *StateDB) commitAndFlush(block uint64, deleteEmptyObjects bool, noStorag
 	}
 	if !ret.empty() {
 		// If snapshotting is enabled, update the snapshot tree with this new version
-		if snap := s.db.Snapshot(); snap != nil && snap.Snapshot(ret.originRoot) != nil {
+		if snap := s.db.Snapshot(); snap != nil {
 			start := time.Now()
 			if err := snap.Update(ret.root, ret.originRoot, ret.accounts, ret.storages); err != nil {
 				log.Warn("Failed to update snapshot tree", "from", ret.originRoot, "to", ret.root, "err", err)
@@ -1424,7 +1424,7 @@ func (s *StateDB) Prepare(rules params.Rules, sender, coinbase common.Address, d
 				al.AddSlot(el.Address, key)
 			}
 		}
-		if rules.IsShanghai { // EIP-3651: warm coinbase
+		if rules.IsShanghai || rules.IsSpiral { // EIP-3651: warm coinbase
 			al.AddAddress(coinbase)
 		}
 	}

@@ -121,12 +121,22 @@ func (c *ChainConfig) IsClassic() bool {
 // Currently, ETC is the only supported perpetual PoW chain.
 // In the future, this could support other PoW chains.
 func (c *ChainConfig) IsPow() bool {
-	return c.IsClassic()
+	return c.Ethash != nil && c.TerminalTotalDifficulty == nil
 }
 
 // IsSpiral returns whether num is either equal to the Spiral fork block or greater.
 func (c *ChainConfig) IsSpiral(num *big.Int) bool {
 	return isBlockForked(c.SpiralBlock, num)
+}
+
+// IsEIP1559 returns whether EIP-1559 (fee market) is active at the given block.
+// Note: ETC has London (Mystique) WITHOUT EIP-1559, so this returns false for ETC.
+// For most chains, IsEIP1559 is equivalent to IsLondon.
+func (c *ChainConfig) IsEIP1559(num *big.Int) bool {
+	if c.IsClassic() {
+		return false // ETC never has EIP-1559
+	}
+	return c.IsLondon(num)
 }
 
 // IsECIP1017 returns whether num is either equal to the ECIP-1017 transition block or greater.

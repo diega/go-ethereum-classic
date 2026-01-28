@@ -54,6 +54,9 @@ func NewEVMBlockContext(header *types.Header, chain ChainContext, author *common
 	}
 	if header.BaseFee != nil {
 		baseFee = new(big.Int).Set(header.BaseFee)
+	} else if chain != nil && chain.Config().IsLondon(header.Number) && !chain.Config().IsEIP1559(header.Number) {
+		// London without EIP-1559 (e.g., ETC Mystique), use 0 as base fee
+		baseFee = common.Big0
 	}
 	if header.ExcessBlobGas != nil {
 		blobBaseFee = eip4844.CalcBlobFee(chain.Config(), header)

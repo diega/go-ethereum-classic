@@ -158,10 +158,14 @@ func NewEVM(blockCtx BlockContext, statedb StateDB, chainConfig *params.ChainCon
 		evm.table = &pragueInstructionSet
 	case evm.chainRules.IsCancun:
 		evm.table = &cancunInstructionSet
+	case evm.chainRules.IsSpiral:
+		evm.table = &spiralInstructionSet
 	case evm.chainRules.IsShanghai:
 		evm.table = &shanghaiInstructionSet
 	case evm.chainRules.IsMerge:
 		evm.table = &mergeInstructionSet
+	case evm.chainRules.IsMystique:
+		evm.table = &mystiqueInstructionSet
 	case evm.chainRules.IsLondon:
 		evm.table = &londonInstructionSet
 	case evm.chainRules.IsBerlin:
@@ -182,9 +186,14 @@ func NewEVM(blockCtx BlockContext, statedb StateDB, chainConfig *params.ChainCon
 		evm.table = &frontierInstructionSet
 	}
 	var extraEips []int
-	if len(evm.Config.ExtraEips) > 0 {
+	if evm.chainRules.IsEIP160 || len(evm.Config.ExtraEips) > 0 {
 		// Deep-copy jumptable to prevent modification of opcodes in other tables
 		evm.table = copyJumpTable(evm.table)
+		if evm.chainRules.IsEIP160 {
+			if err := EnableEIP(160, evm.table); err != nil {
+				log.Error("EIP activation failed", "eip", 160, "error", err)
+			}
+		}
 	}
 	for _, eip := range evm.Config.ExtraEips {
 		if err := EnableEIP(eip, evm.table); err != nil {
