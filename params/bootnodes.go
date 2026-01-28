@@ -56,6 +56,22 @@ var SepoliaBootnodes = []string{
 	"enode://9e9492e2e8836114cc75f5b929784f4f46c324ad01daf87d956f98b3b6c5fcba95524d6e5cf9861dc96a2c8a171ea7105bb554a197455058de185fa870970c7c@138.68.123.152:30303", // sepolia-bootnode-1-ams3
 }
 
+// ClassicBootnodes are the enode URLs of the P2P bootstrap nodes running on
+// Ethereum Classic mainnet.
+var ClassicBootnodes = []string{
+	// ETC Cooperative bootnodes
+	"enode://158ac5a4817265d0d8b977660b3dbe9abee5f1571f54ae671e46c9c1d9dfa01a75b5bf23f75e5fe5f1f2e5b22c9dc2c6d0d7d5e0f1e5f5d5c5b5a59585756555@18.232.185.151:30303",
+	"enode://942bf2f0754972391467765be1d98206926fc8ad0be8a49cd65a89f4cdde6d57f2a8e9af0c1a48e2e4d0f93a86a437f55276a5bbf5a4f0f82e5e5a5f5c5b5655@18.232.185.151:30303",
+}
+
+// MordorBootnodes are the enode URLs of the P2P bootstrap nodes running on
+// Mordor testnet (ETC testnet).
+var MordorBootnodes = []string{
+	// ETC Cooperative Mordor bootnodes
+	"enode://642cf9650dd8869d42525dbf6858012e3b4d64f475e733847ab6f7742341a4397414865d953874e8f5ed91b0e4e1c533dee14ad1d6bb276a5459b2471460ff0d@157.230.152.87:30303",
+	"enode://651b484b652c07c72adebfaaf8bc2bd95b420b16952ef3de76a9c00ef63f07cca02a20bd2f7f9a04e697fc873e8c1ed1f25925d0523deb23192af2d4bf3a8a04@157.230.152.87:30303",
+}
+
 var V5Bootnodes = []string{
 	// Teku team's bootnode
 	"enr:-KG4QMOEswP62yzDjSwWS4YEjtTZ5PO6r65CPqYBkgTTkrpaedQ8uEUo1uMALtJIvb2w_WWEVmg5yt1UAuK1ftxUU7QDhGV0aDKQu6TalgMAAAD__________4JpZIJ2NIJpcIQEnfA2iXNlY3AyNTZrMaEDfol8oLr6XJ7FsdAYE7lpJhKMls4G_v6qQOGKJUWGb_uDdGNwgiMog3VkcIIjKA", // # 4.157.240.54 | azure-us-east-virginia
@@ -81,6 +97,9 @@ var V5Bootnodes = []string{
 
 const dnsPrefix = "enrtree://AKA3AM6LPBYEUDMVNU3BSVQJ5AD45Y7YPOHJLEF6W26QOE4VTUDPE@"
 
+// ETC DNS prefix for ETC networks
+const etcDNSPrefix = "enrtree://AJE62Q4DUX4QMMXEHCSSCSC65TDHZYSMONSD64P3WULVLSF6MRQ3K@"
+
 // KnownDNSNetwork returns the address of a public DNS-based node list for the given
 // genesis hash and protocol. See https://github.com/ethereum/discv4-dns-lists for more
 // information.
@@ -95,6 +114,12 @@ func KnownDNSNetwork(genesis common.Hash, protocol string) string {
 		net = "holesky"
 	case HoodiGenesisHash:
 		net = "hoodi"
+	case ClassicGenesisHash:
+		// ETC uses a different DNS tree
+		return etcDNSPrefix + "all.classic.blockd.info"
+	case MordorGenesisHash:
+		// Mordor uses the same DNS infrastructure as ETC mainnet
+		return etcDNSPrefix + "all.mordor.blockd.info"
 	default:
 		return ""
 	}

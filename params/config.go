@@ -491,6 +491,17 @@ type ChainConfig struct {
 	Ethash             *EthashConfig       `json:"ethash,omitempty"`
 	Clique             *CliqueConfig       `json:"clique,omitempty"`
 	BlobScheduleConfig *BlobScheduleConfig `json:"blobSchedule,omitempty"`
+
+	// ETC-specific fields
+	// Fork fields (WITH "Block" suffix - included in Fork ID calculation)
+	ECIP1017Block *big.Int `json:"ecip1017Block,omitempty"` // ECIP-1017 monetary policy (Gotham)
+	ECIP1041Block *big.Int `json:"ecip1041Block,omitempty"` // ECIP-1041 bomb disposal
+	ECIP1099Block *big.Int `json:"ecip1099Block,omitempty"` // ECIP-1099 Etchash (60k epochs)
+	SpiralBlock   *big.Int `json:"spiralBlock,omitempty"`   // ETC Spiral fork (partial Shanghai)
+	// Configuration fields (no "Block" suffix - excluded from Fork ID)
+	ECIP1017EraRounds  *big.Int `json:"ecip1017EraRounds,omitempty"`  // ECIP-1017 era length (5M mainnet, 2M Mordor)
+	ECIP1010Transition *big.Int `json:"ecip1010Transition,omitempty"` // ECIP-1010 DieHard bomb pause block
+	ECIP1010Length     *big.Int `json:"ecip1010Length,omitempty"`     // ECIP-1010 pause duration
 }
 
 // EthashConfig is the consensus engine configs for proof-of-work based sealing.
@@ -888,6 +899,26 @@ func (c *ChainConfig) IsVerkleGenesis() bool {
 // IsEIP4762 returns whether eip 4762 has been activated at given block.
 func (c *ChainConfig) IsEIP4762(num *big.Int, time uint64) bool {
 	return c.IsVerkle(num, time)
+}
+
+// IsECIP1017 returns whether num is either equal to the ECIP-1017 transition block or greater.
+func (c *ChainConfig) IsECIP1017(num *big.Int) bool {
+	return isBlockForked(c.ECIP1017Block, num)
+}
+
+// IsECIP1010 returns whether num is either equal to the ECIP-1010 (DieHard) transition block or greater.
+func (c *ChainConfig) IsECIP1010(num *big.Int) bool {
+	return isBlockForked(c.ECIP1010Transition, num)
+}
+
+// IsECIP1041 returns whether num is either equal to the ECIP-1041 (bomb disposal) transition block or greater.
+func (c *ChainConfig) IsECIP1041(num *big.Int) bool {
+	return isBlockForked(c.ECIP1041Block, num)
+}
+
+// IsECIP1099 returns whether num is either equal to the ECIP-1099 (Etchash) transition block or greater.
+func (c *ChainConfig) IsECIP1099(num *big.Int) bool {
+	return isBlockForked(c.ECIP1099Block, num)
 }
 
 // CheckCompatible checks whether scheduled fork transitions have been imported
