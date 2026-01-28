@@ -35,6 +35,9 @@ const (
 
 	// ChainFreezerReceiptTable indicates the name of the freezer receipts table.
 	ChainFreezerReceiptTable = "receipts"
+
+	// ETC: ChainFreezerDifficultyTable indicates the name of the freezer total difficulty table.
+	ChainFreezerDifficultyTable = "diffs"
 )
 
 // chainFreezerTableConfigs configures the settings for tables in the chain freezer.
@@ -46,6 +49,8 @@ var chainFreezerTableConfigs = map[string]freezerTableConfig{
 	ChainFreezerHashTable:    {noSnappy: true, prunable: false},
 	ChainFreezerBodiesTable:  {noSnappy: false, prunable: true},
 	ChainFreezerReceiptTable: {noSnappy: false, prunable: true},
+	// ETC: TD uses snappy compression, not prunable (required for PoW chain sync)
+	ChainFreezerDifficultyTable: {noSnappy: false, prunable: false},
 }
 
 // freezerTableConfig contains the settings for a freezer table.

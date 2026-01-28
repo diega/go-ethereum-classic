@@ -19,6 +19,7 @@ package core
 import (
 	"errors"
 	"fmt"
+	"math/big"
 	"sync/atomic"
 	"time"
 
@@ -35,6 +36,7 @@ import (
 
 const (
 	headerCacheLimit = 512
+	tdCacheLimit     = 1024 // ETC: cache for TD
 	numberCacheLimit = 2048
 )
 
@@ -63,7 +65,8 @@ type HeaderChain struct {
 	currentHeaderHash common.Hash                  // Hash of the current head of the header chain (prevent recomputing all the time)
 
 	headerCache *lru.Cache[common.Hash, *types.Header]
-	numberCache *lru.Cache[common.Hash, uint64] // most recent block numbers
+	tdCache     *lru.Cache[common.Hash, *big.Int] // ETC: TD cache for PoW chains
+	numberCache *lru.Cache[common.Hash, uint64]   // most recent block numbers
 
 	procInterrupt func() bool
 	engine        consensus.Engine
@@ -76,6 +79,7 @@ func NewHeaderChain(chainDb ethdb.Database, config *params.ChainConfig, engine c
 		config:        config,
 		chainDb:       chainDb,
 		headerCache:   lru.NewCache[common.Hash, *types.Header](headerCacheLimit),
+		tdCache:       lru.NewCache[common.Hash, *big.Int](tdCacheLimit),
 		numberCache:   lru.NewCache[common.Hash, uint64](numberCacheLimit),
 		procInterrupt: procInterrupt,
 		engine:        engine,
@@ -196,6 +200,14 @@ func (hc *HeaderChain) WriteHeaders(headers []*types.Header) (int, error) {
 	if !hc.HasHeader(headers[0].ParentHash, headers[0].Number.Uint64()-1) {
 		return 0, consensus.ErrUnknownAncestor
 	}
+	// ETC: Get parent TD for PoW chains
+	var parentTd *big.Int
+	if hc.config.IsPow() {
+		parentTd = hc.GetTd(headers[0].ParentHash, headers[0].Number.Uint64()-1)
+		if parentTd == nil {
+			return 0, consensus.ErrUnknownAncestor
+		}
+	}
 	var (
 		inserted    []rawdb.NumberHash // Ephemeral lookup of number/hash for the chain
 		parentKnown = true             // Set to true to force hc.HasHeader check the first iteration
@@ -218,6 +230,10 @@ func (hc *HeaderChain) WriteHeaders(headers []*types.Header) (int, error) {
 		alreadyKnown := parentKnown && hc.HasHeader(hash, number)
 		if !alreadyKnown {
 			rawdb.WriteHeader(batch, header)
+			// ETC: Write TD for PoW chains
+			if parentTd != nil {
+				parentTd = hc.writeTd(batch, hash, number, header.Difficulty, parentTd)
+			}
 			inserted = append(inserted, rawdb.NumberHash{Number: number, Hash: hash})
 			hc.headerCache.Add(hash, header)
 			hc.numberCache.Add(hash, number)
@@ -598,6 +614,10 @@ func (hc *HeaderChain) setHead(headBlock uint64, headTime uint64, updateFn Updat
 				if delFn != nil {
 					delFn(batch, hash, num)
 				}
+				// ETC: Delete TD for PoW chains
+				if hc.config.IsPow() {
+					hc.deleteTd(batch, hash, num)
+				}
 				// Remove the hash->number mapping along with the header itself
 				rawdb.DeleteHeader(batch, hash, num)
 			}
@@ -638,6 +658,7 @@ func (hc *HeaderChain) setHead(headBlock uint64, headTime uint64, updateFn Updat
 	}
 	// Clear out any stale content from the caches
 	hc.headerCache.Purge()
+	hc.tdCache.Purge()
 	hc.numberCache.Purge()
 }
 

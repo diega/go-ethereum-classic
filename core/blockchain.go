@@ -1566,6 +1566,15 @@ func (bc *BlockChain) writeBlockWithoutState(block *types.Block) (err error) {
 		return errInsertionInterrupted
 	}
 	batch := bc.db.NewBatch()
+
+	// ETC: Write TD for sidechain blocks
+	if bc.chainConfig.IsPow() {
+		if ptd := bc.GetTd(block.ParentHash(), block.NumberU64()-1); ptd != nil {
+			externTd := new(big.Int).Add(block.Difficulty(), ptd)
+			rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), externTd)
+		}
+	}
+
 	rawdb.WriteBlock(batch, block)
 	if err := batch.Write(); err != nil {
 		log.Crit("Failed to write block into disk", "err", err)
@@ -1592,11 +1601,25 @@ func (bc *BlockChain) writeBlockWithState(block *types.Block, receipts []*types.
 	if !bc.HasHeader(block.ParentHash(), block.NumberU64()-1) {
 		return consensus.ErrUnknownAncestor
 	}
+
+	// ETC: Calculate and write TD for PoW chain sync
+	var externTd *big.Int
+	if bc.chainConfig.IsPow() {
+		ptd := bc.GetTd(block.ParentHash(), block.NumberU64()-1)
+		if ptd == nil {
+			return consensus.ErrUnknownAncestor
+		}
+		externTd = new(big.Int).Add(block.Difficulty(), ptd)
+	}
+
 	// Irrelevant of the canonical status, write the block itself to the database.
 	//
 	// Note all the components of block(hash->number map, header, body, receipts)
 	// should be written atomically. BlockBatch is used for containing all components.
 	blockBatch := bc.db.NewBatch()
+	if externTd != nil {
+		rawdb.WriteTd(blockBatch, block.Hash(), block.NumberU64(), externTd)
+	}
 	rawdb.WriteBlock(blockBatch, block)
 	rawdb.WriteReceipts(blockBatch, block.Hash(), block.NumberU64(), receipts)
 	rawdb.WritePreimages(blockBatch, statedb.Preimages())
