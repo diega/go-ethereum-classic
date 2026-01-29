@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [master, etc-support-atomic]
+  pull_request:
+    branches: [master]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+      - run: go run build/ci.go lint
+
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ['1.23', '1.22']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+      - run: go run build/ci.go test -p 4
+
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+      - run: make all
+      - name: Verify ETC flags
+        run: |
+          ./build/bin/geth version
+          ./build/bin/geth --help | grep -q "classic"
+          ./build/bin/geth --help | grep -q "mordor"
