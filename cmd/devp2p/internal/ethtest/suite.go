@@ -53,9 +53,12 @@ func NewSuite(dest *enode.Node, chainDir, engineURL, jwt string) (*Suite, error)
 	if err != nil {
 		return nil, err
 	}
-	engine, err := NewEngineClient(chainDir, engineURL, jwt)
-	if err != nil {
-		return nil, err
+	var engine *EngineClient
+	if engineURL != "" {
+		engine, err = NewEngineClient(chainDir, engineURL, jwt)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &Suite{
@@ -70,9 +73,7 @@ func (s *Suite) EthTests() []utesting.Test {
 		// status
 		{Name: "Status", Fn: s.TestStatus},
 		{Name: "MaliciousHandshake", Fn: s.TestMaliciousHandshake},
-		{Name: "BlockRangeUpdateExpired", Fn: s.TestBlockRangeUpdateHistoryExp},
-		{Name: "BlockRangeUpdateFuture", Fn: s.TestBlockRangeUpdateFuture},
-		{Name: "BlockRangeUpdateInvalid", Fn: s.TestBlockRangeUpdateInvalid},
+		// BlockRangeUpdate tests removed: ETH/69-only, not applicable to ETC (ETH/68)
 		// get block headers
 		{Name: "GetBlockHeaders", Fn: s.TestGetBlockHeaders},
 		{Name: "GetNonexistentBlockHeaders", Fn: s.TestGetNonexistentBlockHeaders},
@@ -82,7 +83,7 @@ func (s *Suite) EthTests() []utesting.Test {
 		// get history
 		{Name: "GetBlockBodies", Fn: s.TestGetBlockBodies},
 		{Name: "GetReceipts", Fn: s.TestGetReceipts},
-		// test transactions
+		// test transactions (require engine API to mine blocks)
 		{Name: "LargeTxRequest", Fn: s.TestLargeTxRequest, Slow: true},
 		{Name: "Transaction", Fn: s.TestTransaction},
 		{Name: "InvalidTxs", Fn: s.TestInvalidTxs},
@@ -442,7 +443,7 @@ func (s *Suite) TestGetReceipts(t *utesting.T) {
 		t.Fatalf("could not write to connection: %v", err)
 	}
 	// Wait for response.
-	resp := new(eth.ReceiptsPacket[*eth.ReceiptList69])
+	resp := new(eth.ReceiptsPacket[*eth.ReceiptList68])
 	if err := conn.ReadMsg(ethProto, eth.ReceiptsMsg, &resp); err != nil {
 		t.Fatalf("error reading block bodies msg: %v", err)
 	}

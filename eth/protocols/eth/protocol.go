@@ -40,7 +40,20 @@ const ProtocolName = "eth"
 
 // ProtocolVersions are the supported versions of the `eth` protocol (first
 // is primary).
-var ProtocolVersions = []uint{ETH69, ETH68}
+// ETC PoW requires ETH/68 which includes TD in the handshake.
+// ETH/69 removed TD and is incompatible with PoW sync.
+var ProtocolVersions = []uint{ETH68}
+
+// GetProtocolVersions returns supported protocol versions based on chain type.
+// For perpetual PoW chains, only ETH68 is supported because it includes
+// TotalDifficulty (TD) in the handshake, which is required for PoW sync.
+// ETH69 removed TD from the handshake as it was designed for post-merge (PoS) chains.
+func GetProtocolVersions(isPow bool) []uint {
+	if isPow {
+		return []uint{ETH68} // Only ETH68 for PoW (has TD in handshake)
+	}
+	return ProtocolVersions // Normal: both versions
+}
 
 // protocolLengths are the number of implemented message corresponding to
 // different protocol versions.
@@ -202,6 +215,19 @@ type BlockHeadersRLPPacket struct {
 type NewBlockPacket struct {
 	Block *types.Block
 	TD    *big.Int
+}
+
+// sanityCheck verifies that the values are reasonable, as a DoS protection
+func (request *NewBlockPacket) sanityCheck() error {
+	if err := request.Block.SanityCheck(); err != nil {
+		return err
+	}
+	//TD at mainnet block #7753254 is 76 bits. If it becomes 100 million times
+	// larger, it will still fit within 100 bits
+	if tdlen := request.TD.BitLen(); tdlen > 100 {
+		return fmt.Errorf("too large block TD: bitlen %d", tdlen)
+	}
+	return nil
 }
 
 // GetBlockBodiesRequest represents a block body query.

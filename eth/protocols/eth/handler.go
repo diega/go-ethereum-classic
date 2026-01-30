@@ -98,9 +98,9 @@ type TxPool interface {
 }
 
 // MakeProtocols constructs the P2P protocol definitions for `eth`.
-func MakeProtocols(backend Backend, network uint64, disc enode.Iterator) []p2p.Protocol {
-	protocols := make([]p2p.Protocol, 0, len(ProtocolVersions))
-	for _, version := range ProtocolVersions {
+func MakeProtocols(backend Backend, network uint64, disc enode.Iterator, versions []uint) []p2p.Protocol {
+	protocols := make([]p2p.Protocol, 0, len(versions))
+	for _, version := range versions {
 		protocols = append(protocols, p2p.Protocol{
 			Name:    ProtocolName,
 			Version: version,

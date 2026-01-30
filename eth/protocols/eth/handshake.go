@@ -19,12 +19,14 @@ package eth
 import (
 	"errors"
 	"fmt"
+	"math/big"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/forkid"
 	"github.com/ethereum/go-ethereum/metrics"
 	"github.com/ethereum/go-ethereum/p2p"
+	"github.com/ethereum/go-ethereum/params"
 )
 
 const (
@@ -215,5 +217,45 @@ func (p *BlockRangeUpdatePacket) Validate() error {
 	if p.LatestBlockHash == (common.Hash{}) {
 		return errors.New("zero latest hash")
 	}
+	return nil
+}
+
+// Handshake68PoW executes the eth/68 protocol handshake for perpetual PoW networks.
+// Unlike the standard ETH68 handshake, this version sends and receives TD (Total Difficulty)
+// which is required for proper chain synchronization in PoW networks.
+// After a successful handshake, it initializes the PoW extension with the peer's head info.
+func (p *Peer) Handshake68PoW(networkID uint64, td *big.Int, head common.Hash, genesis common.Hash, forkID forkid.ID, forkFilter forkid.Filter) error {
+	errc := make(chan error, 2)
+	go func() {
+		pkt := &StatusPacket68{
+			ProtocolVersion: uint32(p.version),
+			NetworkID:       networkID,
+			TD:              td,
+			Head:            head,
+			Genesis:         genesis,
+			ForkID:          forkID,
+		}
+		errc <- p2p.Send(p.rw, StatusMsg, pkt)
+	}()
+
+	var status StatusPacket68 // safe to read after two values have been received from errc
+	go func() {
+		errc <- p.readStatus68(networkID, &status, genesis, forkFilter)
+	}()
+
+	if err := waitForHandshake(errc, p); err != nil {
+		return err
+	}
+	// Reject peers with TD >= ETH mainnet's TTD. Such high TD indicates the peer
+	// is from ETH mainnet (which shares the same genesis hash but much higher TD).
+	if status.TD != nil && status.TD.Cmp(params.MainnetTerminalTotalDifficulty) >= 0 {
+		return fmt.Errorf("peer TD %v exceeds ETH TTD, likely wrong network", status.TD)
+	}
+	// Reject peers with nil TD - required for proper PoW sync
+	if status.TD == nil {
+		return errors.New("peer has nil TD, rejecting for PoW sync")
+	}
+	// Initialize PoW extension with peer's head info directly
+	p.InitPoWExtension(status.Head, status.TD)
 	return nil
 }

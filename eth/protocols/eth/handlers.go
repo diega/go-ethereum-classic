@@ -343,10 +343,16 @@ func serviceGetReceiptsQuery69(chain *core.BlockChain, query GetReceiptsRequest)
 }
 
 func handleNewBlockhashes(backend Backend, msg Decoder, peer *Peer) error {
+	if peer.powExt != nil {
+		return handleNewBlockhashesPow(backend, msg, peer)
+	}
 	return errors.New("block announcements disallowed") // We dropped support for non-merge networks
 }
 
 func handleNewBlock(backend Backend, msg Decoder, peer *Peer) error {
+	if peer.powExt != nil {
+		return handleNewBlockPow(backend, msg, peer)
+	}
 	return errors.New("block broadcasts disallowed") // We dropped support for non-merge networks
 }
 
