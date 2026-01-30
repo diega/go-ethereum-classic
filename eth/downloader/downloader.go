@@ -20,6 +20,7 @@ package downloader
 import (
 	"errors"
 	"fmt"
+	"math/big"
 	"sort"
 	"sync"
 	"sync/atomic"
@@ -50,7 +51,8 @@ var (
 	maxResultsProcess          = 2048                             // Number of content download results to import at once into the chain
 	fullMaxForkAncestry uint64 = params.FullImmutabilityThreshold // Maximum chain reorganisation (locally redeclared so tests can reduce it)
 
-	reorgProtHeaderDelay = 2 // Number of headers to delay delivering to cover mini reorgs
+	reorgProtThreshold   = 48 // Threshold number of recent blocks to disable mini reorg protection
+	reorgProtHeaderDelay = 2  // Number of headers to delay delivering to cover mini reorgs
 
 	fsHeaderSafetyNet = 2048            // Number of headers to discard in case a chain violation is detected
 	fsHeaderContCheck = 3 * time.Second // Time interval to check for header continuations during state download
@@ -69,6 +71,13 @@ var (
 	errCancelContentProcessing = errors.New("content processing canceled (requested)")
 	errCanceled                = errors.New("syncing canceled (requested)")
 	errNoPivotHeader           = errors.New("pivot header is not found")
+	errStallingPeer            = errors.New("peer is stalling")
+	errUnsyncedPeer            = errors.New("unsynced peer")
+	errEmptyHeaderSet          = errors.New("empty header set by peer")
+	errPeersUnavailable        = errors.New("no peers available or all tried for download")
+	errNoPeers                 = errors.New("no peers to keep download active")
+	errInvalidAncestor         = errors.New("retrieved ancestor is invalid")
+	errTooOld                  = errors.New("peer's protocol version too old")
 )
 
 // SyncMode defines the sync method of the downloader.
@@ -142,6 +151,7 @@ type Downloader struct {
 	stateSyncStart chan *stateSync
 
 	// Cancellation and termination
+	cancelPeer string         // Identifier of the peer currently being used as the master (cancel on drop)
 	cancelCh   chan struct{}  // Channel to cancel mid-flight syncs
 	cancelLock sync.RWMutex   // Lock to protect the cancel channel and peer in delivers
 	cancelWg   sync.WaitGroup // Make sure all fetcher goroutines have exited.
@@ -171,6 +181,9 @@ type BlockChain interface {
 	// CurrentHeader retrieves the head header from the local chain.
 	CurrentHeader() *types.Header
 
+	// GetTd returns the total difficulty of a local block.
+	GetTd(common.Hash, uint64) *big.Int
+
 	// SetHead rewinds the local chain to a new head.
 	SetHead(uint64) error
 
@@ -191,6 +204,11 @@ type BlockChain interface {
 
 	// SnapSyncCommitHead directly commits the head block to a certain entity.
 	SnapSyncCommitHead(common.Hash) error
+
+	// InsertHeaderChain inserts a batch of headers into the header chain,
+	// computing and persisting TDs. Required for PoW snap sync where TDs
+	// must be available for chain comparison (cf. core-geth BlockChain interface).
+	InsertHeaderChain([]*types.Header) (int, error)
 
 	// InsertHeadersBeforeCutoff inserts a batch of headers before the configured
 	// chain cutoff into the ancient store.
