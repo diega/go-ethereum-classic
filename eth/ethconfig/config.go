@@ -192,6 +192,9 @@ type Config struct {
 	TxSyncDefaultTimeout time.Duration `toml:",omitempty"`
 	TxSyncMaxTimeout     time.Duration `toml:",omitempty"`
 
+	MESSForceEnable  bool // Force enable MESS (emergency override)
+	MESSForceDisable bool // Force disable MESS (never enable)
+
 	// Ethash configuration for ETC PoW mining
 	Ethash ethash.Config
 }

@@ -1799,6 +1799,12 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 	if ctx.Bool(StateSizeTrackingFlag.Name) {
 		cfg.EnableStateSizeTracking = true
 	}
+	if ctx.IsSet(MESSForceEnableFlag.Name) {
+		cfg.MESSForceEnable = ctx.Bool(MESSForceEnableFlag.Name)
+	}
+	if ctx.IsSet(MESSForceDisableFlag.Name) {
+		cfg.MESSForceDisable = ctx.Bool(MESSForceDisableFlag.Name)
+	}
 	// Override any default configs for hard coded networks.
 	switch {
 	case ctx.Bool(MainnetFlag.Name):

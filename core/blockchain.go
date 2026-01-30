@@ -397,7 +397,7 @@ func NewBlockChain(db ethdb.Database, genesis *Genesis, engine consensus.Engine,
 	bc.prefetcher = newStatePrefetcher(chainConfig, bc.hc)
 	bc.processor = NewStateProcessor(bc.hc)
 	if chainConfig.IsPow() {
-		bc.forker = NewForkChoice(bc, nil)
+		bc.forker = NewForkChoiceWithMESS(bc, nil)
 	}
 
 	genesisHeader := bc.GetHeaderByNumber(0)
