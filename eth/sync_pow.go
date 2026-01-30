@@ -34,6 +34,10 @@ const (
 
 	// minSyncPeers is the minimum number of peers required before starting sync.
 	minSyncPeers = 1
+
+	// minMESSPeers is the minimum number of peers required for MESS to be active.
+	// This prevents MESS from blocking reorgs when the node is isolated.
+	minMESSPeers = 5
 )
 
 // chainSyncerPoW coordinates chain synchronization for perpetual PoW networks.
@@ -153,6 +157,9 @@ func (cs *chainSyncerPoW) nextSyncOp() *syncOp {
 	// Only sync if peer has higher TD than us
 	if peerTD.Cmp(localTD) <= 0 {
 		log.Debug("nextSyncOp: peer TD not higher", "peerTD", peerTD, "localTD", localTD, "localBlock", localHead.Number)
+
+		// We're synced - check if we should enable MESS
+		cs.checkMESSActivation()
 		return nil
 	}
 
@@ -183,5 +190,44 @@ func (cs *chainSyncerPoW) startSync(op *syncOp) {
 		log.Warn("PoW sync failed", "peer", op.peerID[:8], "err", err)
 	} else {
 		log.Info("PoW sync completed", "peer", op.peerID[:8])
+	}
+}
+
+// shouldEnableMESS determines if MESS should be activated.
+// Returns true if:
+// - messForceDisable is NOT set
+// - AND (messForceEnable is set OR chainConfig.IsECBP1100(currentBlock) is true)
+func (cs *chainSyncerPoW) shouldEnableMESS() bool {
+	// Force disable always wins
+	if cs.handler.messForceDisable {
+		return false
+	}
+	// Force enable activates even without config
+	if cs.handler.messForceEnable {
+		return true
+	}
+	// By default, follow the block config
+	return cs.handler.chain.Config().IsECBP1100(cs.handler.chain.CurrentHeader().Number)
+}
+
+// checkMESSActivation checks if MESS should be enabled or disabled based on current conditions.
+// MESS activation conditions:
+// 1. shouldEnableMESS() returns true (config + flags check)
+// 2. Node is synced (FullSync mode)
+// 3. >= minMESSPeers peers connected
+// 4. Head is not stale
+func (cs *chainSyncerPoW) checkMESSActivation() {
+	peerCount := cs.handler.peers.len()
+	chainMESSEnabled := cs.handler.chain.IsMESSEnabled()
+
+	// Check if we should disable MESS due to low peers
+	if chainMESSEnabled && peerCount < minMESSPeers {
+		cs.handler.chain.EnableMESS(false, "low peers")
+		return
+	}
+
+	// Check if we should enable MESS
+	if !chainMESSEnabled && cs.shouldEnableMESS() && peerCount >= minMESSPeers {
+		cs.handler.chain.EnableMESS(true, "synced")
 	}
 }

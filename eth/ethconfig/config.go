@@ -190,6 +190,10 @@ type Config struct {
 	// EIP-7966: eth_sendRawTransactionSync timeouts
 	TxSyncDefaultTimeout time.Duration `toml:",omitempty"`
 	TxSyncMaxTimeout     time.Duration `toml:",omitempty"`
+
+	// MESS (ECBP-1100) artificial finality configuration
+	MESSForceEnable  bool // Force enable MESS (emergency override)
+	MESSForceDisable bool // Force disable MESS (never enable)
 }
 
 // CreateConsensusEngine creates a consensus engine for the given chain config.

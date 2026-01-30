@@ -124,6 +124,19 @@ func (c *ChainConfig) IsPow() bool {
 	return c.IsClassic()
 }
 
+// IsECBP1100 returns true if MESS (ECBP-1100) is configured to be active at the given block.
+// - If ECBP1100Transition == nil, returns false (not configured)
+// - If ECBP1100Transition <= num < ECBP1100DeactivateTransition, returns true
+func (c *ChainConfig) IsECBP1100(num *big.Int) bool {
+	// If no config for blocks, MESS is not activated by default
+	if c.ECBP1100Transition == nil {
+		return false
+	}
+	// If configured, verify the block has passed activation and not yet deactivated
+	return isBlockForked(c.ECBP1100Transition, num) &&
+		!isBlockForked(c.ECBP1100DeactivateTransition, num)
+}
+
 func init() {
 	// Register ETC networks in NetworkNames
 	NetworkNames[ClassicChainConfig.ChainID.String()] = "classic"

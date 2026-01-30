@@ -156,6 +156,9 @@ var (
 		utils.BeaconGenesisTimeFlag,
 		utils.BeaconCheckpointFlag,
 		utils.BeaconCheckpointFileFlag,
+		// MESS (ECBP-1100) flags for ETC
+		utils.MESSForceEnableFlag,
+		utils.MESSForceDisableFlag,
 	}, utils.NetworkFlags, utils.DatabaseFlags)
 
 	rpcFlags = []cli.Flag{

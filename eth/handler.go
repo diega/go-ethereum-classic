@@ -108,6 +108,8 @@ type handlerConfig struct {
 	EventMux       *event.TypeMux         // Legacy event mux, deprecate for `feed`
 	RequiredBlocks map[uint64]common.Hash // Hard coded map of required block hashes for sync challenges
 	IsPow          bool                   // Whether this is a perpetual PoW chain (uses TD-based sync)
+	MESSForceEnable  bool                 // Force enable MESS (ECBP-1100) artificial finality
+	MESSForceDisable bool                 // Force disable MESS (ECBP-1100) artificial finality
 }
 
 type handler struct {
@@ -117,6 +119,10 @@ type handler struct {
 	snapSync atomic.Bool // Flag whether snap sync is enabled (gets disabled if we already have blocks)
 	synced   atomic.Bool // Flag whether we're considered synchronised (enables transaction processing)
 	isPow    bool        // Whether this is a perpetual PoW chain (uses TD-based sync)
+
+	// MESS (ECBP-1100) configuration
+	messForceEnable  bool // Force enable MESS (emergency override)
+	messForceDisable bool // Force disable MESS (never enable)
 
 	database ethdb.Database
 	txpool   txPool
@@ -153,19 +159,21 @@ func newHandler(config *handlerConfig) (*handler, error) {
 		config.EventMux = new(event.TypeMux) // Nicety initialization for tests
 	}
 	h := &handler{
-		nodeID:         config.NodeID,
-		networkID:      config.Network,
-		eventMux:       config.EventMux,
-		database:       config.Database,
-		txpool:         config.TxPool,
-		chain:          config.Chain,
-		peers:          newPeerSet(),
-		txBroadcastKey: newBroadcastChoiceKey(),
-		requiredBlocks: config.RequiredBlocks,
-		quitSync:       make(chan struct{}),
-		handlerDoneCh:  make(chan struct{}),
-		handlerStartCh: make(chan struct{}),
-		isPow:          config.IsPow,
+		nodeID:           config.NodeID,
+		networkID:        config.Network,
+		eventMux:         config.EventMux,
+		database:         config.Database,
+		txpool:           config.TxPool,
+		chain:            config.Chain,
+		peers:            newPeerSet(),
+		txBroadcastKey:   newBroadcastChoiceKey(),
+		requiredBlocks:   config.RequiredBlocks,
+		quitSync:         make(chan struct{}),
+		handlerDoneCh:    make(chan struct{}),
+		handlerStartCh:   make(chan struct{}),
+		isPow:            config.IsPow,
+		messForceEnable:  config.MESSForceEnable,
+		messForceDisable: config.MESSForceDisable,
 	}
 	if config.Sync == ethconfig.FullSync {
 		// The database seems empty as the current block is the genesis. Yet the snap
@@ -483,6 +491,9 @@ func (h *handler) Start(maxPeers int) {
 		h.wg.Add(1)
 		go h.chainSync.loop()
 		h.startBlockFetcherPoW()
+		// Start MESS safety loop for stale head detection
+		h.wg.Add(1)
+		go h.messSafetyLoop()
 		log.Info("Starting PoW chain syncer and block fetcher")
 	}
 
@@ -790,4 +801,38 @@ func (bc *broadcastChoice) choosePeers(peers []*ethPeer, txSender common.Address
 		bc.buffer[bc.tmp[i].p] = struct{}{}
 	}
 	return bc.buffer
+}
+
+// messSafetyLoop monitors conditions for MESS safety and disables it if the head becomes stale.
+// This runs for PoW chains only and periodically checks if the chain head is stale.
+func (h *handler) messSafetyLoop() {
+	defer h.wg.Done()
+
+	// Safety interval: 30 * block time (13 seconds for ETC)
+	// ~6.5 minutes, allowing time for natural variance while catching stale heads
+	safetyInterval := 30 * 13 * time.Second
+	ticker := time.NewTicker(safetyInterval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ticker.C:
+			if h.chain.IsMESSEnabled() && isHeadStale(h.chain, safetyInterval) {
+				h.chain.EnableMESS(false, "stale head")
+			}
+		case <-h.quitSync:
+			return
+		}
+	}
+}
+
+// isHeadStale returns true if the chain head is older than the given interval.
+// This is used by MESS to detect if the node might be stuck or isolated.
+func isHeadStale(chain *core.BlockChain, interval time.Duration) bool {
+	head := chain.CurrentHeader()
+	if head == nil {
+		return true
+	}
+	headTime := time.Unix(int64(head.Time), 0)
+	return time.Since(headTime) > interval
 }

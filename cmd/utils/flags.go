@@ -172,6 +172,17 @@ var (
 		Usage:    "Mordor network: Ethereum Classic proof-of-work test network (ChainID 63)",
 		Category: flags.EthCategory,
 	}
+	// MESS (ECBP-1100) artificial finality
+	MESSForceEnableFlag = &cli.BoolFlag{
+		Name:     "mess-force-enable",
+		Usage:    "Force enable MESS regardless of ECBP1100Transition config (emergency override)",
+		Category: flags.EthCategory,
+	}
+	MESSForceDisableFlag = &cli.BoolFlag{
+		Name:     "mess-force-disable",
+		Usage:    "Force disable MESS regardless of ECBP1100Transition config",
+		Category: flags.EthCategory,
+	}
 	// Dev mode
 	DeveloperFlag = &cli.BoolFlag{
 		Name:     "dev",
@@ -1038,6 +1049,8 @@ var (
 	ETCFlags = []cli.Flag{
 		ClassicFlag,
 		MordorFlag,
+		MESSForceEnableFlag,
+		MESSForceDisableFlag,
 	}
 	// NetworkFlags is the flag group of all built-in supported networks.
 	NetworkFlags = append(append([]cli.Flag{MainnetFlag}, TestnetFlags...), ClassicFlag)
@@ -1812,6 +1825,13 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 	}
 	if ctx.Bool(StateSizeTrackingFlag.Name) {
 		cfg.EnableStateSizeTracking = true
+	}
+	// MESS (ECBP-1100) configuration
+	if ctx.IsSet(MESSForceEnableFlag.Name) {
+		cfg.MESSForceEnable = ctx.Bool(MESSForceEnableFlag.Name)
+	}
+	if ctx.IsSet(MESSForceDisableFlag.Name) {
+		cfg.MESSForceDisable = ctx.Bool(MESSForceDisableFlag.Name)
 	}
 	// Override any default configs for hard coded networks.
 	switch {

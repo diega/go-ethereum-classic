@@ -2449,6 +2449,17 @@ func (bc *BlockChain) reorg(oldHead *types.Header, newHead *types.Header) error 
 			return errInvalidNewChain
 		}
 	}
+	// MESS (ECBP-1100) validation for PoW chains only
+	// Guards: 1) Must be PoW chain, 2) MESS enabled at runtime, 3) Actual reorg (not extension)
+	if bc.chainConfig.IsPow() &&
+		bc.IsMESSEnabled() &&
+		len(oldChain) > 0 && len(newChain) > 0 {
+		if err := bc.ValidateMESSReorg(commonBlock, oldChain[0], newChain[0]); err != nil {
+			log.Warn("Reorg rejected by MESS", "error", err)
+			return err
+		}
+	}
+
 	// Ensure the user sees large reorgs
 	if len(oldChain) > 0 && len(newChain) > 0 {
 		logFn := log.Info
