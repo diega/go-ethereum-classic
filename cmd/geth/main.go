@@ -29,6 +29,7 @@ import (
 	"github.com/ethereum/go-ethereum/cmd/utils"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/console/prompt"
+	"github.com/ethereum/go-ethereum/eth"
 	"github.com/ethereum/go-ethereum/eth/downloader"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/internal/debug"
@@ -121,6 +122,11 @@ var (
 		utils.MinerRecommitIntervalFlag,
 		utils.MinerPendingFeeRecipientFlag,
 		utils.MinerNewPayloadTimeoutFlag, // deprecated
+		utils.MinerThreadsFlag,
+		utils.MinerNotifyFlag,
+		utils.MinerNotifyFullFlag,
+		utils.MinerNoVerifyFlag,
+		utils.FakePoWFlag,
 		utils.NATFlag,
 		utils.NoDiscoverFlag,
 		utils.DiscoveryV4Flag,
@@ -238,6 +244,8 @@ func init() {
 		attachCommand,
 		javascriptCommand,
 		// See misccmd.go:
+		makecacheCommand,
+		makedagCommand,
 		versionCommand,
 		versionCheckCommand,
 		licenseCommand,
@@ -303,6 +311,12 @@ func prepare(ctx *cli.Context) {
 	case ctx.IsSet(utils.HoodiFlag.Name):
 		log.Info("Starting Geth on Hoodi testnet...")
 
+	case ctx.IsSet(utils.ClassicFlag.Name):
+		log.Info("Starting Geth on Ethereum Classic mainnet...")
+
+	case ctx.IsSet(utils.MordorFlag.Name):
+		log.Info("Starting Geth on Mordor testnet (ETC)...")
+
 	case !ctx.IsSet(utils.NetworkIdFlag.Name):
 		log.Info("Starting Geth on Ethereum mainnet...")
 	}
@@ -312,6 +326,8 @@ func prepare(ctx *cli.Context) {
 		if !ctx.IsSet(utils.HoleskyFlag.Name) &&
 			!ctx.IsSet(utils.SepoliaFlag.Name) &&
 			!ctx.IsSet(utils.HoodiFlag.Name) &&
+			!ctx.IsSet(utils.ClassicFlag.Name) &&
+			!ctx.IsSet(utils.MordorFlag.Name) &&
 			!ctx.IsSet(utils.DeveloperFlag.Name) {
 			// Nope, we're really on mainnet. Bump that cache up!
 			log.Info("Bumping default cache on mainnet", "provided", ctx.Int(utils.CacheFlag.Name), "updated", 4096)
@@ -329,17 +345,17 @@ func geth(ctx *cli.Context) error {
 	}
 
 	prepare(ctx)
-	stack := makeFullNode(ctx)
+	stack, ethBackend := makeFullNode(ctx)
 	defer stack.Close()
 
-	startNode(ctx, stack, false)
+	startNode(ctx, stack, ethBackend, false)
 	stack.Wait()
 	return nil
 }
 
 // startNode boots up the system node and all registered protocols, after which
 // it starts the RPC/IPC interfaces and the miner.
-func startNode(ctx *cli.Context, stack *node.Node, isConsole bool) {
+func startNode(ctx *cli.Context, stack *node.Node, ethBackend *eth.Ethereum, isConsole bool) {
 	// Start up the node itself
 	utils.StartNode(ctx, stack, isConsole)
 
@@ -387,6 +403,14 @@ func startNode(ctx *cli.Context, stack *node.Node, isConsole bool) {
 			}
 		}
 	}()
+
+	// Start mining if requested
+	if ctx.Bool(utils.MiningEnabledFlag.Name) && ethBackend != nil {
+		threads := ctx.Int(utils.MinerThreadsFlag.Name)
+		if err := ethBackend.StartMining(threads); err != nil {
+			utils.Fatalf("Failed to start mining: %v", err)
+		}
+	}
 
 	// Spawn a standalone goroutine for status synchronization monitoring,
 	// close the node when synchronization is complete if user required.

@@ -191,11 +191,15 @@ type Config struct {
 	// EIP-7966: eth_sendRawTransactionSync timeouts
 	TxSyncDefaultTimeout time.Duration `toml:",omitempty"`
 	TxSyncMaxTimeout     time.Duration `toml:",omitempty"`
+
+	// Ethash configuration for ETC PoW mining
+	Ethash ethash.Config
 }
 
 // CreateConsensusEngine creates a consensus engine for the given chain config.
 // Clique is allowed for now to live standalone, but ethash is forbidden and can
 // only exist on already merged networks.
+// ETC chains use the ETCEngine which wraps ethash with ETC-specific rules.
 func CreateConsensusEngine(config *params.ChainConfig, db ethdb.Database) (consensus.Engine, error) {
 	return CreateConsensusEngineWithConfig(config, db, ethash.Config{})
 }

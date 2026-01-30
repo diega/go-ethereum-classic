@@ -30,6 +30,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/state"
 	"github.com/ethereum/go-ethereum/core/txpool"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/event"
 	"github.com/ethereum/go-ethereum/params"
 )
 
@@ -48,6 +49,9 @@ type Config struct {
 	GasCeil             uint64         // Target gas ceiling for mined blocks.
 	GasPrice            *big.Int       // Minimum gas price for mining a transaction
 	Recommit            time.Duration  // The time interval for miner to re-create mining work.
+	Notify              []string       `toml:",omitempty"` // HTTP URL list to be notified of new work packages (only useful in ethash).
+	NotifyFull          bool           `toml:",omitempty"` // Notify with pending block headers instead of work packages
+	Noverify            bool           // Disable remote mining solution verification (only useful in ethash).
 }
 
 // DefaultConfig contains default settings for miner.
@@ -74,6 +78,14 @@ type Miner struct {
 	chain       *core.BlockChain
 	pending     *pending
 	pendingMu   sync.Mutex // Lock protects the pending block
+
+	// PoW mining fields (nil for PoS chains)
+	mux       *event.TypeMux
+	powWorker *powWorker
+	exitCh    chan struct{}
+	startCh   chan struct{}
+	stopCh    chan struct{}
+	wg        sync.WaitGroup
 }
 
 // New creates a new miner with provided config.

@@ -1,0 +1,158 @@
+// Copyright 2015 The go-ethereum Authors
+// This file is part of go-ethereum.
+//
+// go-ethereum is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// go-ethereum is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with go-ethereum. If not, see <http://www.gnu.org/licenses/>.
+
+package eth
+
+import (
+	"fmt"
+	"sync"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/eth/downloader"
+	"github.com/ethereum/go-ethereum/log"
+)
+
+// etherbase is the mining reward address, protected by etherbaseMu.
+var (
+	etherbaseMu sync.RWMutex
+	etherbase   common.Address
+)
+
+// StartMining starts the PoW mining process with the given number of threads.
+// If threads is 0, the engine decides the thread count internally.
+func (s *Ethereum) StartMining(threads int) error {
+	// Update the thread count within the consensus engine
+	type threaded interface {
+		SetThreads(threads int)
+	}
+	if th, ok := s.engine.(threaded); ok {
+		log.Info("Updated mining threads", "threads", threads)
+		if threads == 0 {
+			threads = -1 // Disable the miner from within
+		}
+		th.SetThreads(threads)
+	}
+	// If the miner was not running, initialize it
+	if !s.IsMining() {
+		// Propagate the initial price point to the transaction pool
+		s.lock.RLock()
+		price := s.gasPrice
+		s.lock.RUnlock()
+		s.txPool.SetGasTip(price)
+
+		// Configure the local mining address
+		eb, err := s.Etherbase()
+		if err != nil {
+			log.Error("Cannot start mining without etherbase", "err", err)
+			return fmt.Errorf("etherbase missing: %v", err)
+		}
+		s.miner.SetEtherbase(eb)
+		s.miner.StartMining()
+	}
+	return nil
+}
+
+// StopMining stops the PoW mining process.
+func (s *Ethereum) StopMining() {
+	// Update the thread count within the consensus engine
+	type threaded interface {
+		SetThreads(threads int)
+	}
+	if th, ok := s.engine.(threaded); ok {
+		th.SetThreads(-1)
+	}
+	s.miner.StopMining()
+}
+
+// IsMining returns whether the miner is currently mining.
+func (s *Ethereum) IsMining() bool {
+	return s.miner.Mining()
+}
+
+// Etherbase returns the configured etherbase address for mining rewards.
+func (s *Ethereum) Etherbase() (common.Address, error) {
+	etherbaseMu.RLock()
+	eb := etherbase
+	etherbaseMu.RUnlock()
+
+	if eb != (common.Address{}) {
+		return eb, nil
+	}
+	return common.Address{}, fmt.Errorf("etherbase must be explicitly specified")
+}
+
+// SetEtherbase sets the mining reward address.
+func (s *Ethereum) SetEtherbase(addr common.Address) {
+	etherbaseMu.Lock()
+	etherbase = addr
+	etherbaseMu.Unlock()
+
+	s.miner.SetEtherbase(addr)
+}
+
+// minerUpdate keeps track of the downloader events and pauses/resumes mining accordingly.
+// This is placed in the eth package (instead of miner) to avoid an import cycle
+// between miner and eth/downloader.
+func (s *Ethereum) minerUpdate() {
+	events := s.eventMux.Subscribe(downloader.StartEvent{}, downloader.DoneEvent{}, downloader.FailedEvent{})
+	defer func() {
+		if !events.Closed() {
+			events.Unsubscribe()
+		}
+	}()
+
+	shouldStart := false
+	dlEventCh := events.Chan()
+
+	for {
+		select {
+		case ev := <-dlEventCh:
+			if ev == nil {
+				dlEventCh = nil
+				continue
+			}
+			switch ev.Data.(type) {
+			case downloader.StartEvent:
+				if s.IsMining() {
+					s.miner.StopMining()
+					shouldStart = true
+				}
+				s.miner.SetSyncing(true)
+
+			case downloader.FailedEvent:
+				if shouldStart {
+					s.miner.StartMining()
+				}
+				s.miner.SetSyncing(false)
+				// Stop reacting to downloader events (one-shot security measure)
+				events.Unsubscribe()
+				dlEventCh = nil
+
+			case downloader.DoneEvent:
+				if shouldStart {
+					s.miner.StartMining()
+				}
+				s.miner.SetSyncing(false)
+				// Stop reacting to downloader events (one-shot security measure)
+				events.Unsubscribe()
+				dlEventCh = nil
+			}
+
+		case <-s.miner.ExitCh():
+			return
+		}
+	}
+}
