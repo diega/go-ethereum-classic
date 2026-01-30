@@ -30,6 +30,7 @@ import (
 	"github.com/dchest/siphash"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"
+	"github.com/ethereum/go-ethereum/core/forkid"
 	"github.com/ethereum/go-ethereum/core/rawdb"
 	"github.com/ethereum/go-ethereum/core/txpool"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -115,6 +116,7 @@ type handler struct {
 
 	snapSync atomic.Bool // Flag whether snap sync is enabled (gets disabled if we already have blocks)
 	synced   atomic.Bool // Flag whether we're considered synchronised (enables transaction processing)
+	isPow    bool        // Whether this is a perpetual PoW chain (uses TD-based sync)
 
 	database ethdb.Database
 	txpool   txPool
@@ -123,8 +125,10 @@ type handler struct {
 
 	downloader     *downloader.Downloader
 	txFetcher      *fetcher.TxFetcher
+	blockFetcher   *fetcher.BlockFetcherPoW // Block fetcher for PoW chains
 	peers          *peerSet
 	txBroadcastKey [16]byte
+	chainSync      *chainSyncerPoW // PoW chain syncer (nil for PoS chains)
 
 	eventMux   *event.TypeMux
 	txsCh      chan core.NewTxsEvent
@@ -161,6 +165,7 @@ func newHandler(config *handlerConfig) (*handler, error) {
 		quitSync:       make(chan struct{}),
 		handlerDoneCh:  make(chan struct{}),
 		handlerStartCh: make(chan struct{}),
+		isPow:          config.IsPow,
 	}
 	if config.Sync == ethconfig.FullSync {
 		// The database seems empty as the current block is the genesis. Yet the snap
@@ -263,9 +268,28 @@ func (h *handler) runEthPeer(peer *eth.Peer, handler eth.Handler) error {
 	}
 
 	// Execute the Ethereum handshake
-	if err := peer.Handshake(h.networkID, h.chain, h.blockRange.currentRange()); err != nil {
-		peer.Log().Debug("Ethereum handshake failed", "err", err)
-		return err
+	if h.isPow {
+		// PoW: use handshake with TD for proper chain sync
+		head := h.chain.CurrentBlock()
+		td := h.chain.GetTd(head.Hash(), head.Number.Uint64())
+		genesis := h.chain.Genesis()
+		forkID := forkid.NewID(h.chain.Config(), genesis, head.Number.Uint64(), head.Time)
+		forkFilter := forkid.NewFilter(h.chain)
+		if err := peer.Handshake68PoW(h.networkID, td, head.Hash(), genesis.Hash(), forkID, forkFilter); err != nil {
+			peer.Log().Debug("PoW handshake failed", "err", err)
+			return err
+		}
+		// Initialize PoW extension for block propagation
+		peerHead, peerTD := eth.GetPeerHead(peer.ID())
+		if peerTD != nil {
+			peer.InitPoWExtension(peerHead, peerTD)
+		}
+	} else {
+		// ETH: standard handshake
+		if err := peer.Handshake(h.networkID, h.chain, h.blockRange.currentRange()); err != nil {
+			peer.Log().Debug("Ethereum handshake failed", "err", err)
+			return err
+		}
 	}
 	reject := false // reserved peer slots
 	if h.snapSync.Load() {
@@ -307,6 +331,10 @@ func (h *handler) runEthPeer(peer *eth.Peer, handler eth.Handler) error {
 			peer.Log().Error("Failed to register peer in snap syncer", "err", err)
 			return err
 		}
+	}
+	// Notify ETC chain syncer about the new peer
+	if h.isPow {
+		h.chainSync.handlePeerEvent()
 	}
 	// Propagate existing transactions. new transactions appearing
 	// after this will be sent via broadcasts.
@@ -422,6 +450,11 @@ func (h *handler) unregisterPeer(id string) {
 	h.downloader.UnregisterPeer(id)
 	h.txFetcher.Drop(id)
 
+	// Clean up PoW peer head/TD data
+	if h.isPow {
+		eth.DeletePeerHead(id)
+	}
+
 	if err := h.peers.unregisterPeer(id); err != nil {
 		logger.Error("Ethereum peer removal failed", "err", err)
 	}
@@ -444,6 +477,15 @@ func (h *handler) Start(maxPeers int) {
 	// start sync handlers
 	h.txFetcher.Start()
 
+	// Start PoW chain syncer and block fetcher if this is a perpetual PoW chain
+	if h.isPow {
+		h.chainSync = newChainSyncerPoW(h)
+		h.wg.Add(1)
+		go h.chainSync.loop()
+		h.startBlockFetcherPoW()
+		log.Info("Starting PoW chain syncer and block fetcher")
+	}
+
 	// start peer handler tracker
 	h.wg.Add(1)
 	go h.protoTracker()
@@ -453,6 +495,9 @@ func (h *handler) Stop() {
 	h.txsSub.Unsubscribe() // quits txBroadcastLoop
 	h.blockRange.stop()
 	h.txFetcher.Stop()
+	if h.blockFetcher != nil {
+		h.blockFetcher.Stop()
+	}
 	h.downloader.Terminate()
 
 	// Quit chainSync and txsync64.
@@ -467,6 +512,12 @@ func (h *handler) Stop() {
 	h.wg.Wait()
 
 	log.Info("Ethereum protocol stopped")
+}
+
+// doSync initiates a sync operation for ETC/PoW chains.
+// This is called by the chainSyncerETC when a peer with higher block height is found.
+func (h *handler) doSync(mode downloader.SyncMode, peer *ethPeer, head common.Hash) error {
+	return h.downloader.PoWSync(peer.ID(), head, mode)
 }
 
 // BroadcastTransactions will propagate a batch of transactions
