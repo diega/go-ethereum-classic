@@ -30,6 +30,7 @@ import (
 	"github.com/dchest/siphash"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"
+	"github.com/ethereum/go-ethereum/core/forkid"
 	"github.com/ethereum/go-ethereum/core/rawdb"
 	"github.com/ethereum/go-ethereum/core/txpool"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -110,11 +111,13 @@ type handlerConfig struct {
 }
 
 type handler struct {
-	nodeID    enode.ID
-	networkID uint64
+	nodeID     enode.ID
+	networkID  uint64
+	forkFilter forkid.Filter // Fork ID filter, constant across the lifetime of the node
 
 	snapSync atomic.Bool // Flag whether snap sync is enabled (gets disabled if we already have blocks)
 	synced   atomic.Bool // Flag whether we're considered synchronised (enables transaction processing)
+	isPow    bool        // Whether this is a perpetual PoW chain (uses TD-based sync)
 
 	database ethdb.Database
 	txpool   txPool
@@ -123,13 +126,16 @@ type handler struct {
 
 	downloader     *downloader.Downloader
 	txFetcher      *fetcher.TxFetcher
+	blockFetcher   *fetcher.BlockFetcher // Block fetcher for PoW chains
 	peers          *peerSet
 	txBroadcastKey [16]byte
+	chainSync      *chainSyncer // PoW chain syncer (nil for PoS chains)
 
-	eventMux   *event.TypeMux
-	txsCh      chan core.NewTxsEvent
-	txsSub     event.Subscription
-	blockRange *blockRangeState
+	eventMux      *event.TypeMux
+	txsCh         chan core.NewTxsEvent
+	txsSub        event.Subscription
+	minedBlockSub *event.TypeMuxSubscription // PoW mined block subscription (nil for PoS)
+	blockRange    *blockRangeState
 
 	requiredBlocks map[uint64]common.Hash
 
@@ -151,6 +157,7 @@ func newHandler(config *handlerConfig) (*handler, error) {
 	h := &handler{
 		nodeID:         config.NodeID,
 		networkID:      config.Network,
+		forkFilter:     forkid.NewFilter(config.Chain),
 		eventMux:       config.EventMux,
 		database:       config.Database,
 		txpool:         config.TxPool,
@@ -161,6 +168,7 @@ func newHandler(config *handlerConfig) (*handler, error) {
 		quitSync:       make(chan struct{}),
 		handlerDoneCh:  make(chan struct{}),
 		handlerStartCh: make(chan struct{}),
+		isPow:          config.IsPow,
 	}
 	if config.Sync == ethconfig.FullSync {
 		// The database seems empty as the current block is the genesis. Yet the snap
@@ -263,9 +271,24 @@ func (h *handler) runEthPeer(peer *eth.Peer, handler eth.Handler) error {
 	}
 
 	// Execute the Ethereum handshake
-	if err := peer.Handshake(h.networkID, h.chain, h.blockRange.currentRange()); err != nil {
-		peer.Log().Debug("Ethereum handshake failed", "err", err)
-		return err
+	if h.isPow {
+		var (
+			genesis = h.chain.Genesis()
+			head    = h.chain.CurrentHeader()
+			hash    = head.Hash()
+			number  = head.Number.Uint64()
+			td      = h.chain.GetTd(hash, number)
+		)
+		forkID := forkid.NewID(h.chain.Config(), genesis, number, head.Time)
+		if err := peer.Handshake68PoW(h.networkID, td, hash, genesis.Hash(), forkID, h.forkFilter); err != nil {
+			peer.Log().Debug("Ethereum handshake failed", "err", err)
+			return err
+		}
+	} else {
+		if err := peer.Handshake(h.networkID, h.chain, h.blockRange.currentRange()); err != nil {
+			peer.Log().Debug("Ethereum handshake failed", "err", err)
+			return err
+		}
 	}
 	reject := false // reserved peer slots
 	if h.snapSync.Load() {
@@ -307,6 +330,10 @@ func (h *handler) runEthPeer(peer *eth.Peer, handler eth.Handler) error {
 			peer.Log().Error("Failed to register peer in snap syncer", "err", err)
 			return err
 		}
+	}
+	// Notify ETC chain syncer about the new peer
+	if h.isPow {
+		h.chainSync.handlePeerEvent()
 	}
 	// Propagate existing transactions. new transactions appearing
 	// after this will be sent via broadcasts.
@@ -442,7 +469,23 @@ func (h *handler) Start(maxPeers int) {
 	go h.blockRangeLoop(h.blockRange)
 
 	// start sync handlers
-	h.txFetcher.Start()
+	// For PoW chains, txFetcher lifecycle is managed by chainSyncer.loop()
+	if !h.isPow {
+		h.txFetcher.Start()
+	}
+
+	// Start PoW chain syncer and block fetcher if this is a perpetual PoW chain
+	if h.isPow {
+		h.startBlockFetcher()
+		h.chainSync = newChainSyncer(h)
+		h.wg.Add(1)
+		go h.chainSync.loop()
+		// Start mined block broadcast loop
+		h.minedBlockSub = h.eventMux.Subscribe(core.NewMinedBlockEvent{})
+		h.wg.Add(1)
+		go h.minedBroadcastLoop()
+		log.Info("Starting PoW chain syncer and block fetcher")
+	}
 
 	// start peer handler tracker
 	h.wg.Add(1)
@@ -451,9 +494,20 @@ func (h *handler) Start(maxPeers int) {
 
 func (h *handler) Stop() {
 	h.txsSub.Unsubscribe() // quits txBroadcastLoop
+	if h.minedBlockSub != nil {
+		h.minedBlockSub.Unsubscribe() // quits minedBroadcastLoop
+	}
 	h.blockRange.stop()
-	h.txFetcher.Stop()
-	h.downloader.Terminate()
+
+	// For PoW chains, fetcher/downloader lifecycle is managed by chainSyncer.loop() defers.
+	// The shutdown flow is: close(quitSync) → loop() exits → defers run Stop/Terminate → wg.Wait() returns.
+	if !h.isPow {
+		h.txFetcher.Stop()
+		if h.blockFetcher != nil {
+			h.blockFetcher.Stop()
+		}
+		h.downloader.Terminate()
+	}
 
 	// Quit chainSync and txsync64.
 	// After this is done, no new peers will be accepted.
