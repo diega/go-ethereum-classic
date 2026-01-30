@@ -42,6 +42,17 @@ const ProtocolName = "eth"
 // is primary).
 var ProtocolVersions = []uint{ETH69, ETH68}
 
+// GetProtocolVersions returns supported protocol versions based on chain type.
+// For perpetual PoW chains, only ETH68 is supported because it includes
+// TotalDifficulty (TD) in the handshake, which is required for PoW sync.
+// ETH69 removed TD from the handshake as it was designed for post-merge (PoS) chains.
+func GetProtocolVersions(isPow bool) []uint {
+	if isPow {
+		return []uint{ETH68} // Only ETH68 for PoW (has TD in handshake)
+	}
+	return ProtocolVersions // Normal: both versions
+}
+
 // protocolLengths are the number of implemented message corresponding to
 // different protocol versions.
 var protocolLengths = map[uint]uint64{ETH68: 17, ETH69: 18}
