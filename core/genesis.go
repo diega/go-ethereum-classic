@@ -565,6 +565,10 @@ func (g *Genesis) Commit(db ethdb.Database, triedb *triedb.Database) (*types.Blo
 	}
 	batch := db.NewBatch()
 	rawdb.WriteGenesisStateSpec(batch, block.Hash(), blob)
+	// ETC: Write TD for genesis block
+	if config.IsPow() {
+		rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), block.Difficulty())
+	}
 	rawdb.WriteBlock(batch, block)
 	rawdb.WriteReceipts(batch, block.Hash(), block.NumberU64(), nil)
 	rawdb.WriteCanonicalHash(batch, block.Hash(), block.NumberU64())
@@ -654,6 +658,33 @@ func DefaultHoodiGenesisBlock() *Genesis {
 		Difficulty: big.NewInt(0x01),
 		Timestamp:  1742212800,
 		Alloc:      decodePrealloc(hoodiAllocData),
+	}
+}
+
+// DefaultClassicGenesisBlock returns the Ethereum Classic mainnet genesis block.
+// ETC and ETH share the same genesis block (identical state at block 0).
+// The chains diverged at the DAO fork (block 1,920,000).
+func DefaultClassicGenesisBlock() *Genesis {
+	return &Genesis{
+		Config:     params.ClassicChainConfig,
+		Nonce:      66,
+		ExtraData:  hexutil.MustDecode("0x11bbe8db4e347b4e8c937c1c8370e4b5ed33adb3db69cbdb7a38e1e50b1b82fa"),
+		GasLimit:   5000,
+		Difficulty: big.NewInt(17179869184),
+		Alloc:      decodePrealloc(mainnetAllocData), // Same alloc as mainnet
+	}
+}
+
+// DefaultMordorGenesisBlock returns the Mordor testnet genesis block.
+func DefaultMordorGenesisBlock() *Genesis {
+	return &Genesis{
+		Config:     params.MordorChainConfig,
+		Nonce:      0,
+		ExtraData:  hexutil.MustDecode("0x70686f656e697820636869636b656e206162737572642062616e616e61"),
+		GasLimit:   0x2fefd8,
+		Difficulty: big.NewInt(0x20000),
+		Timestamp:  1561651659,
+		Alloc:      map[common.Address]types.Account{}, // Mordor has no prealloc
 	}
 }
 
