@@ -106,6 +106,7 @@ type handlerConfig struct {
 	BloomCache     uint64                 // Megabytes to alloc for snap sync bloom
 	EventMux       *event.TypeMux         // Legacy event mux, deprecate for `feed`
 	RequiredBlocks map[uint64]common.Hash // Hard coded map of required block hashes for sync challenges
+	IsPow          bool                   // Whether this is a perpetual PoW chain (uses TD-based sync)
 }
 
 type handler struct {
@@ -193,7 +194,7 @@ func newHandler(config *handlerConfig) (*handler, error) {
 		return nil, errors.New("snap sync not supported with snapshots disabled")
 	}
 	// Construct the downloader (long sync)
-	h.downloader = downloader.New(config.Database, h.eventMux, h.chain, h.removePeer, h.enableSyncedFeatures)
+	h.downloader = downloader.New(config.Database, h.eventMux, h.chain, h.removePeer, h.enableSyncedFeatures, config.IsPow)
 
 	fetchTx := func(peer string, hashes []common.Hash) error {
 		p := h.peers.peer(peer)

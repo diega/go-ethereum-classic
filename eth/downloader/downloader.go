@@ -158,6 +158,21 @@ type Downloader struct {
 	syncStartBlock uint64    // Head snap block when Geth was started
 	syncStartTime  time.Time // Time instance when chain sync started
 	syncLogTime    time.Time // Time instance when status was last reported
+
+	// syncStrategy overrides the default sync behavior.
+	// If nil, uses beacon sync. For PoW networks, set to syncToHeadPoW.
+	syncStrategy func() error
+
+	// peerHeadHash stores the peer's head hash for PoW sync.
+	peerHeadHash common.Hash
+
+	// PoW sync targets
+	peerHeadNumber uint64 // Peer's head block number for PoW sync
+	powSyncOrigin  uint64 // Starting block for PoW sync
+	powSyncTarget  uint64 // Target block for PoW sync
+
+	// PoW sync specific (ETC)
+	headerTaskMgr *headerTaskManager // Header task manager for PoW concurrent fetch
 }
 
 // BlockChain encapsulates functions required to sync a (full or snap) blockchain.
@@ -221,7 +236,8 @@ type BlockChain interface {
 }
 
 // New creates a new downloader to fetch hashes and blocks from remote peers.
-func New(stateDb ethdb.Database, mux *event.TypeMux, chain BlockChain, dropPeer peerDropFn, success func()) *Downloader {
+// If isPow is true, the downloader uses PoW sync strategy instead of beacon sync.
+func New(stateDb ethdb.Database, mux *event.TypeMux, chain BlockChain, dropPeer peerDropFn, success func(), isPow bool) *Downloader {
 	cutoffNumber, cutoffHash := chain.HistoryPruningCutoff()
 	dl := &Downloader{
 		stateDB:           stateDb,
@@ -240,6 +256,11 @@ func New(stateDb ethdb.Database, mux *event.TypeMux, chain BlockChain, dropPeer 
 	}
 	// Create the post-merge skeleton syncer and start the process
 	dl.skeleton = newSkeleton(stateDb, dl.peers, dropPeer, newBeaconBackfiller(dl, success))
+
+	// Configure PoW sync strategy if needed
+	if isPow {
+		dl.syncStrategy = dl.syncToHeadPoW
+	}
 
 	go dl.stateFetcher()
 	return dl
@@ -413,6 +434,10 @@ func (d *Downloader) getMode() SyncMode {
 // syncToHead starts a block synchronization based on the hash chain from
 // the specified head hash.
 func (d *Downloader) syncToHead() (err error) {
+	// Use custom sync strategy if configured (e.g., ETC/PoW)
+	if d.syncStrategy != nil {
+		return d.syncStrategy()
+	}
 	d.mux.Post(StartEvent{})
 	defer func() {
 		// reset on error
