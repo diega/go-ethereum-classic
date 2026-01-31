@@ -158,9 +158,64 @@ func (e *ETCEngine) VerifyHeaders(chain consensus.ChainHeaderReader, headers []*
 	return abort, results
 }
 
-// VerifyUncles verifies that the given block's uncles conform to consensus rules.
+// VerifyUncles verifies that the given block's uncles conform to ETC consensus rules.
+// This reimplements ethash.VerifyUncles to use ETC's difficulty calculation (with ECIP-1010).
 func (e *ETCEngine) VerifyUncles(chain consensus.ChainReader, block *types.Block) error {
-	return e.inner.VerifyUncles(chain, block)
+	// Verify that there are at most 2 uncles included in this block
+	if len(block.Uncles()) > 2 {
+		return errors.New("too many uncles")
+	}
+	if len(block.Uncles()) == 0 {
+		return nil
+	}
+	// Gather the set of past uncles and ancestors
+	uncles, ancestors := make(map[common.Hash]bool), make(map[common.Hash]*types.Header)
+
+	number, parent := block.NumberU64()-1, block.ParentHash()
+	for i := 0; i < 7; i++ {
+		ancestorHeader := chain.GetHeader(parent, number)
+		if ancestorHeader == nil {
+			break
+		}
+		ancestors[parent] = ancestorHeader
+		// If the ancestor doesn't have any uncles, we don't have to iterate them
+		if ancestorHeader.UncleHash != types.EmptyUncleHash {
+			// Need to add those uncles to the banned list too
+			ancestor := chain.GetBlock(parent, number)
+			if ancestor == nil {
+				break
+			}
+			for _, uncle := range ancestor.Uncles() {
+				uncles[uncle.Hash()] = true
+			}
+		}
+		parent, number = ancestorHeader.ParentHash, number-1
+	}
+	ancestors[block.Hash()] = block.Header()
+	uncles[block.Hash()] = true
+
+	// Verify each of the uncles that it's recent, but not an ancestor
+	for _, uncle := range block.Uncles() {
+		// Make sure every uncle is rewarded only once
+		hash := uncle.Hash()
+		if uncles[hash] {
+			return errors.New("duplicate uncle")
+		}
+		uncles[hash] = true
+
+		// Make sure the uncle has a valid ancestry
+		if ancestors[hash] != nil {
+			return errors.New("uncle is ancestor")
+		}
+		if ancestors[uncle.ParentHash] == nil || uncle.ParentHash == block.ParentHash() {
+			return errors.New("uncle's parent is not ancestor")
+		}
+		// Verify uncle header using ETC rules (with ECIP-1010)
+		if err := e.verifyHeader(chain, uncle, ancestors[uncle.ParentHash]); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // Prepare initializes the consensus fields of a block header according to ETC rules.
