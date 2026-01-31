@@ -442,6 +442,7 @@ type ChainConfig struct {
 	EIP150Block *big.Int `json:"eip150Block,omitempty"` // EIP150 HF block (nil = no fork)
 	EIP155Block *big.Int `json:"eip155Block,omitempty"` // EIP155 HF block
 	EIP158Block *big.Int `json:"eip158Block,omitempty"` // EIP158 HF block
+	EIP160Block *big.Int `json:"eip160Block,omitempty"` // EIP160 HF block (EXP cost increase, nil = same as EIP158)
 
 	ByzantiumBlock      *big.Int `json:"byzantiumBlock,omitempty"`      // Byzantium switch block (nil = no fork, 0 = already on byzantium)
 	ConstantinopleBlock *big.Int `json:"constantinopleBlock,omitempty"` // Constantinople switch block (nil = no fork, 0 = already activated)
@@ -762,6 +763,17 @@ func (c *ChainConfig) IsEIP155(num *big.Int) bool {
 
 // IsEIP158 returns whether num is either equal to the EIP158 fork block or greater.
 func (c *ChainConfig) IsEIP158(num *big.Int) bool {
+	return isBlockForked(c.EIP158Block, num)
+}
+
+// IsEIP160 returns whether num is either equal to the EIP160 fork block or greater.
+// EIP-160 increased the EXP opcode cost. For ETH, this was part of Spurious Dragon (same as EIP-158).
+// For ETC, this was activated at block 3M (DieHard) separately from EIP-158.
+// If EIP160Block is nil, it defaults to EIP158Block for backwards compatibility.
+func (c *ChainConfig) IsEIP160(num *big.Int) bool {
+	if c.EIP160Block != nil {
+		return isBlockForked(c.EIP160Block, num)
+	}
 	return isBlockForked(c.EIP158Block, num)
 }
 
@@ -1410,7 +1422,7 @@ func (err *ConfigCompatError) Error() string {
 // phases.
 type Rules struct {
 	ChainID                                                 *big.Int
-	IsHomestead, IsEIP150, IsEIP155, IsEIP158               bool
+	IsHomestead, IsEIP150, IsEIP155, IsEIP158, IsEIP160     bool
 	IsEIP2929, IsEIP4762                                    bool
 	IsByzantium, IsConstantinople, IsPetersburg, IsIstanbul bool
 	IsBerlin, IsLondon                                      bool
@@ -1433,6 +1445,7 @@ func (c *ChainConfig) Rules(num *big.Int, isMerge bool, timestamp uint64) Rules 
 		IsEIP150:         c.IsEIP150(num),
 		IsEIP155:         c.IsEIP155(num),
 		IsEIP158:         c.IsEIP158(num),
+		IsEIP160:         c.IsEIP160(num),
 		IsByzantium:      c.IsByzantium(num),
 		IsConstantinople: c.IsConstantinople(num),
 		IsPetersburg:     c.IsPetersburg(num),

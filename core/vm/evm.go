@@ -172,7 +172,8 @@ func NewEVM(blockCtx BlockContext, statedb StateDB, chainConfig *params.ChainCon
 		evm.table = &constantinopleInstructionSet
 	case evm.chainRules.IsByzantium:
 		evm.table = &byzantiumInstructionSet
-	case evm.chainRules.IsEIP158:
+	case evm.chainRules.IsEIP160:
+		// EIP-160: EXP cost increase. For ETC, this activates at block 3M (DieHard).
 		evm.table = &spuriousDragonInstructionSet
 	case evm.chainRules.IsEIP150:
 		evm.table = &tangerineWhistleInstructionSet

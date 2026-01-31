@@ -34,11 +34,12 @@ var (
 	ClassicChainConfig = &ChainConfig{
 		ChainID:             big.NewInt(61),
 		HomesteadBlock:      big.NewInt(1_150_000),
-		DAOForkBlock:        nil,   // ETC did NOT have the DAO fork (nil excludes from Fork ID)
-		DAOForkSupport:      false, // ETC rejected the DAO fork
+		DAOForkBlock:        nil,                    // ETC did NOT have the DAO fork (nil excludes from Fork ID)
+		DAOForkSupport:      false,                  // ETC rejected the DAO fork
 		EIP150Block:         big.NewInt(2_500_000),  // ETC Tangerine Whistle
-		EIP155Block:         big.NewInt(3_000_000),  // ETC Spurious Dragon (part 1)
-		EIP158Block:         big.NewInt(8_772_000),  // ETC Atlantis (delayed EIP-158)
+		EIP155Block:         big.NewInt(3_000_000),  // ETC DieHard (replay protection)
+		EIP158Block:         big.NewInt(8_772_000),  // ETC Atlantis (state clearing)
+		EIP160Block:         big.NewInt(3_000_000),  // ETC DieHard (EXP cost increase)
 		ByzantiumBlock:      big.NewInt(8_772_000),  // ETC Atlantis
 		ConstantinopleBlock: big.NewInt(9_573_000),  // ETC Agharta
 		PetersburgBlock:     big.NewInt(9_573_000),  // ETC Agharta

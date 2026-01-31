@@ -48,7 +48,9 @@ func LookupInstructionSet(rules params.Rules) (JumpTable, error) {
 		return newConstantinopleInstructionSet(), nil
 	case rules.IsByzantium:
 		return newByzantiumInstructionSet(), nil
-	case rules.IsEIP158:
+	case rules.IsEIP160:
+		// EIP-160: EXP cost increase. For ETC, this activates at block 3M (DieHard),
+		// separately from EIP-158 which activates at block 8.7M (Atlantis).
 		return newSpuriousDragonInstructionSet(), nil
 	case rules.IsEIP150:
 		return newTangerineWhistleInstructionSet(), nil
