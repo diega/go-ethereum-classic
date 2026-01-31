@@ -372,27 +372,30 @@ func calcDifficultyFrontierETC(time uint64, parent *types.Header) *big.Int {
 // ECIP-1010: Pause bomb at block 3M (DieHard)
 // ECIP-1041: Remove bomb at block 5.9M
 func calcBombComponentETC(config *params.ChainConfig, parentNumber *big.Int) *big.Int {
+	// next is the block number we're calculating difficulty for
+	next := new(big.Int).Add(parentNumber, big1)
+
 	// ECIP-1041: Bomb completely removed
-	if config.ECIP1041Block != nil && parentNumber.Cmp(config.ECIP1041Block) >= 0 {
+	if config.ECIP1041Block != nil && next.Cmp(config.ECIP1041Block) >= 0 {
 		return big.NewInt(0)
 	}
 
 	// Calculate the fake block number for bomb calculation
-	fakeBlockNumber := new(big.Int).Add(parentNumber, big1)
+	fakeBlockNumber := new(big.Int).Set(next)
 
 	// ECIP-1010: DieHard bomb pause
-	if config.ECIP1010Transition != nil && parentNumber.Cmp(config.ECIP1010Transition) >= 0 {
+	// The pause applies starting AT the transition block, not after it
+	if config.ECIP1010Transition != nil && next.Cmp(config.ECIP1010Transition) >= 0 {
 		if config.ECIP1010Length != nil {
 			// Pause the bomb: use block number 3M for all blocks between 3M and 3M+pause_length
 			pauseEnd := new(big.Int).Add(config.ECIP1010Transition, config.ECIP1010Length)
-			if parentNumber.Cmp(pauseEnd) < 0 {
+			if next.Cmp(pauseEnd) < 0 {
 				// During pause: freeze at DieHard block
 				fakeBlockNumber.Set(config.ECIP1010Transition)
 			} else {
 				// After pause: resume with delay
-				delay := new(big.Int).Sub(parentNumber, pauseEnd)
+				delay := new(big.Int).Sub(next, pauseEnd)
 				fakeBlockNumber.Add(config.ECIP1010Transition, delay)
-				fakeBlockNumber.Add(fakeBlockNumber, big1)
 			}
 		}
 	}
