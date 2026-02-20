@@ -30,6 +30,7 @@ import (
 	"github.com/ethereum/go-ethereum/beacon/engine"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/core/forkid"
 	"github.com/ethereum/go-ethereum/core/rawdb"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/eth"
@@ -994,6 +995,21 @@ func (api *ConsensusAPI) GetClientVersionV1(info engine.ClientVersionV1) []engin
 			Version: version.WithMeta,
 			Commit:  hexutil.Encode(commit),
 		},
+	}
+}
+
+// GetStatusInfoV1 returns the EL network identity and current fork ID (EIP-2124).
+func (api *ConsensusAPI) GetStatusInfoV1() engine.StatusInfoResponse {
+	config := api.eth.BlockChain().Config()
+	genesis := api.eth.BlockChain().Genesis()
+	head := api.eth.BlockChain().CurrentHeader()
+	fid := forkid.NewID(config, genesis, head.Number.Uint64(), head.Time)
+
+	return engine.StatusInfoResponse{
+		NetworkID:   api.eth.NetworkID(),
+		GenesisHash: genesis.Hash(),
+		Hash:        fid.Hash[:],
+		Next:        fid.Next,
 	}
 }
 

@@ -77,7 +77,7 @@ func NewID(config *params.ChainConfig, genesis *types.Block, head, time uint64) 
 	hash := crc32.ChecksumIEEE(genesis.Hash().Bytes())
 
 	// Calculate the current fork checksum and the next fork block
-	forksByBlock, forksByTime := gatherForks(config, genesis.Time())
+	forksByBlock, forksByTime := GatherForks(config, genesis.Time())
 	for _, fork := range forksByBlock {
 		if fork <= head {
 			// Fork already passed, checksum the previous hash and the fork number
@@ -134,7 +134,7 @@ func NewStaticFilter(config *params.ChainConfig, genesis *types.Block) Filter {
 func newFilter(config *params.ChainConfig, genesis *types.Block, headfn func() (uint64, uint64)) Filter {
 	// Calculate the all the valid fork hash and fork next combos
 	var (
-		forksByBlock, forksByTime = gatherForks(config, genesis.Time())
+		forksByBlock, forksByTime = GatherForks(config, genesis.Time())
 		forks                     = append(append([]uint64{}, forksByBlock...), forksByTime...)
 		sums                      = make([][4]byte, len(forks)+1) // 0th is the genesis
 	)
@@ -237,9 +237,9 @@ func checksumToBytes(hash uint32) [4]byte {
 	return blob
 }
 
-// gatherForks gathers all the known forks and creates two sorted lists out of
+// GatherForks gathers all the known forks and creates two sorted lists out of
 // them, one for the block number based forks and the second for the timestamps.
-func gatherForks(config *params.ChainConfig, genesis uint64) ([]uint64, []uint64) {
+func GatherForks(config *params.ChainConfig, genesis uint64) ([]uint64, []uint64) {
 	// Gather all the fork block numbers via reflection
 	kind := reflect.TypeFor[params.ChainConfig]()
 	conf := reflect.ValueOf(config).Elem()

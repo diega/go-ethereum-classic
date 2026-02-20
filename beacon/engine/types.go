@@ -429,3 +429,11 @@ type ClientVersionV1 struct {
 func (v *ClientVersionV1) String() string {
 	return fmt.Sprintf("%s-%s-%s-%s", v.Code, v.Name, v.Version, v.Commit)
 }
+
+// StatusInfoResponse contains the EL network identity and current fork ID (EIP-2124).
+type StatusInfoResponse struct {
+	NetworkID   uint64        `json:"networkId"`
+	GenesisHash common.Hash   `json:"genesisHash"`
+	Hash        hexutil.Bytes `json:"hash"`
+	Next        uint64        `json:"next"`
+}
