@@ -91,6 +91,11 @@ type ExecutableData struct {
 	BlobGasUsed      *uint64                 `json:"blobGasUsed"`
 	ExcessBlobGas    *uint64                 `json:"excessBlobGas"`
 	ExecutionWitness *types.ExecutionWitness `json:"executionWitness,omitempty"`
+
+	// PoW consensus fields (optional, used by PoW CLs)
+	Difficulty *big.Int          `json:"difficulty"`
+	Nonce      *types.BlockNonce `json:"nonce"`
+	Uncles     []*types.Header   `json:"uncles"`
 }
 
 // JSON type overrides for executableData.
@@ -105,6 +110,7 @@ type executableDataMarshaling struct {
 	Transactions  []hexutil.Bytes
 	BlobGasUsed   *hexutil.Uint64
 	ExcessBlobGas *hexutil.Uint64
+	Difficulty    *hexutil.Big
 }
 
 // StatelessPayloadStatusV1 is the result of a stateless payload execution.
@@ -293,15 +299,31 @@ func ExecutableDataToBlockNoHash(data ExecutableData, versionedHashes []common.H
 		requestsHash = &h
 	}
 
+	// Use PoW fields from CL if provided, otherwise default to PoS values.
+	difficulty := common.Big0
+	if data.Difficulty != nil {
+		difficulty = data.Difficulty
+	}
+	var nonce types.BlockNonce
+	if data.Nonce != nil {
+		nonce = *data.Nonce
+	}
+	uncleHash := types.EmptyUncleHash
+	var uncles []*types.Header
+	if len(data.Uncles) > 0 {
+		uncles = data.Uncles
+		uncleHash = types.CalcUncleHash(uncles)
+	}
+
 	header := &types.Header{
 		ParentHash:       data.ParentHash,
-		UncleHash:        types.EmptyUncleHash,
+		UncleHash:        uncleHash,
 		Coinbase:         data.FeeRecipient,
 		Root:             data.StateRoot,
 		TxHash:           types.DeriveSha(types.Transactions(txs), trie.NewStackTrie(nil)),
 		ReceiptHash:      data.ReceiptsRoot,
 		Bloom:            types.BytesToBloom(data.LogsBloom),
-		Difficulty:       common.Big0,
+		Difficulty:       difficulty,
 		Number:           new(big.Int).SetUint64(data.Number),
 		GasLimit:         data.GasLimit,
 		GasUsed:          data.GasUsed,
@@ -309,6 +331,7 @@ func ExecutableDataToBlockNoHash(data ExecutableData, versionedHashes []common.H
 		BaseFee:          data.BaseFeePerGas,
 		Extra:            data.ExtraData,
 		MixDigest:        data.Random,
+		Nonce:            nonce,
 		WithdrawalsHash:  withdrawalsRoot,
 		ExcessBlobGas:    data.ExcessBlobGas,
 		BlobGasUsed:      data.BlobGasUsed,
@@ -316,7 +339,7 @@ func ExecutableDataToBlockNoHash(data ExecutableData, versionedHashes []common.H
 		RequestsHash:     requestsHash,
 	}
 	return types.NewBlockWithHeader(header).
-			WithBody(types.Body{Transactions: txs, Uncles: nil, Withdrawals: data.Withdrawals}).
+			WithBody(types.Body{Transactions: txs, Uncles: uncles, Withdrawals: data.Withdrawals}).
 			WithWitness(data.ExecutionWitness),
 		nil
 }
@@ -324,6 +347,7 @@ func ExecutableDataToBlockNoHash(data ExecutableData, versionedHashes []common.H
 // BlockToExecutableData constructs the ExecutableData structure by filling the
 // fields from the given block. It assumes the given block is post-merge block.
 func BlockToExecutableData(block *types.Block, fees *big.Int, sidecars []*types.BlobTxSidecar, requests [][]byte) *ExecutionPayloadEnvelope {
+	nonce := block.Header().Nonce
 	data := &ExecutableData{
 		BlockHash:        block.Hash(),
 		ParentHash:       block.ParentHash(),
@@ -343,6 +367,9 @@ func BlockToExecutableData(block *types.Block, fees *big.Int, sidecars []*types.
 		BlobGasUsed:      block.BlobGasUsed(),
 		ExcessBlobGas:    block.ExcessBlobGas(),
 		ExecutionWitness: block.ExecutionWitness(),
+		Difficulty:       block.Difficulty(),
+		Nonce:            &nonce,
+		Uncles:           block.Uncles(),
 	}
 
 	// Add blobs.

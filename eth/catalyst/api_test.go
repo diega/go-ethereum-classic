@@ -780,24 +780,44 @@ func setBlockhash(data *engine.ExecutableData) *engine.ExecutableData {
 	txs, _ := decodeTransactions(data.Transactions)
 	number := big.NewInt(0)
 	number.SetUint64(data.Number)
+
+	// Use PoW fields from payload if provided, matching ExecutableDataToBlockNoHash.
+	difficulty := common.Big0
+	if data.Difficulty != nil {
+		difficulty = data.Difficulty
+	}
+	var nonce types.BlockNonce
+	if data.Nonce != nil {
+		nonce = *data.Nonce
+	}
+	uncleHash := types.EmptyUncleHash
+	if len(data.Uncles) > 0 {
+		uncleHash = types.CalcUncleHash(data.Uncles)
+	}
+	baseFee := data.BaseFeePerGas
+	if baseFee != nil && baseFee.Sign() == 0 {
+		baseFee = nil
+	}
+
 	header := &types.Header{
 		ParentHash:  data.ParentHash,
-		UncleHash:   types.EmptyUncleHash,
+		UncleHash:   uncleHash,
 		Coinbase:    data.FeeRecipient,
 		Root:        data.StateRoot,
 		TxHash:      types.DeriveSha(types.Transactions(txs), trie.NewStackTrie(nil)),
 		ReceiptHash: data.ReceiptsRoot,
 		Bloom:       types.BytesToBloom(data.LogsBloom),
-		Difficulty:  common.Big0,
+		Difficulty:  difficulty,
 		Number:      number,
 		GasLimit:    data.GasLimit,
 		GasUsed:     data.GasUsed,
 		Time:        data.Timestamp,
-		BaseFee:     data.BaseFeePerGas,
+		BaseFee:     baseFee,
 		Extra:       data.ExtraData,
 		MixDigest:   data.Random,
+		Nonce:       nonce,
 	}
-	block := types.NewBlockWithHeader(header).WithBody(types.Body{Transactions: txs})
+	block := types.NewBlockWithHeader(header).WithBody(types.Body{Transactions: txs, Uncles: data.Uncles})
 	data.BlockHash = block.Hash()
 	return data
 }

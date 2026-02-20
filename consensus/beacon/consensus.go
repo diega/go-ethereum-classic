@@ -99,136 +99,59 @@ func (beacon *Beacon) VerifyHeader(chain consensus.ChainHeaderReader, header *ty
 	// verification even stricter is to enforce that the chain can switch from
 	// >0 to ==0 TD only once by forbidding an ==0 to be followed by a >0.
 
-	// Verify that we're not reverting to pre-merge from post-merge
+	// All blocks are validated with beacon rules which are now consensus-agnostic
+	// (they don't enforce difficulty=0 or nonce=0). The CL is responsible for
+	// consensus validation (PoW seal, difficulty adjustment, etc.).
 	parent := chain.GetHeader(header.ParentHash, header.Number.Uint64()-1)
 	if parent == nil {
 		return consensus.ErrUnknownAncestor
 	}
-	if parent.Difficulty.Sign() == 0 && header.Difficulty.Sign() > 0 {
-		return consensus.ErrInvalidTerminalBlock
-	}
-	// Check >0 TDs with pre-merge, --0 TDs with post-merge rules
-	if header.Difficulty.Sign() > 0 {
-		return beacon.ethone.VerifyHeader(chain, header)
-	}
 	return beacon.verifyHeader(chain, header, parent)
 }
 
-// splitHeaders splits the provided header batch into two parts according to
-// the difficulty field.
-//
-// Note, this function will not verify the header validity but just split them.
+// splitHeaders previously split headers into pre-merge (PoW) and post-merge
+// (PoS) based on difficulty. Since all blocks now flow through the beacon
+// engine, all headers are treated as "post" headers.
 func (beacon *Beacon) splitHeaders(headers []*types.Header) ([]*types.Header, []*types.Header) {
-	var (
-		preHeaders  = headers
-		postHeaders []*types.Header
-	)
-	for i, header := range headers {
-		if header.Difficulty.Sign() == 0 {
-			preHeaders = headers[:i]
-			postHeaders = headers[i:]
-			break
-		}
-	}
-	return preHeaders, postHeaders
+	return nil, headers
 }
 
 // VerifyHeaders is similar to VerifyHeader, but verifies a batch of headers
 // concurrently. The method returns a quit channel to abort the operations and
 // a results channel to retrieve the async verifications.
 // VerifyHeaders expect the headers to be ordered and continuous.
+// All headers are verified with beacon (consensus-agnostic) rules.
 func (beacon *Beacon) VerifyHeaders(chain consensus.ChainHeaderReader, headers []*types.Header) (chan<- struct{}, <-chan error) {
-	preHeaders, postHeaders := beacon.splitHeaders(headers)
-	if len(postHeaders) == 0 {
-		return beacon.ethone.VerifyHeaders(chain, headers)
-	}
-	if len(preHeaders) == 0 {
-		return beacon.verifyHeaders(chain, headers, nil)
-	}
-	// The transition point exists in the middle, separate the headers
-	// into two batches and apply different verification rules for them.
-	var (
-		abort   = make(chan struct{})
-		results = make(chan error, len(headers))
-	)
-	go func() {
-		var (
-			old, new, out      = 0, len(preHeaders), 0
-			errors             = make([]error, len(headers))
-			done               = make([]bool, len(headers))
-			oldDone, oldResult = beacon.ethone.VerifyHeaders(chain, preHeaders)
-			newDone, newResult = beacon.verifyHeaders(chain, postHeaders, preHeaders[len(preHeaders)-1])
-		)
-		// Collect the results
-		for {
-			for ; done[out]; out++ {
-				results <- errors[out]
-				if out == len(headers)-1 {
-					return
-				}
-			}
-			select {
-			case err := <-oldResult:
-				if !done[old] { // skip TTD-verified failures
-					errors[old], done[old] = err, true
-				}
-				old++
-			case err := <-newResult:
-				errors[new], done[new] = err, true
-				new++
-			case <-abort:
-				close(oldDone)
-				close(newDone)
-				return
-			}
-		}
-	}()
-	return abort, results
+	return beacon.verifyHeaders(chain, headers, nil)
 }
 
 // VerifyUncles verifies that the given block's uncles conform to the consensus
 // rules of the Ethereum consensus engine.
+// NOTE: Uncle validation is delegated to the CL. The EL only verifies that
+// the uncle hash in the header matches the actual uncles in the body.
 func (beacon *Beacon) VerifyUncles(chain consensus.ChainReader, block *types.Block) error {
-	if !beacon.IsPoSHeader(block.Header()) {
-		return beacon.ethone.VerifyUncles(chain, block)
-	}
-	// Verify that there is no uncle block. It's explicitly disabled in the beacon
-	if len(block.Uncles()) > 0 {
-		return errTooManyUncles
-	}
 	return nil
 }
 
 // verifyHeader checks whether a header conforms to the consensus rules of the
-// stock Ethereum consensus engine. The difference between the beacon and classic is
-// (a) The following fields are expected to be constants:
-//   - difficulty is expected to be 0
-//   - nonce is expected to be 0
-//   - unclehash is expected to be Hash(emptyHeader)
-//     to be the desired constants
+// stock Ethereum consensus engine. Unlike standard PoS, this version does NOT
+// enforce difficulty=0, nonce=0, or empty uncles, allowing a PoW CL to pass
+// real consensus fields through the Engine API.
 //
-// (b) we don't verify if a block is in the future anymore
-// (c) the extradata is limited to 32 bytes
+// The CL is responsible for validating PoW-specific fields (difficulty
+// adjustment, ethash seal, uncle validity). The EL only validates execution
+// correctness (gas, EIP-1559, state transitions).
 func (beacon *Beacon) verifyHeader(chain consensus.ChainHeaderReader, header, parent *types.Header) error {
 	// Ensure that the header's extra-data section is of a reasonable size
 	if len(header.Extra) > int(params.MaximumExtraDataSize) {
 		return fmt.Errorf("extra-data longer than 32 bytes (%d)", len(header.Extra))
 	}
-	// Verify the seal parts. Ensure the nonce and uncle hash are the expected value.
-	if header.Nonce != beaconNonce {
-		return errInvalidNonce
-	}
-	if header.UncleHash != types.EmptyUncleHash {
-		return errInvalidUncleHash
-	}
 	// Verify the timestamp
 	if header.Time <= parent.Time {
 		return errInvalidTimestamp
 	}
-	// Verify the block's difficulty to ensure it's the default constant
-	if beaconDifficulty.Cmp(header.Difficulty) != 0 {
-		return fmt.Errorf("invalid difficulty: have %v, want %v", header.Difficulty, beaconDifficulty)
-	}
+	// NOTE: difficulty, nonce, and uncleHash are NOT validated here.
+	// The CL is responsible for consensus validation (PoW or PoS).
 	// Verify that the gas limit is <= 2^63-1
 	if header.GasLimit > params.MaxGasLimit {
 		return fmt.Errorf("invalid gasLimit: have %v, max %v", header.GasLimit, params.MaxGasLimit)
@@ -317,11 +240,13 @@ func (beacon *Beacon) verifyHeaders(chain consensus.ChainHeaderReader, headers [
 
 // Prepare implements consensus.Engine, initializing the difficulty field of a
 // header to conform to the beacon protocol. The changes are done inline.
+// NOTE: If the CL provides a difficulty value via the Engine API, it will
+// override this default after Prepare is called.
 func (beacon *Beacon) Prepare(chain consensus.ChainHeaderReader, header *types.Header) error {
-	if !chain.Config().IsPostMerge(header.Number.Uint64(), header.Time) {
-		return beacon.ethone.Prepare(chain, header)
+	// Default to 0; the CL may override this via ExecutableData.Difficulty.
+	if header.Difficulty == nil {
+		header.Difficulty = beaconDifficulty
 	}
-	header.Difficulty = beaconDifficulty
 	return nil
 }
 
@@ -443,14 +368,12 @@ func (beacon *Beacon) Close() error {
 	return beacon.ethone.Close()
 }
 
-// IsPoSHeader reports the header belongs to the PoS-stage with some special fields.
-// This function is not suitable for a part of APIs like Prepare or CalcDifficulty
-// because the header difficulty is not set yet.
+// IsPoSHeader reports whether the header is managed by the beacon consensus
+// engine (i.e., received via Engine API from a CL). Since all blocks now flow
+// through the beacon engine regardless of the CL's consensus algorithm (PoS
+// or PoW), this always returns true.
 func (beacon *Beacon) IsPoSHeader(header *types.Header) bool {
-	if header.Difficulty == nil {
-		panic("IsPoSHeader called with invalid difficulty")
-	}
-	return header.Difficulty.Cmp(beaconDifficulty) == 0
+	return true
 }
 
 // InnerEngine returns the embedded eth1 consensus engine.

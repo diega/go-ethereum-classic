@@ -713,7 +713,13 @@ func (api *ConsensusAPI) newPayload(params engine.ExecutableData, versionedHashe
 			"beaconRoot", beaconRoot,
 			"len(requests)", len(requests),
 			"error", err)
-		return api.invalid(err, nil), nil
+		// Look up the parent header so invalid() can return the correct
+		// LatestValidHash (0x0 for PoW parents, parent hash for PoS).
+		var parentHeader *types.Header
+		if parent := api.eth.BlockChain().GetBlock(params.ParentHash, params.Number-1); parent != nil {
+			parentHeader = parent.Header()
+		}
+		return api.invalid(err, parentHeader), nil
 	}
 	// Stash away the last update to warn the user if the beacon client goes offline
 	api.lastNewPayloadUpdate.Store(time.Now().Unix())

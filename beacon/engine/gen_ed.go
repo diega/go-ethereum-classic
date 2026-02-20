@@ -35,6 +35,9 @@ func (e ExecutableData) MarshalJSON() ([]byte, error) {
 		BlobGasUsed      *hexutil.Uint64         `json:"blobGasUsed"`
 		ExcessBlobGas    *hexutil.Uint64         `json:"excessBlobGas"`
 		ExecutionWitness *types.ExecutionWitness `json:"executionWitness,omitempty"`
+		Difficulty       *hexutil.Big            `json:"difficulty"`
+		Nonce            *types.BlockNonce       `json:"nonce"`
+		Uncles           []*types.Header         `json:"uncles"`
 	}
 	var enc ExecutableData
 	enc.ParentHash = e.ParentHash
@@ -60,6 +63,9 @@ func (e ExecutableData) MarshalJSON() ([]byte, error) {
 	enc.BlobGasUsed = (*hexutil.Uint64)(e.BlobGasUsed)
 	enc.ExcessBlobGas = (*hexutil.Uint64)(e.ExcessBlobGas)
 	enc.ExecutionWitness = e.ExecutionWitness
+	enc.Difficulty = (*hexutil.Big)(e.Difficulty)
+	enc.Nonce = e.Nonce
+	enc.Uncles = e.Uncles
 	return json.Marshal(&enc)
 }
 
@@ -84,6 +90,9 @@ func (e *ExecutableData) UnmarshalJSON(input []byte) error {
 		BlobGasUsed      *hexutil.Uint64         `json:"blobGasUsed"`
 		ExcessBlobGas    *hexutil.Uint64         `json:"excessBlobGas"`
 		ExecutionWitness *types.ExecutionWitness `json:"executionWitness,omitempty"`
+		Difficulty       *hexutil.Big            `json:"difficulty"`
+		Nonce            *types.BlockNonce       `json:"nonce"`
+		Uncles           []*types.Header         `json:"uncles"`
 	}
 	var dec ExecutableData
 	if err := json.Unmarshal(input, &dec); err != nil {
@@ -159,6 +168,15 @@ func (e *ExecutableData) UnmarshalJSON(input []byte) error {
 	}
 	if dec.ExecutionWitness != nil {
 		e.ExecutionWitness = dec.ExecutionWitness
+	}
+	if dec.Difficulty != nil {
+		e.Difficulty = (*big.Int)(dec.Difficulty)
+	}
+	if dec.Nonce != nil {
+		e.Nonce = dec.Nonce
+	}
+	if dec.Uncles != nil {
+		e.Uncles = dec.Uncles
 	}
 	return nil
 }
