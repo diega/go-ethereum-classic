@@ -487,6 +487,12 @@ type ChainConfig struct {
 	// those cases.
 	EnableVerkleAtGenesis bool `json:"enableVerkleAtGenesis,omitempty"`
 
+	// ETC-specific ECIPs (enter Fork ID via gatherForks reflection on *big.Int fields with "Block" suffix)
+	ECIP1017Block *big.Int `json:"ecip1017Block,omitempty"`
+	ECIP1041Block *big.Int `json:"ecip1041Block,omitempty"`
+	ECIP1099Block *big.Int `json:"ecip1099Block,omitempty"`
+	SpiralBlock   *big.Int `json:"spiralBlock,omitempty"`
+
 	// Various consensus engines
 	Ethash             *EthashConfig       `json:"ethash,omitempty"`
 	Clique             *CliqueConfig       `json:"clique,omitempty"`

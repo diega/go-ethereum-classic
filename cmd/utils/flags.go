@@ -161,6 +161,11 @@ var (
 		Usage:    "Hoodi network: pre-configured proof-of-stake test network",
 		Category: flags.EthCategory,
 	}
+	ClassicFlag = &cli.BoolFlag{
+		Name:     "classic",
+		Usage:    "Ethereum Classic mainnet: proof-of-work network (ChainID 61)",
+		Category: flags.EthCategory,
+	}
 	// Dev mode
 	DeveloperFlag = &cli.BoolFlag{
 		Name:     "dev",
@@ -1023,7 +1028,7 @@ var (
 		HoodiFlag,
 	}
 	// NetworkFlags is the flag group of all built-in supported networks.
-	NetworkFlags = append([]cli.Flag{MainnetFlag}, TestnetFlags...)
+	NetworkFlags = append([]cli.Flag{MainnetFlag, ClassicFlag}, TestnetFlags...)
 
 	// DatabaseFlags is the flag group of all database flags.
 	DatabaseFlags = []cli.Flag{
@@ -1056,6 +1061,9 @@ func MakeDataDir(ctx *cli.Context) string {
 		}
 		if ctx.Bool(HoodiFlag.Name) {
 			return filepath.Join(path, "hoodi")
+		}
+		if ctx.Bool(ClassicFlag.Name) {
+			return filepath.Join(path, "classic")
 		}
 		return path
 	}
@@ -1478,6 +1486,8 @@ func SetDataDir(ctx *cli.Context, cfg *node.Config) {
 		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "holesky")
 	case ctx.Bool(HoodiFlag.Name) && cfg.DataDir == node.DefaultDataDir():
 		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "hoodi")
+	case ctx.Bool(ClassicFlag.Name) && cfg.DataDir == node.DefaultDataDir():
+		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "classic")
 	}
 }
 
@@ -1604,7 +1614,7 @@ func setRequiredBlocks(ctx *cli.Context, cfg *ethconfig.Config) {
 // SetEthConfig applies eth-related command line flags to the config.
 func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 	// Avoid conflicting network flags, don't allow network id override on preset networks
-	flags.CheckExclusive(ctx, MainnetFlag, DeveloperFlag, SepoliaFlag, HoleskyFlag, HoodiFlag, NetworkIdFlag, OverrideGenesisFlag)
+	flags.CheckExclusive(ctx, MainnetFlag, DeveloperFlag, SepoliaFlag, HoleskyFlag, HoodiFlag, ClassicFlag, NetworkIdFlag, OverrideGenesisFlag)
 	flags.CheckExclusive(ctx, DeveloperFlag, ExternalSignerFlag) // Can't use both ephemeral unlocked and external signer
 
 	// Set configurations from CLI flags
@@ -1808,6 +1818,9 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 		cfg.NetworkId = 560048
 		cfg.Genesis = core.DefaultHoodiGenesisBlock()
 		SetDNSDiscoveryDefaults(cfg, params.HoodiGenesisHash)
+	case ctx.Bool(ClassicFlag.Name):
+		cfg.NetworkId = 1
+		cfg.Genesis = core.DefaultClassicGenesisBlock()
 	case ctx.Bool(DeveloperFlag.Name):
 		cfg.NetworkId = 1337
 		cfg.SyncMode = ethconfig.FullSync
@@ -1935,7 +1948,7 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 func MakeBeaconLightConfig(ctx *cli.Context) bparams.ClientConfig {
 	var config bparams.ClientConfig
 	customConfig := ctx.IsSet(BeaconConfigFlag.Name)
-	flags.CheckExclusive(ctx, MainnetFlag, SepoliaFlag, HoleskyFlag, HoodiFlag, BeaconConfigFlag)
+	flags.CheckExclusive(ctx, MainnetFlag, SepoliaFlag, HoleskyFlag, HoodiFlag, ClassicFlag, BeaconConfigFlag)
 	switch {
 	case ctx.Bool(MainnetFlag.Name):
 		config.ChainConfig = *bparams.MainnetLightConfig
@@ -2244,6 +2257,8 @@ func MakeGenesis(ctx *cli.Context) *core.Genesis {
 		genesis = core.DefaultSepoliaGenesisBlock()
 	case ctx.Bool(HoodiFlag.Name):
 		genesis = core.DefaultHoodiGenesisBlock()
+	case ctx.Bool(ClassicFlag.Name):
+		genesis = core.DefaultClassicGenesisBlock()
 	case ctx.Bool(DeveloperFlag.Name):
 		Fatalf("Developer chains are ephemeral")
 	}
