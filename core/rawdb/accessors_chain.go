@@ -754,6 +754,10 @@ func writeAncientBlock(op ethdb.AncientWriteOp, block *types.Block, header *type
 	if err := op.Append(ChainFreezerReceiptTable, num, receipts); err != nil {
 		return fmt.Errorf("can't append block %d receipts: %v", num, err)
 	}
+	// Write nil TD placeholder to keep freezer tables in sync
+	if err := op.AppendRaw(ChainFreezerDifficultyTable, num, nil); err != nil {
+		return fmt.Errorf("can't append block %d td: %v", num, err)
+	}
 	return nil
 }
 
@@ -775,6 +779,9 @@ func WriteAncientHeaderChain(db ethdb.AncientWriter, headers []*types.Header) (i
 			}
 			if err := op.AppendRaw(ChainFreezerReceiptTable, num, nil); err != nil {
 				return fmt.Errorf("can't append block %d receipts: %v", num, err)
+			}
+			if err := op.AppendRaw(ChainFreezerDifficultyTable, num, nil); err != nil {
+				return fmt.Errorf("can't append block %d td: %v", num, err)
 			}
 		}
 		return nil
