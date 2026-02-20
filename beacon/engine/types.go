@@ -315,6 +315,13 @@ func ExecutableDataToBlockNoHash(data ExecutableData, versionedHashes []common.H
 		uncleHash = types.CalcUncleHash(uncles)
 	}
 
+	// Treat BaseFeePerGas == 0 as nil (pre-London blocks have no base fee).
+	// In London+ blocks, the protocol guarantees BaseFee > 0.
+	baseFee := data.BaseFeePerGas
+	if baseFee != nil && baseFee.Sign() == 0 {
+		baseFee = nil
+	}
+
 	header := &types.Header{
 		ParentHash:       data.ParentHash,
 		UncleHash:        uncleHash,
@@ -328,7 +335,7 @@ func ExecutableDataToBlockNoHash(data ExecutableData, versionedHashes []common.H
 		GasLimit:         data.GasLimit,
 		GasUsed:          data.GasUsed,
 		Time:             data.Timestamp,
-		BaseFee:          data.BaseFeePerGas,
+		BaseFee:          baseFee,
 		Extra:            data.ExtraData,
 		MixDigest:        data.Random,
 		Nonce:            nonce,
