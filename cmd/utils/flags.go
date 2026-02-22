@@ -1127,6 +1127,8 @@ func setBootstrapNodes(ctx *cli.Context, cfg *p2p.Config) {
 			urls = params.SepoliaBootnodes
 		case ctx.Bool(HoodiFlag.Name):
 			urls = params.HoodiBootnodes
+		case ctx.Bool(ClassicFlag.Name):
+			urls = params.ClassicBootnodes
 		}
 	}
 	cfg.BootstrapNodes = mustParseBootnodes(urls)
@@ -1821,6 +1823,12 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 	case ctx.Bool(ClassicFlag.Name):
 		cfg.NetworkId = 1
 		cfg.Genesis = core.DefaultClassicGenesisBlock()
+		// ETC shares genesis hash with ETH mainnet, so we set DNS directly
+		// instead of using SetDNSDiscoveryDefaults (which would match mainnet).
+		if cfg.EthDiscoveryURLs == nil {
+			cfg.EthDiscoveryURLs = []string{"enrtree://AJE62Q4DUX4QMMXEHCSSCSC65TDHZYSMONSD64P3WULVLSF6MRQ3K@all.classic.blockd.info"}
+			cfg.SnapDiscoveryURLs = cfg.EthDiscoveryURLs
+		}
 	case ctx.Bool(DeveloperFlag.Name):
 		cfg.NetworkId = 1337
 		cfg.SyncMode = ethconfig.FullSync

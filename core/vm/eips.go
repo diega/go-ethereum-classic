@@ -28,6 +28,7 @@ import (
 )
 
 var activators = map[int]func(*JumpTable){
+	160:  enable160,
 	5656: enable5656,
 	6780: enable6780,
 	3855: enable3855,
@@ -54,6 +55,12 @@ func EnableEIP(eipNum int, jt *JumpTable) error {
 	}
 	enablerFn(jt)
 	return nil
+}
+
+// enable160 applies EIP-160 (EXP gas cost increase from 10 to 50 per byte).
+// Needed for ETC between blocks 3M (Die Hard) and 8.77M (Atlantis).
+func enable160(jt *JumpTable) {
+	jt[EXP].dynamicGas = gasExpEIP158
 }
 
 func ValidEip(eipNum int) bool {

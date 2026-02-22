@@ -378,12 +378,12 @@ func (beacon *Beacon) Close() error {
 	return beacon.ethone.Close()
 }
 
-// IsPoSHeader reports whether the header is managed by the beacon consensus
-// engine (i.e., received via Engine API from a CL). Since all blocks now flow
-// through the beacon engine regardless of the CL's consensus algorithm (PoS
-// or PoW), this always returns true.
+// IsPoSHeader reports whether the header is a PoS block (difficulty == 0).
+// PoW blocks (difficulty > 0) are delegated to the inner ethash engine for
+// finalization (mining rewards). Both PoW and PoS blocks flow through the
+// beacon engine via the Engine API.
 func (beacon *Beacon) IsPoSHeader(header *types.Header) bool {
-	return true
+	return header.Difficulty == nil || header.Difficulty.Sign() == 0
 }
 
 // InnerEngine returns the embedded eth1 consensus engine.

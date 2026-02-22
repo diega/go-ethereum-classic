@@ -182,9 +182,14 @@ func NewEVM(blockCtx BlockContext, statedb StateDB, chainConfig *params.ChainCon
 		evm.table = &frontierInstructionSet
 	}
 	var extraEips []int
-	if len(evm.Config.ExtraEips) > 0 {
+	if evm.chainRules.IsEIP160 || len(evm.Config.ExtraEips) > 0 {
 		// Deep-copy jumptable to prevent modification of opcodes in other tables
 		evm.table = copyJumpTable(evm.table)
+		if evm.chainRules.IsEIP160 {
+			if err := EnableEIP(160, evm.table); err != nil {
+				log.Error("EIP activation failed", "eip", 160, "error", err)
+			}
+		}
 	}
 	for _, eip := range evm.Config.ExtraEips {
 		if err := EnableEIP(eip, evm.table); err != nil {

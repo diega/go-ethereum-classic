@@ -71,6 +71,16 @@ func (c *ChainConfig) IsECIP1017(num *big.Int) bool {
 	return isBlockForked(c.ECIP1017Block, num)
 }
 
+// isEIP160 returns true when EIP-160 (EXP gas cost increase) needs manual activation.
+// For ETC: Die Hard activated EIP-160 at block 3M, but Atlantis activated EIP-158/161/170
+// at block 8.77M. Between these blocks, we need to patch the jump table.
+func (c *ChainConfig) isEIP160(num *big.Int) bool {
+	if c.IsClassic() {
+		return c.IsEIP155(num) && !c.IsEIP158(num)
+	}
+	return false
+}
+
 // IsClassic returns whether this chain is an Ethereum Classic chain.
 func (c *ChainConfig) IsClassic() bool {
 	if c.ChainID == nil {

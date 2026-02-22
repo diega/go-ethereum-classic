@@ -281,7 +281,9 @@ func (api *ConsensusAPI) forkchoiceUpdated(update engine.ForkchoiceStateV1, payl
 	}
 	// Block is known locally, just sanity check that the beacon client does not
 	// attempt to push us back to before the merge.
-	if block.Difficulty().BitLen() > 0 && block.NumberU64() > 0 {
+	// Skip this check when there's no TTD (perpetual PoW chain like ETC).
+	ttd := api.eth.BlockChain().Config().TerminalTotalDifficulty
+	if ttd != nil && block.Difficulty().BitLen() > 0 && block.NumberU64() > 0 {
 		ph := api.eth.BlockChain().GetHeader(block.ParentHash(), block.NumberU64()-1)
 		if ph == nil {
 			return engine.STATUS_INVALID, errors.New("parent unavailable for difficulty check")
