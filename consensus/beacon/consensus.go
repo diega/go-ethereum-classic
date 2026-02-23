@@ -246,11 +246,16 @@ func (beacon *Beacon) verifyHeaders(chain consensus.ChainHeaderReader, headers [
 
 // Prepare implements consensus.Engine, initializing the difficulty field of a
 // header to conform to the beacon protocol. The changes are done inline.
-// NOTE: If the CL provides a difficulty value via the Engine API, it will
-// override this default after Prepare is called.
+//
+// For PoW chains (ETC): if the parent block has non-zero difficulty, compute
+// the PoW difficulty so that FinalizeAndAssemble takes the PoW path and
+// applies mining rewards via accumulateRewards. This ensures getPayloadV2
+// returns a block with the correct state_root (including mining rewards).
 func (beacon *Beacon) Prepare(chain consensus.ChainHeaderReader, header *types.Header) error {
-	// Default to 0; the CL may override this via ExecutableData.Difficulty.
-	if header.Difficulty == nil {
+	parent := chain.GetHeader(header.ParentHash, header.Number.Uint64()-1)
+	if parent != nil && parent.Difficulty != nil && parent.Difficulty.Sign() > 0 {
+		header.Difficulty = beacon.ethone.CalcDifficulty(chain, header.Time, parent)
+	} else if header.Difficulty == nil {
 		header.Difficulty = beaconDifficulty
 	}
 	return nil
