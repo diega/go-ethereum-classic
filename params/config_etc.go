@@ -56,7 +56,8 @@ var (
 		VerkleTime:              nil,
 		TerminalTotalDifficulty: nil, // ETC is perpetual PoW, no TTD
 		// ETC-specific ECIPs
-		ECIP1017Block: big.NewInt(5_000_000),  // Gotham monetary policy
+		ECIP1017Block:     big.NewInt(5_000_000), // Gotham monetary policy
+		ECIP1017EraRounds: big.NewInt(5_000_000), // Era length: 5M blocks
 		ECIP1041Block: big.NewInt(5_900_000),  // ECIP-1041 bomb disposal
 		ECIP1099Block: big.NewInt(11_700_000), // Etchash (60k epochs)
 		SpiralBlock:   big.NewInt(19_250_000), // Spiral (partial Shanghai)
@@ -64,6 +65,11 @@ var (
 		Ethash: new(EthashConfig),
 	}
 )
+
+// IsECIP1017 returns whether num is either equal to the ECIP-1017 transition block or greater.
+func (c *ChainConfig) IsECIP1017(num *big.Int) bool {
+	return isBlockForked(c.ECIP1017Block, num)
+}
 
 // IsClassic returns whether this chain is an Ethereum Classic chain.
 func (c *ChainConfig) IsClassic() bool {

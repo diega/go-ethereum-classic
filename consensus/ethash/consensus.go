@@ -568,6 +568,11 @@ func (ethash *Ethash) SealHash(header *types.Header) (hash common.Hash) {
 // reward. The total reward consists of the static block reward and rewards for
 // included uncles. The coinbase of each uncle block is also rewarded.
 func accumulateRewards(config *params.ChainConfig, stateDB vm.StateDB, header *types.Header, uncles []*types.Header) {
+	// For ETC chains with ECIP-1017, use era-based rewards
+	if config.IsClassic() && config.IsECIP1017(header.Number) {
+		accumulateRewardsETC(config, stateDB, header, uncles)
+		return
+	}
 	// Select the correct block reward based on chain progression
 	blockReward := FrontierBlockReward
 	if config.IsByzantium(header.Number) {
@@ -592,4 +597,62 @@ func accumulateRewards(config *params.ChainConfig, stateDB vm.StateDB, header *t
 		reward.Add(reward, r)
 	}
 	stateDB.AddBalance(header.Coinbase, reward, tracing.BalanceIncreaseRewardMineBlock)
+}
+
+// accumulateRewardsETC implements ECIP-1017 era-based monetary policy.
+// Rewards are reduced by 20% every era (5M blocks on mainnet).
+func accumulateRewardsETC(config *params.ChainConfig, stateDB vm.StateDB, header *types.Header, uncles []*types.Header) {
+	era := getBlockEra(header.Number, config.ECIP1017EraRounds)
+	blockReward := getBlockWinnerRewardByEra(era)
+
+	reward := new(uint256.Int).Set(blockReward)
+	r := new(uint256.Int)
+	hNum, _ := uint256.FromBig(header.Number)
+	for _, uncle := range uncles {
+		uNum, _ := uint256.FromBig(uncle.Number)
+
+		if era.Sign() == 0 {
+			// Era 0: standard formula (8 - distance) / 8 * blockReward
+			r.AddUint64(uNum, 8)
+			r.Sub(r, hNum)
+			r.Mul(r, blockReward)
+			r.Rsh(r, 3)
+		} else {
+			// Era 1+: fixed 1/32 of block reward (ECIP-1017)
+			r.Rsh(blockReward, 5)
+		}
+		stateDB.AddBalance(uncle.Coinbase, r, tracing.BalanceIncreaseRewardMineUncle)
+
+		// Miner gets 1/32 of block reward per uncle
+		r.Rsh(blockReward, 5)
+		reward.Add(reward, r)
+	}
+	stateDB.AddBalance(header.Coinbase, reward, tracing.BalanceIncreaseRewardMineBlock)
+}
+
+// getBlockEra returns the era number for a given block number.
+// Era 0: blocks 0 to eraRounds-1, Era 1: eraRounds to 2*eraRounds-1, etc.
+func getBlockEra(blockNum *big.Int, eraRounds *big.Int) *big.Int {
+	if eraRounds == nil || eraRounds.Sign() <= 0 || blockNum.Sign() <= 0 {
+		return big.NewInt(0)
+	}
+	era := new(big.Int).Sub(blockNum, big.NewInt(1))
+	era.Div(era, eraRounds)
+	return era
+}
+
+// getBlockWinnerRewardByEra calculates the block reward for a given era.
+// ECIP-1017: reward = 5 ETC * 0.8^era (20% reduction per era).
+func getBlockWinnerRewardByEra(era *big.Int) *uint256.Int {
+	if era.Sign() <= 0 {
+		return new(uint256.Int).Set(FrontierBlockReward)
+	}
+	reward := new(uint256.Int).Set(FrontierBlockReward)
+	four := uint256.NewInt(4)
+	five := uint256.NewInt(5)
+	for i := big.NewInt(0); i.Cmp(era) < 0; i.Add(i, big.NewInt(1)) {
+		reward.Mul(reward, four)
+		reward.Div(reward, five)
+	}
+	return reward
 }
