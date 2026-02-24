@@ -99,6 +99,11 @@ func (c *ChainConfig) IsEIP1559(num *big.Int) bool {
 	return c.IsLondon(num)
 }
 
+// IsSpiral returns whether num is either equal to the Spiral fork block or greater.
+func (c *ChainConfig) IsSpiral(num *big.Int) bool {
+	return isBlockForked(c.SpiralBlock, num)
+}
+
 func init() {
 	// Register ETC networks in NetworkNames
 	NetworkNames[ClassicChainConfig.ChainID.String()] = "classic"

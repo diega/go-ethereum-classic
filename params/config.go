@@ -1389,6 +1389,7 @@ type Rules struct {
 	IsBerlin, IsLondon                                      bool
 	IsMerge, IsShanghai, IsCancun, IsPrague, IsOsaka        bool
 	IsAmsterdam, IsVerkle                                   bool
+	IsSpiral                                                bool
 }
 
 // Rules ensures c's ChainID is not nil.
@@ -1400,6 +1401,7 @@ func (c *ChainConfig) Rules(num *big.Int, isMerge bool, timestamp uint64) Rules 
 	// disallow setting Merge out of order
 	isMerge = isMerge && c.IsLondon(num)
 	isVerkle := isMerge && c.IsVerkle(num, timestamp)
+	isSpiral := c.IsSpiral(num)
 	return Rules{
 		ChainID:          new(big.Int).Set(chainID),
 		IsHomestead:      c.IsHomestead(num),
@@ -1415,12 +1417,13 @@ func (c *ChainConfig) Rules(num *big.Int, isMerge bool, timestamp uint64) Rules 
 		IsEIP2929:        c.IsBerlin(num) && !isVerkle,
 		IsLondon:         c.IsLondon(num),
 		IsMerge:          isMerge,
-		IsShanghai:       isMerge && c.IsShanghai(num, timestamp),
+		IsShanghai:       (isMerge && c.IsShanghai(num, timestamp)) || isSpiral,
 		IsCancun:         isMerge && c.IsCancun(num, timestamp),
 		IsPrague:         isMerge && c.IsPrague(num, timestamp),
 		IsOsaka:          isMerge && c.IsOsaka(num, timestamp),
 		IsAmsterdam:      isMerge && c.IsAmsterdam(num, timestamp),
 		IsVerkle:         isVerkle,
 		IsEIP4762:        isVerkle,
+		IsSpiral:         isSpiral,
 	}
 }

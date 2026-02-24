@@ -158,6 +158,8 @@ func NewEVM(blockCtx BlockContext, statedb StateDB, chainConfig *params.ChainCon
 		evm.table = &pragueInstructionSet
 	case evm.chainRules.IsCancun:
 		evm.table = &cancunInstructionSet
+	case evm.chainRules.IsSpiral:
+		evm.table = &spiralInstructionSet
 	case evm.chainRules.IsShanghai:
 		evm.table = &shanghaiInstructionSet
 	case evm.chainRules.IsMerge:
