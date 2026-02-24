@@ -492,7 +492,7 @@ func (g *Genesis) toBlockWithRoot(root common.Hash) *types.Block {
 			head.Difficulty = params.GenesisDifficulty
 		}
 	}
-	if g.Config != nil && g.Config.IsLondon(common.Big0) {
+	if g.Config != nil && g.Config.IsEIP1559(common.Big0) {
 		if g.BaseFee != nil {
 			head.BaseFee = g.BaseFee
 		} else {

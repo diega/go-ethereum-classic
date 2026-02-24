@@ -166,8 +166,10 @@ func (beacon *Beacon) verifyHeader(chain consensus.ChainHeaderReader, header, pa
 		return consensus.ErrInvalidNumber
 	}
 	// Verify gas limit and (if applicable) EIP-1559 base fee.
-	if !chain.Config().IsLondon(header.Number) {
-		// Pre-London: just verify gas limit bounds, no base fee.
+	// Use IsEIP1559 instead of IsLondon because ETC has London (Mystique)
+	// WITHOUT EIP-1559 — gas limit rules remain pre-London for ETC.
+	if !chain.Config().IsEIP1559(header.Number) {
+		// Pre-EIP1559: just verify gas limit bounds, no base fee.
 		if err := misc.VerifyGaslimit(parent.GasLimit, header.GasLimit); err != nil {
 			return err
 		}

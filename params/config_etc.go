@@ -89,6 +89,16 @@ func (c *ChainConfig) IsClassic() bool {
 	return c.ChainID.Uint64() == 61
 }
 
+// IsEIP1559 returns whether EIP-1559 (fee market) is active at the given block.
+// Note: ETC has London (Mystique) WITHOUT EIP-1559, so this returns false for ETC.
+// For most chains, IsEIP1559 is equivalent to IsLondon.
+func (c *ChainConfig) IsEIP1559(num *big.Int) bool {
+	if c.IsClassic() {
+		return false // ETC never has EIP-1559
+	}
+	return c.IsLondon(num)
+}
+
 func init() {
 	// Register ETC networks in NetworkNames
 	NetworkNames[ClassicChainConfig.ChainID.String()] = "classic"

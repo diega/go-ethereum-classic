@@ -218,10 +218,12 @@ func (miner *Miner) prepareWork(genParams *generateParams, witness bool) (*envir
 	if genParams.random != (common.Hash{}) {
 		header.MixDigest = genParams.random
 	}
-	// Set baseFee and GasLimit if we are on an EIP-1559 chain
-	if miner.chainConfig.IsLondon(header.Number) {
+	// Set baseFee and GasLimit if we are on an EIP-1559 chain.
+	// Use IsEIP1559 instead of IsLondon because ETC has London (Mystique)
+	// WITHOUT EIP-1559 — no base fee, no elastic gas limit for ETC.
+	if miner.chainConfig.IsEIP1559(header.Number) {
 		header.BaseFee = eip1559.CalcBaseFee(miner.chainConfig, parent)
-		if !miner.chainConfig.IsLondon(parent.Number) {
+		if !miner.chainConfig.IsEIP1559(parent.Number) {
 			parentGasLimit := parent.GasLimit * miner.chainConfig.ElasticityMultiplier()
 			header.GasLimit = core.CalcGasLimit(parentGasLimit, miner.config.GasCeil)
 		}
