@@ -102,6 +102,7 @@ type generateParams struct {
 	withdrawals types.Withdrawals // List of withdrawals to include in block (shanghai field)
 	beaconRoot  *common.Hash      // The beacon root (cancun field).
 	noTxs       bool              // Flag whether an empty block without any transaction is expected
+	uncles      []*types.Header   // Uncle headers for PoW blocks (optional).
 }
 
 // generateWork generates a sealing block based on the given parameters.
@@ -133,7 +134,7 @@ func (miner *Miner) generateWork(genParam *generateParams, witness bool) *newPay
 			log.Warn("Block building is interrupted", "allowance", common.PrettyDuration(miner.config.Recommit))
 		}
 	}
-	body := types.Body{Transactions: work.txs, Withdrawals: genParam.withdrawals}
+	body := types.Body{Transactions: work.txs, Withdrawals: genParam.withdrawals, Uncles: genParam.uncles}
 
 	allLogs := make([]*types.Log, 0)
 	for _, r := range work.receipts {

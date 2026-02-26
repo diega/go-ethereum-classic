@@ -360,6 +360,7 @@ func (api *ConsensusAPI) forkchoiceUpdated(update engine.ForkchoiceStateV1, payl
 			Withdrawals:  payloadAttributes.Withdrawals,
 			BeaconRoot:   payloadAttributes.BeaconRoot,
 			Version:      payloadVersion,
+			Uncles:       payloadAttributes.Uncles,
 		}
 		id := args.Id()
 		// If we already are busy generating this work, then we do not need
@@ -1007,11 +1008,16 @@ func (api *ConsensusAPI) GetStatusInfoV1() engine.StatusInfoResponse {
 	head := api.eth.BlockChain().CurrentHeader()
 	fid := forkid.NewID(config, genesis, head.Number.Uint64(), head.Time)
 
+	// Gather all fork block numbers for EIP-2124 validation by the CL.
+	// ETC has no time-based forks, so we only need block-based forks.
+	forksByBlock, _ := forkid.GatherForks(config, genesis.Time())
+
 	return engine.StatusInfoResponse{
 		NetworkID:   api.eth.NetworkID(),
 		GenesisHash: genesis.Hash(),
 		Hash:        fid.Hash[:],
 		Next:        fid.Next,
+		ForkBlocks:  forksByBlock,
 	}
 }
 

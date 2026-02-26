@@ -62,6 +62,7 @@ type PayloadAttributes struct {
 	SuggestedFeeRecipient common.Address      `json:"suggestedFeeRecipient" gencodec:"required"`
 	Withdrawals           []*types.Withdrawal `json:"withdrawals"`
 	BeaconRoot            *common.Hash        `json:"parentBeaconBlockRoot"`
+	Uncles                []*types.Header     `json:"uncles"`
 }
 
 // JSON type overrides for PayloadAttributes.
@@ -443,4 +444,5 @@ type StatusInfoResponse struct {
 	GenesisHash common.Hash   `json:"genesisHash"`
 	Hash        hexutil.Bytes `json:"hash"`
 	Next        uint64        `json:"next"`
+	ForkBlocks  []uint64      `json:"forkBlocks"`
 }
