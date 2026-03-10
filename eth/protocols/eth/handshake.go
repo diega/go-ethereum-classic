@@ -36,6 +36,43 @@ const (
 // Handshake executes the eth protocol handshake, negotiating version number,
 // network IDs, difficulties, head and genesis blocks.
 func (p *Peer) Handshake(networkID uint64, chain forkid.Blockchain, rangeMsg BlockRangeUpdatePacket) error {
+	switch p.version {
+	case ETH69:
+		return p.handshake69(networkID, chain, rangeMsg)
+	case ETH68:
+		return p.handshake68(networkID, chain)
+	default:
+		return errors.New("unsupported protocol version")
+	}
+}
+
+func (p *Peer) handshake68(networkID uint64, chain forkid.Blockchain) error {
+	var (
+		genesis    = chain.Genesis()
+		latest     = chain.CurrentHeader()
+		forkID     = forkid.NewID(chain.Config(), genesis, latest.Number.Uint64(), latest.Time)
+		forkFilter = forkid.NewFilter(chain)
+	)
+	errc := make(chan error, 2)
+	go func() {
+		pkt := &StatusPacket68{
+			ProtocolVersion: uint32(p.version),
+			NetworkID:       networkID,
+			Head:            latest.Hash(),
+			Genesis:         genesis.Hash(),
+			ForkID:          forkID,
+		}
+		errc <- p2p.Send(p.rw, StatusMsg, pkt)
+	}()
+	var status StatusPacket68 // safe to read after two values have been received from errc
+	go func() {
+		errc <- p.readStatus68(networkID, &status, genesis.Hash(), forkFilter)
+	}()
+
+	return waitForHandshake(errc, p)
+}
+
+func (p *Peer) handshake69(networkID uint64, chain forkid.Blockchain, rangeMsg BlockRangeUpdatePacket) error {
 	var (
 		genesis    = chain.Genesis()
 		latest     = chain.CurrentHeader()

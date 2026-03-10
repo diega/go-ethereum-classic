@@ -98,9 +98,9 @@ type TxPool interface {
 }
 
 // MakeProtocols constructs the P2P protocol definitions for `eth`.
-func MakeProtocols(backend Backend, network uint64, disc enode.Iterator) []p2p.Protocol {
-	protocols := make([]p2p.Protocol, 0, len(ProtocolVersions))
-	for _, version := range ProtocolVersions {
+func MakeProtocols(backend Backend, network uint64, disc enode.Iterator, versions []uint) []p2p.Protocol {
+	protocols := make([]p2p.Protocol, 0, len(versions))
+	for _, version := range versions {
 		protocols = append(protocols, p2p.Protocol{
 			Name:    ProtocolName,
 			Version: version,
@@ -166,6 +166,10 @@ type Decoder interface {
 	Time() time.Time
 }
 
+// versionHandlers maps protocol versions to their message handler maps.
+// PoW protocol versions (e.g. ETH68) are registered via init() in _pow.go files.
+var versionHandlers = map[uint]map[uint64]msgHandler{}
+
 var eth69 = map[uint64]msgHandler{
 	TransactionsMsg:               handleTransactions,
 	NewPooledTransactionHashesMsg: handleNewPooledTransactionHashes,
@@ -196,6 +200,8 @@ func handleMessage(backend Backend, peer *Peer) error {
 	var handlers map[uint64]msgHandler
 	if peer.version == ETH69 {
 		handlers = eth69
+	} else if h, ok := versionHandlers[peer.version]; ok {
+		handlers = h
 	} else {
 		return fmt.Errorf("unknown eth protocol version: %v", peer.version)
 	}

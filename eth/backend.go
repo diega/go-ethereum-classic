@@ -459,7 +459,7 @@ func (s *Ethereum) ArchiveMode() bool                  { return s.config.NoPruni
 // Protocols returns all the currently configured
 // network protocols to start.
 func (s *Ethereum) Protocols() []p2p.Protocol {
-	protos := eth.MakeProtocols((*ethHandler)(s.handler), s.networkID, s.discmix)
+	protos := eth.MakeProtocols((*ethHandler)(s.handler), s.networkID, s.discmix, eth.GetProtocolVersions(s.blockchain.Config().IsPow()))
 	if s.config.SnapshotCache > 0 {
 		protos = append(protos, snap.MakeProtocols((*snapHandler)(s.handler))...)
 	}

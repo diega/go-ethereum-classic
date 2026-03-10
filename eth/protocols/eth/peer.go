@@ -64,6 +64,8 @@ type Peer struct {
 	resDispatch chan *response // Dispatch channel to fulfil pending requests and untrack them
 
 	term chan struct{} // Termination channel to stop the broadcasters
+
+	powExt *PoWPeerExtension // PoW-specific peer state (nil for PoS peers)
 }
 
 // NewPeer creates a wrapper for a network connection and negotiated  protocol
