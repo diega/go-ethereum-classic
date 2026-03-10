@@ -17,6 +17,7 @@
 package miner
 
 import (
+	"context"
 	"math/big"
 	"sync"
 	"sync/atomic"
@@ -389,7 +390,7 @@ func (w *powWorker) commitWork(interrupt *atomic.Int32, timestamp int64) {
 	}
 
 	// Construct the sealing task using the existing Miner methods.
-	work, err := w.miner.prepareWork(&generateParams{
+	work, err := w.miner.prepareWork(context.Background(), &generateParams{
 		timestamp: uint64(timestamp),
 		coinbase:  coinbase,
 	}, false)
@@ -399,7 +400,7 @@ func (w *powWorker) commitWork(interrupt *atomic.Int32, timestamp int64) {
 	}
 
 	// Fill transactions.
-	err = w.miner.fillTransactions(interrupt, work)
+	err = w.miner.fillTransactions(context.Background(), interrupt, work)
 	if err != nil {
 		log.Warn("Block building interrupted", "err", err)
 	}
@@ -408,7 +409,7 @@ func (w *powWorker) commitWork(interrupt *atomic.Int32, timestamp int64) {
 	body := types.Body{
 		Transactions: work.txs,
 	}
-	block, err := w.miner.engine.FinalizeAndAssemble(w.chain, work.header, work.state, &body, work.receipts)
+	block, err := w.miner.engine.FinalizeAndAssemble(context.Background(), w.chain, work.header, work.state, &body, work.receipts)
 	if err != nil {
 		log.Error("Failed to finalize block for sealing", "err", err)
 		return
