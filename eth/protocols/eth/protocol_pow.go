@@ -28,9 +28,7 @@ import (
 const ETH68 = 68
 
 func init() {
-	// ETC PoW requires ETH/68 which includes TD in the handshake.
-	// ETH/69 removed TD and is incompatible with PoW sync.
-	ProtocolVersions = []uint{ETH68}
+	ProtocolVersions = append(ProtocolVersions, ETH68)
 	protocolLengths[ETH68] = 17
 }
 

@@ -240,19 +240,22 @@ func (f *fetcherTesterPoW) makeBodyFetcher(peer string, blocks map[common.Hash]*
 			}
 		}
 		// Return on a new thread
-		bodies := make([]*eth.BlockBody, len(transactions))
+		bodies := make([]eth.BlockBody, len(transactions))
 		for i, txs := range transactions {
-			bodies[i] = &eth.BlockBody{
-				Transactions: txs,
-				Uncles:       uncles[i],
+			for _, tx := range txs {
+				bodies[i].Transactions.Append(tx)
+			}
+			for _, uncle := range uncles[i] {
+				bodies[i].Uncles.Append(uncle)
 			}
 		}
 		req := &eth.Request{
 			Peer: peer,
 		}
+		resp := eth.BlockBodiesResponse(bodies)
 		res := &eth.Response{
 			Req:  req,
-			Res:  (*eth.BlockBodiesResponse)(&bodies),
+			Res:  &resp,
 			Time: drift,
 			Done: make(chan error, 1), // Ignore the returned status
 		}

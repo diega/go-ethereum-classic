@@ -62,6 +62,10 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header) *big.Int {
 	if !config.IsLondon(parent.Number) {
 		return new(big.Int).SetUint64(params.InitialBaseFee)
 	}
+	// If London is active but EIP-1559 is not (e.g., ETC Mystique), return 0.
+	if !config.IsEIP1559(parent.Number) {
+		return common.Big0
+	}
 
 	parentGasTarget := parent.GasLimit / config.ElasticityMultiplier()
 	// If the parent gasUsed is the same as the target, the baseFee remains unchanged.
