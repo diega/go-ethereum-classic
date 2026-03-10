@@ -502,6 +502,9 @@ type ChainConfig struct {
 	ECIP1017EraRounds  *big.Int `json:"ecip1017EraRounds,omitempty"`  // ECIP-1017 era length (5M mainnet, 2M Mordor)
 	ECIP1010Transition *big.Int `json:"ecip1010Transition,omitempty"` // ECIP-1010 DieHard bomb pause block
 	ECIP1010Length     *big.Int `json:"ecip1010Length,omitempty"`     // ECIP-1010 pause duration
+	// ECBP-1100 (MESS) artificial finality — "Transition" suffix excludes from Fork ID (matching core-geth)
+	ECBP1100Transition           *big.Int `json:"ecbp1100Transition,omitempty"`           // ECBP-1100 activation block (optional)
+	ECBP1100DeactivateTransition *big.Int `json:"ecbp1100DeactivateTransition,omitempty"` // ECBP-1100 deactivation block (optional)
 }
 
 // EthashConfig is the consensus engine configs for proof-of-work based sealing.
@@ -1386,6 +1389,7 @@ func (err *ConfigCompatError) Error() string {
 // Rules is a one time interface meaning that it shouldn't be used in between transition
 // phases.
 type Rules struct {
+	ChainID                                                 *big.Int
 	IsHomestead, IsEIP150, IsEIP155, IsEIP158, IsEIP160     bool
 	IsEIP2929, IsEIP4762                                    bool
 	IsByzantium, IsConstantinople, IsPetersburg, IsIstanbul bool
@@ -1398,11 +1402,16 @@ type Rules struct {
 
 // Rules ensures c's ChainID is not nil.
 func (c *ChainConfig) Rules(num *big.Int, isMerge bool, timestamp uint64) Rules {
+	chainID := c.ChainID
+	if chainID == nil {
+		chainID = new(big.Int)
+	}
 	// disallow setting Merge out of order
 	isMerge = isMerge && c.IsLondon(num)
 	isVerkle := isMerge && c.IsVerkle(num, timestamp)
 	isSpiral := c.IsSpiral(num)
 	return Rules{
+		ChainID:          new(big.Int).Set(chainID),
 		IsHomestead:      c.IsHomestead(num),
 		IsEIP150:         c.IsEIP150(num),
 		IsEIP155:         c.IsEIP155(num),

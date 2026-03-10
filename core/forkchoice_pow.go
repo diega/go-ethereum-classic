@@ -61,6 +61,11 @@ type ForkChoice struct {
 	// local td is equal to the extern one. It can be nil for light
 	// client
 	preserve func(header *types.Header) bool
+
+	// reorgFilter is an optional callback that validates whether a reorg
+	// warranted by TD should actually be applied.  Returns nil if allowed,
+	// non-nil error if the reorg must be rejected.
+	reorgFilter func(current, extern *types.Header) error
 }
 
 func NewForkChoice(chainReader ChainReader, preserve func(header *types.Header) bool) *ForkChoice {
@@ -91,7 +96,7 @@ func (f *ForkChoice) ReorgNeeded(current *types.Header, extern *types.Header) (b
 	}
 	// If the total difficulty is higher than our known, add it to the canonical chain
 	if diff := externTd.Cmp(localTD); diff > 0 {
-		return true, nil
+		return f.reorgAllowed(current, extern)
 	} else if diff < 0 {
 		return false, nil
 	}
@@ -109,5 +114,20 @@ func (f *ForkChoice) ReorgNeeded(current *types.Header, extern *types.Header) (b
 		}
 		reorg = !currentPreserve && (externPreserve || f.rand.Float64() < 0.5)
 	}
-	return reorg, nil
+	if !reorg {
+		return false, nil
+	}
+	return f.reorgAllowed(current, extern)
+}
+
+// reorgAllowed checks whether a reorg that is warranted by TD should also
+// pass the configured reorg filter (e.g. artificial finality), when set.
+func (f *ForkChoice) reorgAllowed(current, extern *types.Header) (bool, error) {
+	if f.reorgFilter == nil {
+		return true, nil
+	}
+	if err := f.reorgFilter(current, extern); err != nil {
+		return false, nil
+	}
+	return true, nil
 }

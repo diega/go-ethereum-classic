@@ -211,6 +211,9 @@ type Config struct {
 	// RangeLimit restricts the maximum range (end - start) for range queries.
 	RangeLimit uint64 `toml:",omitempty"`
 
+	MESSForceEnable  bool // Force enable MESS (emergency override)
+	MESSForceDisable bool // Force disable MESS (never enable)
+
 	// Ethash configuration for ETC PoW mining
 	Ethash ethash.Config
 }

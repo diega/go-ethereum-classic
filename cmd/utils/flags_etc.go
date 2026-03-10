@@ -124,10 +124,24 @@ var (
 		Category: flags.LoggingCategory,
 	}
 
+	// MESS (ECBP-1100) artificial finality flags
+	MESSForceEnableFlag = &cli.BoolFlag{
+		Name:     "mess-force-enable",
+		Usage:    "Force enable MESS regardless of ECBP1100Transition config (emergency override)",
+		Category: flags.EthCategory,
+	}
+	MESSForceDisableFlag = &cli.BoolFlag{
+		Name:     "mess-force-disable",
+		Usage:    "Force disable MESS regardless of ECBP1100Transition config",
+		Category: flags.EthCategory,
+	}
+
 	// ETCFlags is the flag group of Ethereum Classic networks.
 	ETCFlags = []cli.Flag{
 		ClassicFlag,
 		MordorFlag,
+		MESSForceEnableFlag,
+		MESSForceDisableFlag,
 	}
 )
 
