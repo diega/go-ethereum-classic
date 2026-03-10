@@ -109,6 +109,7 @@ type handlerConfig struct {
 	BloomCache     uint64                 // Megabytes to alloc for snap sync bloom
 	EventMux       *event.TypeMux         // Legacy event mux, deprecate for `feed`
 	RequiredBlocks map[uint64]common.Hash // Hard coded map of required block hashes for sync challenges
+	IsPow          bool                   // Whether this is a perpetual PoW chain (uses TD-based sync)
 }
 
 type handler struct {

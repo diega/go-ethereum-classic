@@ -200,8 +200,13 @@ func (hc *HeaderChain) WriteHeaders(headers []*types.Header) (int, error) {
 	if !hc.HasHeader(headers[0].ParentHash, headers[0].Number.Uint64()-1) {
 		return 0, consensus.ErrUnknownAncestor
 	}
-	// Get parent TD for chain sync (may be nil for post-merge chains)
+	// Get parent TD for chain sync. For PoW chains (ETC), parent TD must
+	// exist — reject headers without it (cf. core-geth WriteHeaders).
+	// Post-merge chains don't use TD so nil is acceptable.
 	parentTd := hc.GetTd(headers[0].ParentHash, headers[0].Number.Uint64()-1)
+	if parentTd == nil && hc.config.Ethash != nil {
+		return 0, consensus.ErrUnknownAncestor
+	}
 	var (
 		inserted    []rawdb.NumberHash // Ephemeral lookup of number/hash for the chain
 		parentKnown = true             // Set to true to force hc.HasHeader check the first iteration
