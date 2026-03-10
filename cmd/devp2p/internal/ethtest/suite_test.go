@@ -17,47 +17,27 @@
 package ethtest
 
 import (
-	crand "crypto/rand"
-	"fmt"
 	"os"
-	"path/filepath"
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/consensus/ethash"
 	"github.com/ethereum/go-ethereum/eth"
-	"github.com/ethereum/go-ethereum/eth/catalyst"
 	"github.com/ethereum/go-ethereum/eth/ethconfig"
 	"github.com/ethereum/go-ethereum/internal/utesting"
 	"github.com/ethereum/go-ethereum/node"
 	"github.com/ethereum/go-ethereum/p2p"
+	"github.com/ethereum/go-ethereum/params"
 )
 
-func makeJWTSecret(t *testing.T) (string, [32]byte, error) {
-	var secret [32]byte
-	if _, err := crand.Read(secret[:]); err != nil {
-		return "", secret, fmt.Errorf("failed to create jwt secret: %v", err)
-	}
-	jwtPath := filepath.Join(t.TempDir(), "jwt_secret")
-	if err := os.WriteFile(jwtPath, []byte(hexutil.Encode(secret[:])), 0600); err != nil {
-		return "", secret, fmt.Errorf("failed to prepare jwt secret file: %v", err)
-	}
-	return jwtPath, secret, nil
-}
-
 func TestEthSuite(t *testing.T) {
-	jwtPath, secret, err := makeJWTSecret(t)
-	if err != nil {
-		t.Fatalf("could not make jwt secret: %v", err)
-	}
-	geth, err := runGeth("./testdata", jwtPath)
+	geth, err := runGeth("./testdata")
 	if err != nil {
 		t.Fatalf("could not run geth: %v", err)
 	}
 	defer geth.Close()
 
-	suite, err := NewSuite(geth.Server().Self(), "./testdata", geth.HTTPAuthEndpoint(), common.Bytes2Hex(secret[:]))
+	suite, err := NewSuite(geth.Server().Self(), "./testdata", "", "")
 	if err != nil {
 		t.Fatalf("could not create new test suite: %v", err)
 	}
@@ -75,17 +55,13 @@ func TestEthSuite(t *testing.T) {
 }
 
 func TestSnapSuite(t *testing.T) {
-	jwtPath, secret, err := makeJWTSecret(t)
-	if err != nil {
-		t.Fatalf("could not make jwt secret: %v", err)
-	}
-	geth, err := runGeth("./testdata", jwtPath)
+	geth, err := runGeth("./testdata")
 	if err != nil {
 		t.Fatalf("could not run geth: %v", err)
 	}
 	defer geth.Close()
 
-	suite, err := NewSuite(geth.Server().Self(), "./testdata", geth.HTTPAuthEndpoint(), common.Bytes2Hex(secret[:]))
+	suite, err := NewSuite(geth.Server().Self(), "./testdata", "", "")
 	if err != nil {
 		t.Fatalf("could not create new test suite: %v", err)
 	}
@@ -99,25 +75,20 @@ func TestSnapSuite(t *testing.T) {
 	}
 }
 
-// runGeth creates and starts a geth node
-func runGeth(dir string, jwtPath string) (*node.Node, error) {
+// runGeth creates and starts a geth node configured as PoW (ETH/68).
+func runGeth(dir string) (*node.Node, error) {
 	stack, err := node.New(&node.Config{
-		AuthAddr: "127.0.0.1",
-		AuthPort: 0,
 		P2P: p2p.Config{
 			ListenAddr:  "127.0.0.1:0",
 			NoDiscovery: true,
-			MaxPeers:    10, // in case a test requires multiple connections, can be changed in the future
+			MaxPeers:    10,
 			NoDial:      true,
 		},
-		JWTSecret: jwtPath,
 	})
 	if err != nil {
 		return nil, err
 	}
-
-	err = setupGeth(stack, dir)
-	if err != nil {
+	if err := setupGeth(stack, dir); err != nil {
 		stack.Close()
 		return nil, err
 	}
@@ -133,9 +104,16 @@ func setupGeth(stack *node.Node, dir string) error {
 	if err != nil {
 		return err
 	}
+	// Configure as PoW with ModeFake (cf. core-geth setupGeth):
+	// - Ethash config present so engine uses PoW path (ETH/68 with TD)
+	// - ModeFake skips seal verification (testdata blocks have zero mixhash)
+	// - TTD cleared so node runs perpetual PoW, not beacon sync
+	chain.genesis.Config.Ethash = new(params.EthashConfig)
+
 	backend, err := eth.New(stack, &ethconfig.Config{
 		Genesis:        &chain.genesis,
-		NetworkId:      chain.genesis.Config.ChainID.Uint64(), // 19763
+		Ethash:         ethash.Config{PowMode: ethash.ModeFake},
+		NetworkId:      chain.genesis.Config.ChainID.Uint64(),
 		DatabaseCache:  10,
 		TrieCleanCache: 10,
 		TrieDirtyCache: 16,
@@ -144,9 +122,6 @@ func setupGeth(stack *node.Node, dir string) error {
 	})
 	if err != nil {
 		return err
-	}
-	if err := catalyst.Register(stack, backend); err != nil {
-		return fmt.Errorf("failed to register catalyst service: %v", err)
 	}
 	_, err = backend.BlockChain().InsertChain(chain.blocks[1:])
 	return err

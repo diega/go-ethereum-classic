@@ -209,7 +209,7 @@ func (args *TransactionArgs) setFeeDefaults(ctx context.Context, b Backend, head
 	}
 
 	// Sanity check the non-EIP-1559 fee parameters.
-	isLondon := b.ChainConfig().IsLondon(head.Number)
+	isLondon := b.ChainConfig().IsEIP1559(head.Number)
 	if args.GasPrice != nil && !eip1559ParamsSet {
 		// Zero gas-price is not allowed after London fork
 		if args.GasPrice.ToInt().Sign() == 0 && isLondon {

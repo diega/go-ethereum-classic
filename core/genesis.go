@@ -510,7 +510,7 @@ func (g *Genesis) toBlockWithRoot(root common.Hash) *types.Block {
 			head.Difficulty = params.GenesisDifficulty
 		}
 	}
-	if g.Config != nil && g.Config.IsLondon(common.Big0) {
+	if g.Config != nil && g.Config.IsEIP1559(common.Big0) {
 		if g.BaseFee != nil {
 			head.BaseFee = g.BaseFee
 		} else {
@@ -589,6 +589,7 @@ func (g *Genesis) Commit(db ethdb.Database, triedb *triedb.Database, tracer *tra
 	}
 	batch := db.NewBatch()
 	rawdb.WriteGenesisStateSpec(batch, block.Hash(), blob)
+	rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), block.Difficulty())
 	rawdb.WriteBlock(batch, block)
 	rawdb.WriteReceipts(batch, block.Hash(), block.NumberU64(), nil)
 	rawdb.WriteCanonicalHash(batch, block.Hash(), block.NumberU64())

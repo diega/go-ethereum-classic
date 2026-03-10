@@ -25,6 +25,7 @@ import (
 	"github.com/ethereum/go-ethereum/consensus"
 	"github.com/ethereum/go-ethereum/consensus/beacon"
 	"github.com/ethereum/go-ethereum/consensus/clique"
+	"github.com/ethereum/go-ethereum/consensus/etc"
 	"github.com/ethereum/go-ethereum/consensus/ethash"
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/history"
@@ -215,6 +216,28 @@ type Config struct {
 // Clique is allowed for now to live standalone, but ethash is forbidden and can
 // only exist on already merged networks.
 func CreateConsensusEngine(config *params.ChainConfig, db ethdb.Database) (consensus.Engine, error) {
+	return CreateConsensusEngineWithConfig(config, db, ethash.Config{})
+}
+
+// CreateConsensusEngineWithConfig creates a consensus engine with explicit ethash configuration.
+// This is used for ETC chains that need full PoW support with custom cache/dataset directories.
+func CreateConsensusEngineWithConfig(config *params.ChainConfig, db ethdb.Database, ethashConfig ethash.Config) (consensus.Engine, error) {
+	// ETC Classic chains: use ETCEngine with ETC-specific rules (ECIP-1017, etc.)
+	if config.IsClassic() {
+		if ethashConfig.PowMode == ethash.ModeNormal || ethashConfig.PowMode == ethash.ModeShared {
+			return etc.New(config, ethashConfig), nil
+		}
+		return etc.NewFaker(config), nil
+	}
+	// Other PoW chains (e.g. test chains): use standard ethash
+	if config.IsPow() {
+		if ethashConfig.PowMode == ethash.ModeNormal || ethashConfig.PowMode == ethash.ModeShared {
+			return ethash.New(ethashConfig, nil, false), nil
+		}
+		return ethash.NewFaker(), nil
+	}
+
+	// ETH chains: require TerminalTotalDifficulty for PoS
 	if config.TerminalTotalDifficulty == nil {
 		log.Error("Geth only supports PoS networks. Please transition legacy networks using Geth v1.13.x.")
 		return nil, errors.New("'terminalTotalDifficulty' is not set in genesis block")

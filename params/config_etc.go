@@ -123,7 +123,7 @@ func (c *ChainConfig) IsClassic() bool {
 // Currently, ETC is the only supported perpetual PoW chain.
 // In the future, this could support other PoW chains.
 func (c *ChainConfig) IsPow() bool {
-	return c.IsClassic()
+	return c.Ethash != nil && c.TerminalTotalDifficulty == nil
 }
 
 // IsSpiral returns whether num is either equal to the Spiral fork block or greater.
