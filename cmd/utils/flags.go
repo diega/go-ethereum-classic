@@ -1114,9 +1114,10 @@ var (
 		SepoliaFlag,
 		HoleskyFlag,
 		HoodiFlag,
+		MordorFlag,
 	}
 	// NetworkFlags is the flag group of all built-in supported networks.
-	NetworkFlags = append([]cli.Flag{MainnetFlag}, TestnetFlags...)
+	NetworkFlags = append(append([]cli.Flag{MainnetFlag}, TestnetFlags...), ClassicFlag)
 
 	// DatabaseFlags is the flag group of all database flags.
 	DatabaseFlags = []cli.Flag{
@@ -1149,6 +1150,12 @@ func MakeDataDir(ctx *cli.Context) string {
 		}
 		if ctx.Bool(HoodiFlag.Name) {
 			return filepath.Join(path, "hoodi")
+		}
+		if ctx.Bool(ClassicFlag.Name) {
+			return filepath.Join(path, "classic")
+		}
+		if ctx.Bool(MordorFlag.Name) {
+			return filepath.Join(path, "mordor")
 		}
 		return path
 	}
@@ -1733,8 +1740,8 @@ func setRequiredBlocks(ctx *cli.Context, cfg *ethconfig.Config) {
 
 // SetEthConfig applies eth-related command line flags to the config.
 func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
-	// Avoid conflicting network flags
-	flags.CheckExclusive(ctx, MainnetFlag, DeveloperFlag, SepoliaFlag, HoleskyFlag, HoodiFlag, OverrideGenesisFlag)
+	// Avoid conflicting network flags, don't allow network id override on preset networks
+	flags.CheckExclusive(ctx, MainnetFlag, DeveloperFlag, SepoliaFlag, HoleskyFlag, HoodiFlag, ClassicFlag, MordorFlag, NetworkIdFlag, OverrideGenesisFlag)
 	flags.CheckExclusive(ctx, DeveloperFlag, ExternalSignerFlag) // Can't use both ephemeral unlocked and external signer
 
 	// Set configurations from CLI flags
@@ -1742,7 +1749,9 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 	setGPO(ctx, &cfg.GPO)
 	setTxPool(ctx, &cfg.TxPool)
 	setBlobPool(ctx, &cfg.BlobPool)
+	setEthash(ctx, cfg)
 	setMiner(ctx, &cfg.Miner)
+	setMinerETC(ctx, &cfg.Miner)
 	setRequiredBlocks(ctx, cfg)
 
 	// Cap the cache allowance and tune the garbage collector
@@ -1948,6 +1957,22 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 		cfg.NetworkId = 560048
 		cfg.Genesis = core.DefaultHoodiGenesisBlock()
 		SetDNSDiscoveryDefaults(cfg, params.HoodiGenesisHash)
+	case ctx.Bool(ClassicFlag.Name):
+		cfg.NetworkId = 1 // ETC uses NetworkID=1 (same as ETH), ChainID=61 is for tx signing
+		cfg.Genesis = core.DefaultClassicGenesisBlock()
+		// ETC shares genesis hash with ETH mainnet, so we set DNS directly
+		if cfg.EthDiscoveryURLs == nil {
+			cfg.EthDiscoveryURLs = []string{"enrtree://AJE62Q4DUX4QMMXEHCSSCSC65TDHZYSMONSD64P3WULVLSF6MRQ3K@all.classic.blockd.info"}
+			cfg.SnapDiscoveryURLs = cfg.EthDiscoveryURLs
+		}
+	case ctx.Bool(MordorFlag.Name):
+		cfg.NetworkId = 7 // Mordor uses NetworkID=7, ChainID=63
+		cfg.Genesis = core.DefaultMordorGenesisBlock()
+		// Mordor DNS discovery
+		if cfg.EthDiscoveryURLs == nil {
+			cfg.EthDiscoveryURLs = []string{"enrtree://AJE62Q4DUX4QMMXEHCSSCSC65TDHZYSMONSD64P3WULVLSF6MRQ3K@all.mordor.blockd.info"}
+			cfg.SnapDiscoveryURLs = cfg.EthDiscoveryURLs
+		}
 	case ctx.Bool(DeveloperFlag.Name):
 		cfg.NetworkId = 1337
 		cfg.SyncMode = ethconfig.FullSync
@@ -2043,7 +2068,8 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 		}
 		cfg.Genesis = genesis
 	default:
-		if ctx.Uint64(NetworkIdFlag.Name) == 1 {
+		// Only set mainnet DNS defaults if NetworkId==1 AND not using ETC (which also uses NetworkId=1)
+		if cfg.NetworkId == 1 && !ctx.Bool(ClassicFlag.Name) {
 			SetDNSDiscoveryDefaults(cfg, params.MainnetGenesisHash)
 		}
 	}
@@ -2394,6 +2420,10 @@ func MakeGenesis(ctx *cli.Context) *core.Genesis {
 		genesis = core.DefaultSepoliaGenesisBlock()
 	case ctx.Bool(HoodiFlag.Name):
 		genesis = core.DefaultHoodiGenesisBlock()
+	case ctx.Bool(ClassicFlag.Name):
+		genesis = core.DefaultClassicGenesisBlock()
+	case ctx.Bool(MordorFlag.Name):
+		genesis = core.DefaultMordorGenesisBlock()
 	case ctx.Bool(DeveloperFlag.Name):
 		Fatalf("Developer chains are ephemeral")
 	}

@@ -210,11 +210,15 @@ type Config struct {
 
 	// RangeLimit restricts the maximum range (end - start) for range queries.
 	RangeLimit uint64 `toml:",omitempty"`
+
+	// Ethash configuration for ETC PoW mining
+	Ethash ethash.Config
 }
 
 // CreateConsensusEngine creates a consensus engine for the given chain config.
 // Clique is allowed for now to live standalone, but ethash is forbidden and can
 // only exist on already merged networks.
+// ETC chains use the ETCEngine which wraps ethash with ETC-specific rules.
 func CreateConsensusEngine(config *params.ChainConfig, db ethdb.Database) (consensus.Engine, error) {
 	return CreateConsensusEngineWithConfig(config, db, ethash.Config{})
 }

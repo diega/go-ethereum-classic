@@ -1,17 +1,19 @@
-## Go Ethereum
+## Go Ethereum Classic
 
-Golang execution layer implementation of the Ethereum protocol.
+Golang execution layer implementation supporting Ethereum and Ethereum Classic networks.
 
-[![API Reference](
-https://pkg.go.dev/badge/github.com/ethereum/go-ethereum
-)](https://pkg.go.dev/github.com/ethereum/go-ethereum?tab=doc)
-[![Go Report Card](https://goreportcard.com/badge/github.com/ethereum/go-ethereum)](https://goreportcard.com/report/github.com/ethereum/go-ethereum)
-[![Travis](https://app.travis-ci.com/ethereum/go-ethereum.svg?branch=master)](https://app.travis-ci.com/github/ethereum/go-ethereum)
-[![Discord](https://img.shields.io/badge/discord-join%20chat-blue.svg)](https://discord.gg/nthXNEv)
-[![Twitter](https://img.shields.io/twitter/follow/go_ethereum)](https://x.com/go_ethereum)
+> **Fork Notice:** This is a fork of [ethereum/go-ethereum](https://github.com/ethereum/go-ethereum)
+> with native support for Ethereum Classic (ETC) mainnet and Mordor testnet.
 
-Automated builds are available for stable releases and the unstable master branch. Binary
-archives are published at https://geth.ethereum.org/downloads/.
+## Supported Networks
+
+| Network | Chain ID | Flag | Status |
+|---------|----------|------|--------|
+| Ethereum Mainnet | 1 | `--mainnet` | PoS (post-merge) |
+| **Ethereum Classic** | 61 | `--classic` | PoW |
+| **Mordor Testnet** | 63 | `--mordor` | PoW (ETC testnet) |
+| Sepolia | 11155111 | `--sepolia` | PoS testnet |
+| Holesky | 17000 | `--holesky` | PoS testnet |
 
 ## Building the source
 
@@ -43,6 +45,26 @@ directory.
 |  `abigen`  | Source code generator to convert Ethereum contract definitions into easy-to-use, compile-time type-safe Go packages. It operates on plain [Ethereum contract ABIs](https://docs.soliditylang.org/en/develop/abi-spec.html) with expanded functionality if the contract bytecode is also available. However, it also accepts Solidity source files, making development much more streamlined. Please see our [Native DApps](https://geth.ethereum.org/docs/developers/dapp-developer/native-bindings) page for details.                                  |
 |   `evm`    | Developer utility version of the EVM (Ethereum Virtual Machine) that is capable of running bytecode snippets within a configurable environment and execution mode. Its purpose is to allow isolated, fine-grained debugging of EVM opcodes (e.g. `evm --code 60ff60ff --debug run`).                                                                                                                                                                                                                                               |
 | `rlpdump`  | Developer utility tool to convert binary RLP ([Recursive Length Prefix](https://ethereum.org/en/developers/docs/data-structures-and-encoding/rlp)) dumps (data encoding used by the Ethereum protocol both network as well as consensus wise) to user-friendlier hierarchical representation (e.g. `rlpdump --hex CE0183FFFFFFC4C304050583616263`).                                                                                                                                                                                |
+
+## Ethereum Classic Features
+
+This fork implements the following ETC-specific ECIPs:
+
+| ECIP | Name | Description |
+|------|------|-------------|
+| ECIP-1017 | Monetary Policy | 5M block eras with 20% emission reduction |
+| ECIP-1041 | Difficulty Bomb Disposal | Removes difficulty bomb permanently |
+| ECIP-1099 | Etchash | Modified DAG algorithm (60k epochs) |
+
+### Running Ethereum Classic
+
+```shell
+# ETC Mainnet
+geth --classic console
+
+# Mordor Testnet
+geth --mordor console
+```
 
 ## Running `geth`
 
@@ -83,7 +105,7 @@ This command will:
    causing it to download more data in exchange for avoiding processing the entire history
    of the Ethereum network, which is very CPU intensive.
  * Start the built-in interactive [JavaScript console](https://geth.ethereum.org/docs/interacting-with-geth/javascript-console),
-   (via the trailing `console` subcommand) through which you can interact using [`web3` methods](https://github.com/ChainSafe/web3.js/blob/0.20.7/DOCUMENTATION.md) 
+   (via the trailing `console` subcommand) through which you can interact using [`web3` methods](https://github.com/ChainSafe/web3.js/blob/0.20.7/DOCUMENTATION.md)
    (note: the `web3` version bundled within `geth` is very old, and not up to date with official docs),
    as well as `geth`'s own [management APIs](https://geth.ethereum.org/docs/interacting-with-geth/rpc).
    This tool is optional and if you leave it out you can always attach it to an already running
@@ -106,7 +128,7 @@ useful on the testnet too.
 
 Specifying the `--holesky` flag, however, will reconfigure your `geth` instance a bit:
 
- * Instead of connecting to the main Ethereum network, the client will connect to the Holesky 
+ * Instead of connecting to the main Ethereum network, the client will connect to the Holesky
    test network, which uses different P2P bootnodes, different network IDs and genesis
    states.
  * Instead of using the default data directory (`~/.ethereum` on Linux for example), `geth`
@@ -218,12 +240,8 @@ There are three different solutions depending on your use case:
 Thank you for considering helping out with the source code! We welcome contributions
 from anyone on the internet, and are grateful for even the smallest of fixes!
 
-If you'd like to contribute to go-ethereum, please fork, fix, commit and send a pull request
-for the maintainers to review and merge into the main code base. If you wish to submit
-more complex changes though, please check up with the core devs first on [our Discord Server](https://discord.gg/invite/nthXNEv)
-to ensure those changes are in line with the general philosophy of the project and/or get
-some early feedback which can make both your efforts much lighter as well as our review
-and merge procedures quick and simple.
+If you'd like to contribute to go-ethereum-classic, please fork, fix, commit and send a pull request
+for the maintainers to review and merge into the main code base.
 
 Please make sure your contributions adhere to our coding guidelines:
 
@@ -235,15 +253,10 @@ Please make sure your contributions adhere to our coding guidelines:
  * Commit messages should be prefixed with the package(s) they modify.
    * E.g. "eth, rpc: make trace configs optional"
 
-Please see the [Developers' Guide](https://geth.ethereum.org/docs/developers/geth-developer/dev-guide)
-for more details on configuring your environment, managing project dependencies, and
-testing procedures.
+### Syncing with upstream
 
-### Contributing to geth.ethereum.org
-
-For contributions to the [go-ethereum website](https://geth.ethereum.org), please checkout and raise pull requests against the `website` branch.
-For more detailed instructions please see the `website` branch [README](https://github.com/ethereum/go-ethereum/tree/website#readme) or the 
-[contributing](https://geth.ethereum.org/docs/developers/geth-developer/contributing) page of the website.
+This fork is periodically synced with [ethereum/go-ethereum](https://github.com/ethereum/go-ethereum).
+ETC-specific changes are maintained in separate commits for easy rebasing.
 
 ## License
 
