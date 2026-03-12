@@ -1,0 +1,1516 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-7.0.6">
+    
+    
+      
+        <title>Extension Points - Go Ethereum Classic — Fork Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2c0c5eaf.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.7fa14f5b.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="cyan">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#extension-points" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Go Ethereum Classic — Fork Documentation" class="md-header__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Go Ethereum Classic — Fork Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Extension Points
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="md-header__options">
+      
+    </div>
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/diega/go-ethereum-classic" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Go Ethereum Classic — Fork Documentation" class="md-nav__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Go Ethereum Classic — Fork Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/diega/go-ethereum-classic" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pow-code-mapping/" class="md-nav__link">
+        PoW Code Mapping
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-chain-configuration/" class="md-nav__link">
+        Chain Configuration
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-etc-consensus/" class="md-nav__link">
+        ETC Consensus
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-core-and-evm/" class="md-nav__link">
+        Core and EVM
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-protocol-layer/" class="md-nav__link">
+        Protocol Layer
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-eth-service-and-downloader/" class="md-nav__link">
+        Eth Service and Downloader
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-etc-configuration-and-cli/" class="md-nav__link">
+        ETC Configuration and CLI
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-misc-plumbing/" class="md-nav__link">
+        Misc Plumbing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-ci-cd-and-build/" class="md-nav__link">
+        CI-CD and Build
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Extension Points
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Extension Points
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#struct-fields" class="md-nav__link">
+    Struct Fields
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conditional-blocks" class="md-nav__link">
+    Conditional Blocks
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#function-calls" class="md-nav__link">
+    Function Calls
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eip-1559-decoupling" class="md-nav__link">
+    EIP-1559 Decoupling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#constants-variables" class="md-nav__link">
+    Constants &amp; Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#added-functions" class="md-nav__link">
+    Added Functions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interface-additions" class="md-nav__link">
+    Interface Additions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#import-additions" class="md-nav__link">
+    Import Additions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config-plumbing" class="md-nav__link">
+    Config Plumbing
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mess-artificial-finality/" class="md-nav__link">
+        MESS
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#struct-fields" class="md-nav__link">
+    Struct Fields
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conditional-blocks" class="md-nav__link">
+    Conditional Blocks
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#function-calls" class="md-nav__link">
+    Function Calls
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eip-1559-decoupling" class="md-nav__link">
+    EIP-1559 Decoupling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#constants-variables" class="md-nav__link">
+    Constants &amp; Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#added-functions" class="md-nav__link">
+    Added Functions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interface-additions" class="md-nav__link">
+    Interface Additions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#import-additions" class="md-nav__link">
+    Import Additions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config-plumbing" class="md-nav__link">
+    Config Plumbing
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/diega/go-ethereum-classic/edit/master/docs/extension-points.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="extension-points">Extension Points<a class="headerlink" href="#extension-points" title="Permanent link">&para;</a></h1>
+<p>Modifications to upstream go-ethereum files that wire in ETC/PoW code.
+Each point is a hook, field, conditional, call, or function added to a file
+that originally existed in upstream.</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align: right;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total extension points</td>
+<td style="text-align: right;">85</td>
+</tr>
+<tr>
+<td>Files touched</td>
+<td style="text-align: right;">39</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Points by kind</strong></p>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th style="text-align: right;">Count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>field</td>
+<td style="text-align: right;">27</td>
+</tr>
+<tr>
+<td>conditional</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr>
+<td>call</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr>
+<td>function</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td>const</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>import</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="struct-fields">Struct Fields<a class="headerlink" href="#struct-fields" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>File</th>
+<th>Name</th>
+<th>Lines</th>
+<th>Description</th>
+<th>Wires To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/params/config.go#L497-L507"><code>params/config.go</code></a></td>
+<td>ChainConfig ETC fields</td>
+<td>497-507</td>
+<td>ECIP fork blocks (1017/1041/1099/Spiral), era rounds, DieHard bomb pause, MESS (ECBP-1100) activation/deactivation</td>
+<td>params/config_etc.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/params/config.go#L1393"><code>params/config.go</code></a></td>
+<td>Rules.IsEIP160</td>
+<td>1393</td>
+<td>EIP-160 activation flag in Rules struct — ETC activates EIP-160 independently of EIP-158</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/params/config.go#L1399"><code>params/config.go</code></a></td>
+<td>Rules.IsSpiral</td>
+<td>1399</td>
+<td>Spiral hard fork activation flag in Rules struct — ETC equivalent of Shanghai</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler.go#L122"><code>eth/handler.go</code></a></td>
+<td>handler.isPow</td>
+<td>122</td>
+<td>Flag for perpetual PoW chains — gates TD-based sync, block fetcher, chain syncer</td>
+<td>eth/handler_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler.go#L118"><code>eth/handler.go</code></a></td>
+<td>handler.forkFilter</td>
+<td>118</td>
+<td>Fork ID filter for ETC chain identity — rejects incompatible peers</td>
+<td>core/forkid</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler.go#L124-L125"><code>eth/handler.go</code></a></td>
+<td>handler.messForceEnable/Disable</td>
+<td>124-125</td>
+<td>MESS emergency override flags propagated from ethconfig</td>
+<td>eth/handler_mess.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler.go#L134"><code>eth/handler.go</code></a></td>
+<td>handler.blockFetcher</td>
+<td>134</td>
+<td>Block fetcher instance for PoW chains (nil on PoS)</td>
+<td>eth/handler_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler.go#L137"><code>eth/handler.go</code></a></td>
+<td>handler.chainSync</td>
+<td>137</td>
+<td>PoW chain syncer managing TD-based sync loop (nil on PoS)</td>
+<td>eth/sync_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/peer.go#L32"><code>eth/peer.go</code></a></td>
+<td>ethPeerInfo.Difficulty</td>
+<td>32</td>
+<td>Total difficulty field in peer info — exposed in admin_peers for PoW diagnostics</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">10</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/downloader/queue.go#L154"><code>eth/downloader/queue.go</code></a></td>
+<td>queue.revokeHook</td>
+<td>154</td>
+<td>Callback for header request revocation on peer drop</td>
+<td>eth/downloader/queue_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">11</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/downloader/downloader.go#L154"><code>eth/downloader/downloader.go</code></a></td>
+<td>Downloader.cancelPeer</td>
+<td>154</td>
+<td>Tracks the master peer for cancellation on stalling — used by concurrent fetchers</td>
+<td>eth/downloader/downloader_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">12</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/blockchain.go#L332"><code>core/blockchain.go</code></a></td>
+<td>BlockChain.forker</td>
+<td>332</td>
+<td>ETC PoW fork choice engine (nil for non-PoW) — replaces upstream hc.td comparison</td>
+<td>core/forkchoice_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">13</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/headerchain.go#L68"><code>core/headerchain.go</code></a></td>
+<td>HeaderChain.tdCache</td>
+<td>68</td>
+<td>LRU cache for total difficulty values, keyed by block hash</td>
+<td>core/headerchain_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">14</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/protocols/eth/peer.go#L64"><code>eth/protocols/eth/peer.go</code></a></td>
+<td>Peer.powExt</td>
+<td>64</td>
+<td>PoW-specific peer state (TD, head info) — nil for PoS peers</td>
+<td>eth/protocols/eth/peer_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">15</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/ethconfig/config.go#L194-L195"><code>eth/ethconfig/config.go</code></a></td>
+<td>Config.MESSForceEnable/Disable</td>
+<td>194-195</td>
+<td>Emergency MESS overrides — force enable or force disable regardless of chain config</td>
+<td>eth/ethconfig/config.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">16</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/ethconfig/config.go#L198"><code>eth/ethconfig/config.go</code></a></td>
+<td>Config.Ethash</td>
+<td>198</td>
+<td>Ethash configuration for ETC PoW mining</td>
+<td>consensus/ethash</td>
+</tr>
+</tbody>
+</table>
+<h2 id="conditional-blocks">Conditional Blocks<a class="headerlink" href="#conditional-blocks" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>File</th>
+<th>Name</th>
+<th>Lines</th>
+<th>Description</th>
+<th>Wires To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">17</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler.go#L280-L298"><code>eth/handler.go</code></a></td>
+<td>isPow dispatch in runEthPeer</td>
+<td>280-298</td>
+<td>Routes to Handshake68PoW (with TD) for PoW peers, standard Handshake for PoS</td>
+<td>eth/protocols/eth/handshake.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">18</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler.go#L341-L343"><code>eth/handler.go</code></a></td>
+<td>isPow notify chainSync</td>
+<td>341-343</td>
+<td>Notifies PoW chain syncer about new peer for TD-based sync</td>
+<td>eth/sync_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">19</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler.go#L478-L481"><code>eth/handler.go</code></a></td>
+<td>isPow in Start (txFetcher guard)</td>
+<td>478-481</td>
+<td>Skips txFetcher.Start() for PoW — lifecycle managed by chainSyncer.loop()</td>
+<td>eth/sync_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">20</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler.go#L483-L493"><code>eth/handler.go</code></a></td>
+<td>isPow in Start (PoW syncer)</td>
+<td>483-493</td>
+<td>Starts chainSyncer, block fetcher, and MESS safety loop for PoW chains</td>
+<td>eth/handler_pow.go, eth/sync_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">21</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler.go#L504-L512"><code>eth/handler.go</code></a></td>
+<td>isPow in Stop</td>
+<td>504-512</td>
+<td>Skips manual fetcher/downloader stop for PoW — defers handle teardown</td>
+<td>eth/sync_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">22</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler_eth.go#L61-L63"><code>eth/handler_eth.go</code></a></td>
+<td>NewBlockHashesPacket PoW dispatch</td>
+<td>61-63</td>
+<td>Dispatches NewBlockHashes to block fetcher for PoW announcement-based propagation</td>
+<td>eth/handler_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">23</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler_eth.go#L65-L66"><code>eth/handler_eth.go</code></a></td>
+<td>NewBlockPacket PoW dispatch</td>
+<td>65-66</td>
+<td>Dispatches NewBlock to block fetcher for PoW block propagation</td>
+<td>eth/handler_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">24</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/peer.go#L54-L56"><code>eth/peer.go</code></a></td>
+<td>PoW block in ethPeer.info()</td>
+<td>54-56</td>
+<td>Adds difficulty and head hash to peer info when TD is available</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">25</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/protocols/eth/handlers.go#L345-L349"><code>eth/protocols/eth/handlers.go</code></a></td>
+<td>powExt guard handleNewBlockhashes</td>
+<td>345-349</td>
+<td>Only processes NewBlockHashes if peer has PoW extension initialized</td>
+<td>eth/protocols/eth/handlers_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">26</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/protocols/eth/handlers.go#L352-L357"><code>eth/protocols/eth/handlers.go</code></a></td>
+<td>powExt guard handleNewBlock</td>
+<td>352-357</td>
+<td>Only processes NewBlock if peer has PoW extension initialized</td>
+<td>eth/protocols/eth/handlers_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">27</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/evm.go#L57-L59"><code>core/evm.go</code></a></td>
+<td>London-without-EIP1559 baseFee=0</td>
+<td>57-59</td>
+<td>Sets baseFee to 0 when London is active but EIP-1559 is not — ETC decouples these</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">28</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/vm/evm.go#L161-L162"><code>core/vm/evm.go</code></a></td>
+<td>IsSpiral instruction set</td>
+<td>161-162</td>
+<td>Selects Spiral instruction set — ETC equivalent of Shanghai EVM rules</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">29</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/vm/evm.go#L187"><code>core/vm/evm.go</code></a></td>
+<td>IsEIP160 activation</td>
+<td>187,190-193</td>
+<td>Deep-copies jump table and enables EIP-160 (increased gas for EXP) independently</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">30</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/consensus/misc/eip1559/eip1559.go#L62"><code>consensus/misc/eip1559/eip1559.go</code></a></td>
+<td>IsEIP1559 guard</td>
+<td>62</td>
+<td>Guards EIP-1559 base fee verification — skips when chain has London without 1559</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">31</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/blockchain.go#L1603-L1612"><code>core/blockchain.go</code></a></td>
+<td>forker in writeKnownBlock</td>
+<td>1603-1612</td>
+<td>Uses ForkChoice.ReorgNeeded() to decide reorg for known blocks</td>
+<td>core/forkchoice_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">32</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/blockchain.go#L1722-L1729"><code>core/blockchain.go</code></a></td>
+<td>forker in writeBlockAndSetHead</td>
+<td>1722-1729</td>
+<td>Uses ForkChoice.ReorgNeeded() to decide reorg for new blocks</td>
+<td>core/forkchoice_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">33</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/blockchain.go#L399-L401"><code>core/blockchain.go</code></a></td>
+<td>IsPow in NewBlockChain</td>
+<td>399-401</td>
+<td>Initializes ForkChoice with MESS for PoW chains</td>
+<td>core/forkchoice_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">34</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/downloader/queue.go#L501-L503"><code>eth/downloader/queue.go</code></a></td>
+<td>revokeHook in Revoke</td>
+<td>501-503</td>
+<td>Calls revokeHook callback (if set) to also revoke in-flight header requests</td>
+<td>eth/downloader/queue_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">35</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/downloader/fetchers_concurrent.go#L131"><code>eth/downloader/fetchers_concurrent.go</code></a></td>
+<td>errNoPeers check</td>
+<td>131</td>
+<td>Returns errNoPeers when no peers available — triggers master peer cancel flow</td>
+<td>eth/downloader/downloader_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">36</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/downloader/fetchers_concurrent.go#L319"><code>eth/downloader/fetchers_concurrent.go</code></a></td>
+<td>master peer cancel</td>
+<td>319</td>
+<td>Detects master peer drop and triggers download cancellation via cancelPeer</td>
+<td>eth/downloader/downloader_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">37</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/downloader/fetchers.go#L48"><code>eth/downloader/fetchers.go</code></a></td>
+<td>cancelCh case</td>
+<td>48</td>
+<td>Listens on cancelCh to abort header fetching when master peer drops</td>
+<td>eth/downloader/downloader_pow.go</td>
+</tr>
+</tbody>
+</table>
+<h2 id="function-calls">Function Calls<a class="headerlink" href="#function-calls" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>File</th>
+<th>Name</th>
+<th>Lines</th>
+<th>Description</th>
+<th>Wires To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">38</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/rawdb/accessors_chain.go#L796"><code>core/rawdb/accessors_chain.go</code></a></td>
+<td>DeleteTd in DeleteBlock</td>
+<td>796</td>
+<td>Deletes TD when deleting a block (PoS doesn't have TD)</td>
+<td>core/rawdb/accessors_chain_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">39</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/rawdb/accessors_chain.go#L805"><code>core/rawdb/accessors_chain.go</code></a></td>
+<td>DeleteTd in DeleteBlockWithoutNumber</td>
+<td>805</td>
+<td>Deletes TD in the variant without number lookup</td>
+<td>core/rawdb/accessors_chain_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">40</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/blockchain.go#L1168"><code>core/blockchain.go</code></a></td>
+<td>WriteTd in SetHead reset</td>
+<td>1168</td>
+<td>Writes genesis TD during chain head reset</td>
+<td>core/rawdb/accessors_chain_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">41</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/blockchain.go#L1585-L1589"><code>core/blockchain.go</code></a></td>
+<td>WriteTd for sidechain block</td>
+<td>1585-1589</td>
+<td>Calculates and writes TD for sidechain (non-canonical) blocks</td>
+<td>core/rawdb/accessors_chain_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">42</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/blockchain.go#L1632-L1636"><code>core/blockchain.go</code></a></td>
+<td>WriteTd for canonical block</td>
+<td>1632-1636</td>
+<td>Calculates and writes TD for blocks inserted into the canonical chain</td>
+<td>core/rawdb/accessors_chain_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">43</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/headerchain.go#L227-L228"><code>core/headerchain.go</code></a></td>
+<td>writeTd in InsertHeaderChain</td>
+<td>227-228</td>
+<td>Delegates TD writing to headerchain_pow.go during header chain insertion</td>
+<td>core/headerchain_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">44</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/rawdb/chain_freezer.go#L343-L350"><code>core/rawdb/chain_freezer.go</code></a></td>
+<td>AppendRaw TD in freezeRange</td>
+<td>343-350</td>
+<td>Appends TD to ancient freezer store during block freezing</td>
+<td>core/rawdb/ancient_scheme.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">45</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/genesis.go#L568"><code>core/genesis.go</code></a></td>
+<td>WriteTd in Commit</td>
+<td>568</td>
+<td>Writes genesis block total difficulty during chain database commit</td>
+<td>core/rawdb/accessors_chain_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">46</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/ethstats/ethstats.go#L647"><code>ethstats/ethstats.go</code></a></td>
+<td>GetTd in assembleBlockStats</td>
+<td>647,658</td>
+<td>Fetches total difficulty for block stats reporting to ethstats server</td>
+<td>eth/api_backend_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">47</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/internal/ethapi/backend.go#L73"><code>internal/ethapi/backend.go</code></a></td>
+<td>GetTd in Backend interface</td>
+<td>73</td>
+<td>Interface method for fetching total difficulty by block hash — removed in PR #30386, restored for ETC</td>
+<td>eth/api_backend_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">48</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/internal/ethapi/api.go#L471"><code>internal/ethapi/api.go</code></a></td>
+<td>rpcMarshalHeader in GetHeaderByNumber</td>
+<td>471</td>
+<td>Calls rpcMarshalHeader to inject totalDifficulty in header response</td>
+<td>internal/ethapi/api_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">49</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/internal/ethapi/api.go#L487"><code>internal/ethapi/api.go</code></a></td>
+<td>rpcMarshalHeader in GetHeaderByHash</td>
+<td>487</td>
+<td>Calls rpcMarshalHeader to inject totalDifficulty in header response</td>
+<td>internal/ethapi/api_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">50</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/internal/ethapi/api.go#L502"><code>internal/ethapi/api.go</code></a></td>
+<td>rpcMarshalBlock in GetBlockByNumber</td>
+<td>502</td>
+<td>Calls rpcMarshalBlock to inject totalDifficulty in block response</td>
+<td>internal/ethapi/api_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">51</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/internal/ethapi/api.go#L522"><code>internal/ethapi/api.go</code></a></td>
+<td>rpcMarshalBlock in GetBlockByHash</td>
+<td>522</td>
+<td>Calls rpcMarshalBlock to inject totalDifficulty in block response</td>
+<td>internal/ethapi/api_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">52</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/internal/ethapi/api.go#L537"><code>internal/ethapi/api.go</code></a></td>
+<td>rpcMarshalBlock in GetUncleByBlockNumberAndIndex</td>
+<td>537</td>
+<td>Calls rpcMarshalBlock to inject totalDifficulty in uncle response</td>
+<td>internal/ethapi/api_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">53</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/internal/ethapi/api.go#L552"><code>internal/ethapi/api.go</code></a></td>
+<td>rpcMarshalBlock in GetUncleByBlockHashAndIndex</td>
+<td>552</td>
+<td>Calls rpcMarshalBlock to inject totalDifficulty in uncle response</td>
+<td>internal/ethapi/api_pow.go</td>
+</tr>
+</tbody>
+</table>
+<h2 id="eip-1559-decoupling">EIP-1559 Decoupling<a class="headerlink" href="#eip-1559-decoupling" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>File</th>
+<th>Name</th>
+<th>Lines</th>
+<th>Description</th>
+<th>Wires To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">54</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/chain_makers.go#L241"><code>core/chain_makers.go</code></a></td>
+<td>IsEIP1559 in GenerateChain header</td>
+<td>241,243</td>
+<td>Uses IsEIP1559 instead of IsLondon for base fee initialization in test chain generation</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">55</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/chain_makers.go#L609"><code>core/chain_makers.go</code></a></td>
+<td>IsEIP1559 in makeHeader</td>
+<td>609,611</td>
+<td>Uses IsEIP1559 instead of IsLondon for base fee calculation in test header construction</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">56</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/state_transition.go#L341"><code>core/state_transition.go</code></a></td>
+<td>IsEIP1559 in gas price</td>
+<td>341</td>
+<td>Uses IsEIP1559 instead of IsLondon to determine effective gas price calculation</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">57</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/txpool/legacypool/legacypool.go#L1254"><code>core/txpool/legacypool/legacypool.go</code></a></td>
+<td>IsEIP1559 in pool reset</td>
+<td>1254</td>
+<td>Uses IsEIP1559 instead of IsLondon for base fee tracking in transaction pool</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">58</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/gasprice/feehistory.go#L92"><code>eth/gasprice/feehistory.go</code></a></td>
+<td>IsEIP1559 in fee history</td>
+<td>92</td>
+<td>Uses IsEIP1559 instead of IsLondon for fee history base fee resolution</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">59</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/graphql/graphql.go#L779"><code>graphql/graphql.go</code></a></td>
+<td>IsEIP1559 in GraphQL baseFee</td>
+<td>779</td>
+<td>Uses IsEIP1559 instead of IsLondon for GraphQL base fee next-block estimation</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">60</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/internal/ethapi/simulate.go#L213"><code>internal/ethapi/simulate.go</code></a></td>
+<td>IsEIP1559 in simulation</td>
+<td>213</td>
+<td>Uses IsEIP1559 instead of IsLondon for base fee in block simulation</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">61</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/internal/ethapi/transaction_args.go#L211"><code>internal/ethapi/transaction_args.go</code></a></td>
+<td>IsEIP1559 in tx args</td>
+<td>211</td>
+<td>Uses IsEIP1559 instead of IsLondon for gas tip cap defaults in transaction arguments</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">62</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/miner/worker.go#L222"><code>miner/worker.go</code></a></td>
+<td>IsEIP1559 in miner</td>
+<td>222,224</td>
+<td>Uses IsEIP1559 instead of IsLondon for base fee initialization in block preparation</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="constants-variables">Constants &amp; Variables<a class="headerlink" href="#constants-variables" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>File</th>
+<th>Name</th>
+<th>Lines</th>
+<th>Description</th>
+<th>Wires To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">63</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/rawdb/ancient_scheme.go#L39-L40"><code>core/rawdb/ancient_scheme.go</code></a></td>
+<td>ChainFreezerDifficultyTable</td>
+<td>39-40</td>
+<td>Declares 'diffs' freezer table for storing total difficulty in ancient store</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">64</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/rawdb/ancient_scheme.go#L52"><code>core/rawdb/ancient_scheme.go</code></a></td>
+<td>Difficulty table in freezer schema</td>
+<td>52</td>
+<td>Registers difficulty table in chainFreezerNoSnappy map (snappy-compressed, non-prunable)</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">65</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/headerchain.go#L39"><code>core/headerchain.go</code></a></td>
+<td>tdCacheLimit</td>
+<td>39</td>
+<td>LRU cache size constant (1024) for TD values</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">66</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/downloader/downloader.go#L74"><code>eth/downloader/downloader.go</code></a></td>
+<td>errStallingPeer etc.</td>
+<td>74</td>
+<td>Error variables for PoW sync — errStallingPeer, errNoPeers, errCanceled</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">67</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/downloader/metrics.go#L28"><code>eth/downloader/metrics.go</code></a></td>
+<td>headerDropMeter</td>
+<td>28</td>
+<td>Meter tracking dropped headers during PoW sync</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">68</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/params/bootnodes.go#L59-L72"><code>params/bootnodes.go</code></a></td>
+<td>ClassicBootnodes, MordorBootnodes</td>
+<td>59-72</td>
+<td>Bootstrap node lists for ETC mainnet and Mordor testnet</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">69</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/params/bootnodes.go#L101"><code>params/bootnodes.go</code></a></td>
+<td>etcDNSPrefix + DNS discovery</td>
+<td>101,119,122</td>
+<td>DNS discovery prefix and tree URLs for ETC mainnet and Mordor</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="added-functions">Added Functions<a class="headerlink" href="#added-functions" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>File</th>
+<th>Name</th>
+<th>Lines</th>
+<th>Description</th>
+<th>Wires To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">70</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/protocols/eth/handshake.go#L223-L261"><code>eth/protocols/eth/handshake.go</code></a></td>
+<td>Handshake68PoW</td>
+<td>223-261</td>
+<td>PoW handshake variant that exchanges TD for peer synchronization</td>
+<td>eth/protocols/eth/peer_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">71</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/ethconfig/config.go#L209-L233"><code>eth/ethconfig/config.go</code></a></td>
+<td>CreateConsensusEngineWithConfig</td>
+<td>209-233</td>
+<td>ETC consensus engine routing — creates ETCEngine/Ethash based on chain config</td>
+<td>consensus/etc</td>
+</tr>
+<tr>
+<td style="text-align: right;">72</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/protocols/eth/protocol.go#L45-L54"><code>eth/protocols/eth/protocol.go</code></a></td>
+<td>GetProtocolVersions</td>
+<td>45-54</td>
+<td>Returns protocol version list filtered by PoW/PoS — PoW includes eth/67 for NewBlock</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">73</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/protocols/eth/protocol.go#L219-L227"><code>eth/protocols/eth/protocol.go</code></a></td>
+<td>NewBlockPacket.sanityCheck</td>
+<td>219-227</td>
+<td>Validates NewBlockPacket fields (block non-nil, TD non-nil) before processing</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">74</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/peer.go#L72-L73"><code>eth/peer.go</code></a></td>
+<td>KnownBlock, AsyncSendNewBlock, AsyncSendNewBlockHash</td>
+<td>72-73,78-79,84-85</td>
+<td>PoW block propagation helpers — track known blocks and async broadcast to peers</td>
+<td>eth/handler_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">75</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/core/vm/eips.go#L171-L175"><code>core/vm/eips.go</code></a></td>
+<td>enable160</td>
+<td>171-175</td>
+<td>Enables EIP-160 (EXP gas increase) independently — ETC activates separately from EIP-158</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="interface-additions">Interface Additions<a class="headerlink" href="#interface-additions" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>File</th>
+<th>Name</th>
+<th>Lines</th>
+<th>Description</th>
+<th>Wires To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">76</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/downloader/downloader.go#L184-L185"><code>eth/downloader/downloader.go</code></a></td>
+<td>BlockChain.GetTd</td>
+<td>184-185</td>
+<td>GetTd method added to BlockChain interface — required for TD-based PoW sync</td>
+<td>core/blockchain_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">77</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/downloader/peer.go#L60"><code>eth/downloader/peer.go</code></a></td>
+<td>Peer.Head()</td>
+<td>60</td>
+<td>Head() method in Peer interface — returns head hash and TD for PoW peer selection</td>
+<td>eth/protocols/eth/peer_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">78</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/ethstats/ethstats.go#L68"><code>ethstats/ethstats.go</code></a></td>
+<td>backend.GetTd</td>
+<td>68</td>
+<td>GetTd method added to ethstats backend interface — used for block stats reporting</td>
+<td>eth/api_backend_pow.go</td>
+</tr>
+</tbody>
+</table>
+<h2 id="import-additions">Import Additions<a class="headerlink" href="#import-additions" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>File</th>
+<th>Name</th>
+<th>Lines</th>
+<th>Description</th>
+<th>Wires To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">79</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/ethconfig/config.go#L28-L29"><code>eth/ethconfig/config.go</code></a></td>
+<td>consensus/etc and consensus/ethash imports</td>
+<td>28-29</td>
+<td>Adds imports for ETC consensus engine and Ethash configuration</td>
+<td>consensus/etc, consensus/ethash</td>
+</tr>
+</tbody>
+</table>
+<h2 id="config-plumbing">Config Plumbing<a class="headerlink" href="#config-plumbing" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>File</th>
+<th>Name</th>
+<th>Lines</th>
+<th>Description</th>
+<th>Wires To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">80</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler.go#L110"><code>eth/handler.go</code></a></td>
+<td>handlerConfig.IsPow</td>
+<td>110</td>
+<td>Config field that propagates IsPow flag from ethconfig to handler</td>
+<td>eth/backend.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">81</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler.go#L175"><code>eth/handler.go</code></a></td>
+<td>isPow initialization</td>
+<td>175</td>
+<td>Copies config.IsPow into handler struct during construction</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">82</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/backend.go#L339"><code>eth/backend.go</code></a></td>
+<td>IsPow passthrough</td>
+<td>339</td>
+<td>Passes IsPow from blockchain config to handler config</td>
+<td>eth/handler.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">83</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/backend.go#L340-L341"><code>eth/backend.go</code></a></td>
+<td>MESS flags passthrough</td>
+<td>340-341</td>
+<td>Passes MESSForceEnable/Disable from ethconfig to handler config</td>
+<td>eth/handler.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">84</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/backend.go#L436-L437"><code>eth/backend.go</code></a></td>
+<td>isPow to MakeProtocols</td>
+<td>436-437</td>
+<td>Passes isPow flag to eth.MakeProtocols for protocol version selection</td>
+<td>eth/protocols/eth/handler.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">85</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/protocols/eth/handler.go#L100-L108"><code>eth/protocols/eth/handler.go</code></a></td>
+<td>MakeProtocols isPow param</td>
+<td>100-108</td>
+<td>MakeProtocols accepts isPow to select protocol versions and enable PoW message handlers</td>
+<td>eth/protocols/eth/protocol.go</td>
+</tr>
+</tbody>
+</table>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../file-diffs-ci-cd-and-build/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              CI-CD and Build
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../mess-artificial-finality/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              MESS
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.fb4a9340.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a1c7c35e.min.js"></script>
+      
+    
+  </body>
+</html>
