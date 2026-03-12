@@ -1,0 +1,1443 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-7.0.6">
+    
+    
+      
+        <title>Version Comparison - Go Ethereum Classic — Fork Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2c0c5eaf.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.7fa14f5b.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="cyan">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#version-comparison-v1168-v1171" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Go Ethereum Classic — Fork Documentation" class="md-header__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Go Ethereum Classic — Fork Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Version Comparison
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="md-header__options">
+      
+    </div>
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/diega/go-ethereum-classic" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Go Ethereum Classic — Fork Documentation" class="md-nav__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Go Ethereum Classic — Fork Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/diega/go-ethereum-classic" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pow-code-mapping/" class="md-nav__link">
+        PoW Code Mapping
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-chain-configuration/" class="md-nav__link">
+        Chain Configuration
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-etc-consensus/" class="md-nav__link">
+        ETC Consensus
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-core-and-evm/" class="md-nav__link">
+        Core and EVM
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-protocol-layer/" class="md-nav__link">
+        Protocol Layer
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-eth-service-and-downloader/" class="md-nav__link">
+        Eth Service and Downloader
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-etc-configuration-and-cli/" class="md-nav__link">
+        ETC Configuration and CLI
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-misc-plumbing/" class="md-nav__link">
+        Misc Plumbing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file-diffs-ci-cd-and-build/" class="md-nav__link">
+        CI-CD and Build
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extension-points/" class="md-nav__link">
+        Extension Points
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mess-artificial-finality/" class="md-nav__link">
+        MESS
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Version Comparison
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Version Comparison
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#etc-created-files-_powgo-_etcgo" class="md-nav__link">
+    ETC-Created Files (_pow.go / _etc.go)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modified-upstream-files" class="md-nav__link">
+    Modified Upstream Files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files-only-in-v1168" class="md-nav__link">
+    Files Only in v1.16.8
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files-only-in-v1171" class="md-nav__link">
+    Files Only in v1.17.1
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#etc-created-files-_powgo-_etcgo" class="md-nav__link">
+    ETC-Created Files (_pow.go / _etc.go)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modified-upstream-files" class="md-nav__link">
+    Modified Upstream Files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files-only-in-v1168" class="md-nav__link">
+    Files Only in v1.16.8
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files-only-in-v1171" class="md-nav__link">
+    Files Only in v1.17.1
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/diega/go-ethereum-classic/edit/master/docs/version-comparison.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="version-comparison-v1168-v1171">Version Comparison: v1.16.8 → v1.17.1<a class="headerlink" href="#version-comparison-v1168-v1171" title="Permanent link">&para;</a></h1>
+<p>Cross-version comparison of ETC patches between
+<a href="https://github.com/diega/go-ethereum-classic/tree/etc/v1.16.8-full-node"><code>etc/v1.16.8-full-node</code></a> and
+<a href="https://github.com/diega/go-ethereum-classic/tree/etc/v1.17.1"><code>etc/v1.17.1</code></a>.</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align: right;">Count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total files compared</td>
+<td style="text-align: right;">107</td>
+</tr>
+<tr>
+<td>Identical patches</td>
+<td style="text-align: right;">69</td>
+</tr>
+<tr>
+<td>Changed patches</td>
+<td style="text-align: right;">38</td>
+</tr>
+<tr>
+<td>Only in v1.16.8</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td>Only in v1.17.1</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+<h2 id="etc-created-files-_powgo-_etcgo">ETC-Created Files (<code>_pow.go</code> / <code>_etc.go</code>)<a class="headerlink" href="#etc-created-files-_powgo-_etcgo" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Status</th>
+<th style="text-align: right;">v1.16.8</th>
+<th style="text-align: right;">v1.17.1</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.claude/skills/release/SKILL.md</code></td>
+<td>✅</td>
+<td style="text-align: right;">+87 -0</td>
+<td style="text-align: right;">+87 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>.github/workflows/ci.yml</code></td>
+<td>✅</td>
+<td style="text-align: right;">+47 -0</td>
+<td style="text-align: right;">+47 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>.github/workflows/release.yml</code></td>
+<td>✅</td>
+<td style="text-align: right;">+95 -0</td>
+<td style="text-align: right;">+95 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>.github/workflows/wiki-sync.yml</code></td>
+<td>✅</td>
+<td style="text-align: right;">+42 -0</td>
+<td style="text-align: right;">+42 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>cmd/utils/flags_etc.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+185 -0</td>
+<td style="text-align: right;">+185 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>consensus/etc/engine.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+670 -0</td>
+<td style="text-align: right;">+670 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>consensus/etc/rewards_test.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+254 -0</td>
+<td style="text-align: right;">+254 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>consensus/ethash/algorithm.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1166 -0</td>
+<td style="text-align: right;">+1166 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>consensus/ethash/api.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+113 -0</td>
+<td style="text-align: right;">+113 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>consensus/ethash/mmap_help_linux.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+35 -0</td>
+<td style="text-align: right;">+35 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>consensus/ethash/mmap_help_other.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+36 -0</td>
+<td style="text-align: right;">+36 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>consensus/ethash/sealer.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+499 -0</td>
+<td style="text-align: right;">+499 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>consensus/ethash/verifyseal.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+108 -0</td>
+<td style="text-align: right;">+108 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>core/blockchain_mess.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+261 -0</td>
+<td style="text-align: right;">+261 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>core/blockchain_mess_test.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+620 -0</td>
+<td style="text-align: right;">+620 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>core/blockchain_pow.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+36 -0</td>
+<td style="text-align: right;">+36 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>core/forkchoice_pow.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+133 -0</td>
+<td style="text-align: right;">+133 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>core/genesis_etc.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+53 -0</td>
+<td style="text-align: right;">+53 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>core/headerchain_pow.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+55 -0</td>
+<td style="text-align: right;">+55 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>core/rawdb/accessors_chain_pow.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+92 -0</td>
+<td style="text-align: right;">+92 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>core/rawdb/accessors_pow.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+79 -0</td>
+<td style="text-align: right;">+79 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>core/vm/jump_table_etc.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+32 -0</td>
+<td style="text-align: right;">+32 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/api_backend_pow.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+31 -0</td>
+<td style="text-align: right;">+31 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/downloader/downloader_pow.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+961 -0</td>
+<td style="text-align: right;">+961 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/downloader/fetchers_concurrent_headers_pow.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+100 -0</td>
+<td style="text-align: right;">+100 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/downloader/queue_pow.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+275 -0</td>
+<td style="text-align: right;">+275 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/fetcher/block_fetcher_pow.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+939 -0</td>
+<td style="text-align: right;">+939 -0</td>
+<td><a href="eth-fetcher-block_fetcher_pow-go/">view</a></td>
+</tr>
+<tr>
+<td><code>eth/fetcher/block_fetcher_pow_test.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+597 -0</td>
+<td style="text-align: right;">+600 -0</td>
+<td><a href="eth-fetcher-block_fetcher_pow_test-go/">view</a></td>
+</tr>
+<tr>
+<td><code>eth/handler_pow.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+120 -0</td>
+<td style="text-align: right;">+120 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/peerset_pow.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+57 -0</td>
+<td style="text-align: right;">+57 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/protocols/eth/handlers_pow.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+63 -0</td>
+<td style="text-align: right;">+80 -0</td>
+<td><a href="eth-protocols-eth-handlers_pow-go/">view</a></td>
+</tr>
+<tr>
+<td><code>eth/protocols/eth/peer_pow.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+176 -0</td>
+<td style="text-align: right;">+176 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/sync_mess.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+107 -0</td>
+<td style="text-align: right;">+107 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/sync_pow.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+215 -0</td>
+<td style="text-align: right;">+216 -0</td>
+<td><a href="eth-sync_pow-go/">view</a></td>
+</tr>
+<tr>
+<td><code>internal/ethapi/api_pow.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+42 -0</td>
+<td style="text-align: right;">+42 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>params/config_etc.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+190 -0</td>
+<td style="text-align: right;">+192 -0</td>
+<td><a href="params-config_etc-go/">view</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="modified-upstream-files">Modified Upstream Files<a class="headerlink" href="#modified-upstream-files" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Status</th>
+<th style="text-align: right;">v1.16.8 delta</th>
+<th style="text-align: right;">v1.17.1 delta</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.github/workflows/go.yml</code></td>
+<td>📝</td>
+<td style="text-align: right;">+0 -99</td>
+<td style="text-align: right;">+0 -99</td>
+<td><a href="github-workflows-go-yml/">view</a></td>
+</tr>
+<tr>
+<td><code>README.md</code></td>
+<td>✅</td>
+<td style="text-align: right;">+57 -25</td>
+<td style="text-align: right;">+57 -25</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>build/ci.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+0 -1</td>
+<td style="text-align: right;">+0 -1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>cmd/geth/consolecmd_test.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+2 -2</td>
+<td style="text-align: right;">+2 -2</td>
+<td><a href="cmd-geth-consolecmd_test-go/">view</a></td>
+</tr>
+<tr>
+<td><code>cmd/geth/main.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+11 -1</td>
+<td style="text-align: right;">+11 -1</td>
+<td><a href="cmd-geth-main-go/">view</a></td>
+</tr>
+<tr>
+<td><code>cmd/utils/flags.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+38 -3</td>
+<td style="text-align: right;">+39 -4</td>
+<td><a href="cmd-utils-flags-go/">view</a></td>
+</tr>
+<tr>
+<td><code>consensus/ethash/consensus.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+5 -7</td>
+<td style="text-align: right;">+5 -7</td>
+<td><a href="consensus-ethash-consensus-go/">view</a></td>
+</tr>
+<tr>
+<td><code>consensus/ethash/ethash.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+788 -14</td>
+<td style="text-align: right;">+788 -14</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>consensus/misc/eip1559/eip1559.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+4 -0</td>
+<td style="text-align: right;">+4 -0</td>
+<td><a href="consensus-misc-eip1559-eip1559-go/">view</a></td>
+</tr>
+<tr>
+<td><code>core/blockchain.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+75 -5</td>
+<td style="text-align: right;">+74 -5</td>
+<td><a href="core-blockchain-go/">view</a></td>
+</tr>
+<tr>
+<td><code>core/chain_makers.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+4 -4</td>
+<td style="text-align: right;">+4 -4</td>
+<td><a href="core-chain_makers-go/">view</a></td>
+</tr>
+<tr>
+<td><code>core/evm.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+3 -0</td>
+<td style="text-align: right;">+3 -0</td>
+<td><a href="core-evm-go/">view</a></td>
+</tr>
+<tr>
+<td><code>core/genesis.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+2 -1</td>
+<td style="text-align: right;">+2 -1</td>
+<td><a href="core-genesis-go/">view</a></td>
+</tr>
+<tr>
+<td><code>core/headerchain.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+12 -1</td>
+<td style="text-align: right;">+12 -1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>core/rawdb/accessors_chain.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+10 -1</td>
+<td style="text-align: right;">+10 -1</td>
+<td><a href="core-rawdb-accessors_chain-go/">view</a></td>
+</tr>
+<tr>
+<td><code>core/rawdb/ancient_scheme.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+8 -4</td>
+<td style="text-align: right;">+8 -4</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>core/rawdb/chain_freezer.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+8 -0</td>
+<td style="text-align: right;">+8 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>core/state/statedb.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+1 -1</td>
+<td style="text-align: right;">+1 -1</td>
+<td><a href="core-state-statedb-go/">view</a></td>
+</tr>
+<tr>
+<td><code>core/state_transition.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -1</td>
+<td style="text-align: right;">+1 -1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>core/txpool/legacypool/legacypool.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+1 -1</td>
+<td style="text-align: right;">+1 -1</td>
+<td><a href="core-txpool-legacypool-legacypool-go/">view</a></td>
+</tr>
+<tr>
+<td><code>core/vm/eips.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+7 -0</td>
+<td style="text-align: right;">+7 -0</td>
+<td><a href="core-vm-eips-go/">view</a></td>
+</tr>
+<tr>
+<td><code>core/vm/evm.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+8 -1</td>
+<td style="text-align: right;">+8 -1</td>
+<td><a href="core-vm-evm-go/">view</a></td>
+</tr>
+<tr>
+<td><code>core/vm/jump_table_export.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+2 -0</td>
+<td style="text-align: right;">+2 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/backend.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+13 -10</td>
+<td style="text-align: right;">+13 -10</td>
+<td><a href="eth-backend-go/">view</a></td>
+</tr>
+<tr>
+<td><code>eth/downloader/downloader.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+14 -1</td>
+<td style="text-align: right;">+14 -1</td>
+<td><a href="eth-downloader-downloader-go/">view</a></td>
+</tr>
+<tr>
+<td><code>eth/downloader/downloader_test.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+7 -0</td>
+<td style="text-align: right;">+7 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/downloader/fetchers.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+3 -0</td>
+<td style="text-align: right;">+3 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/downloader/fetchers_concurrent.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+28 -4</td>
+<td style="text-align: right;">+28 -4</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/downloader/metrics.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/downloader/peer.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+3 -0</td>
+<td style="text-align: right;">+3 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/downloader/queue.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+5 -0</td>
+<td style="text-align: right;">+5 -0</td>
+<td><a href="eth-downloader-queue-go/">view</a></td>
+</tr>
+<tr>
+<td><code>eth/ethconfig/config.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+26 -0</td>
+<td style="text-align: right;">+26 -0</td>
+<td><a href="eth-ethconfig-config-go/">view</a></td>
+</tr>
+<tr>
+<td><code>eth/gasprice/feehistory.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -1</td>
+<td style="text-align: right;">+1 -1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/handler.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+86 -29</td>
+<td style="text-align: right;">+88 -30</td>
+<td><a href="eth-handler-go/">view</a></td>
+</tr>
+<tr>
+<td><code>eth/handler_eth.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+8 -0</td>
+<td style="text-align: right;">+8 -0</td>
+<td><a href="eth-handler_eth-go/">view</a></td>
+</tr>
+<tr>
+<td><code>eth/peer.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+32 -1</td>
+<td style="text-align: right;">+32 -1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>eth/protocols/eth/handler.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+3 -3</td>
+<td style="text-align: right;">+9 -3</td>
+<td><a href="eth-protocols-eth-handler-go/">view</a></td>
+</tr>
+<tr>
+<td><code>eth/protocols/eth/peer.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+2 -0</td>
+<td style="text-align: right;">+2 -0</td>
+<td><a href="eth-protocols-eth-peer-go/">view</a></td>
+</tr>
+<tr>
+<td><code>ethstats/ethstats.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+11 -1</td>
+<td style="text-align: right;">+11 -1</td>
+<td><a href="ethstats-ethstats-go/">view</a></td>
+</tr>
+<tr>
+<td><code>go.mod</code></td>
+<td>📝</td>
+<td style="text-align: right;">+7 -2</td>
+<td style="text-align: right;">+2 -0</td>
+<td><a href="go-mod/">view</a></td>
+</tr>
+<tr>
+<td><code>go.sum</code></td>
+<td>📝</td>
+<td style="text-align: right;">+8 -0</td>
+<td style="text-align: right;">+4 -2</td>
+<td><a href="go-sum/">view</a></td>
+</tr>
+<tr>
+<td><code>graphql/graphql.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+1 -1</td>
+<td style="text-align: right;">+1 -1</td>
+<td><a href="graphql-graphql-go/">view</a></td>
+</tr>
+<tr>
+<td><code>internal/ethapi/api.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+9 -6</td>
+<td style="text-align: right;">+9 -6</td>
+<td><a href="internal-ethapi-api-go/">view</a></td>
+</tr>
+<tr>
+<td><code>internal/ethapi/api_test.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+6 -0</td>
+<td style="text-align: right;">+6 -0</td>
+<td><a href="internal-ethapi-api_test-go/">view</a></td>
+</tr>
+<tr>
+<td><code>internal/ethapi/backend.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/simulate.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -1</td>
+<td style="text-align: right;">+1 -1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getBlockByHash-hash-1.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getBlockByHash-hash-genesis.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getBlockByHash-hash-latest-1-fullTx.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getBlockByHash-hash-latest.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getBlockByNumber-number-0.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getBlockByNumber-number-1.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getBlockByNumber-number-latest-1.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getBlockByNumber-tag-latest.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getBlockByNumber-tag-pending-fullTx.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getBlockByNumber-tag-pending.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getHeaderByHash-hash-0.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getHeaderByHash-hash-1.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getHeaderByHash-hash-latest-1.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getHeaderByHash-hash-latest.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getHeaderByNumber-number-0.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getHeaderByNumber-number-1.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getHeaderByNumber-number-latest-1.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getHeaderByNumber-tag-latest.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/testdata/eth_getHeaderByNumber-tag-pending.json</code></td>
+<td>✅</td>
+<td style="text-align: right;">+1 -0</td>
+<td style="text-align: right;">+1 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>internal/ethapi/transaction_args.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+1 -1</td>
+<td style="text-align: right;">+1 -1</td>
+<td><a href="internal-ethapi-transaction_args-go/">view</a></td>
+</tr>
+<tr>
+<td><code>internal/ethapi/transaction_args_test.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+3 -0</td>
+<td style="text-align: right;">+3 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>miner/worker.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+2 -2</td>
+<td style="text-align: right;">+2 -2</td>
+<td><a href="miner-worker-go/">view</a></td>
+</tr>
+<tr>
+<td><code>params/bootnodes.go</code></td>
+<td>✅</td>
+<td style="text-align: right;">+25 -0</td>
+<td style="text-align: right;">+25 -0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>params/config.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+20 -2</td>
+<td style="text-align: right;">+20 -2</td>
+<td><a href="params-config-go/">view</a></td>
+</tr>
+<tr>
+<td><code>version/version.go</code></td>
+<td>📝</td>
+<td style="text-align: right;">+4 -4</td>
+<td style="text-align: right;">+4 -4</td>
+<td><a href="version-version-go/">view</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="files-only-in-v1168">Files Only in v1.16.8<a class="headerlink" href="#files-only-in-v1168" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Type</th>
+<th style="text-align: right;">Delta</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eth/protocols/eth/handlers.go</code></td>
+<td>MOD</td>
+<td style="text-align: right;">+6 -0</td>
+<td>upstream file no longer modified in v1.17.1</td>
+</tr>
+<tr>
+<td><code>eth/protocols/eth/handshake.go</code></td>
+<td>MOD</td>
+<td style="text-align: right;">+42 -0</td>
+<td>upstream file no longer modified in v1.17.1</td>
+</tr>
+<tr>
+<td><code>eth/protocols/eth/protocol.go</code></td>
+<td>MOD</td>
+<td style="text-align: right;">+24 -0</td>
+<td>upstream file no longer modified in v1.17.1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="files-only-in-v1171">Files Only in v1.17.1<a class="headerlink" href="#files-only-in-v1171" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Type</th>
+<th style="text-align: right;">Delta</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eth/protocols/eth/handshake_pow.go</code></td>
+<td>NEW</td>
+<td style="text-align: right;">+88 -0</td>
+<td>new ETC-created file in v1.17.1</td>
+</tr>
+<tr>
+<td><code>eth/protocols/eth/protocol_pow.go</code></td>
+<td>NEW</td>
+<td style="text-align: right;">+112 -0</td>
+<td>new ETC-created file in v1.17.1</td>
+</tr>
+</tbody>
+</table>
+<p><a href="..">← Home</a></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../mess-artificial-finality/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              MESS
+            </div>
+          </div>
+        </a>
+      
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.fb4a9340.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a1c7c35e.min.js"></script>
+      
+    
+  </body>
+</html>
