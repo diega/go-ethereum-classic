@@ -4,11 +4,12 @@
     var m = location.pathname.match(/\/(\d+\.\d+\.\d+)\//);
     if (!m) return;
     var tag = "v" + m[1] + "-etc.1";
-    var el = document.querySelector(".md-source__fact--version");
-    if (el && el.textContent !== tag) {
-      el.textContent = tag;
-      var link = document.querySelector("a.md-source");
-      if (link) link.href = repo + tag;
-    }
+    var tagURL = repo + tag;
+    document.querySelectorAll(".md-source__fact--version").forEach(function(el) {
+      if (el.textContent !== tag) el.textContent = tag;
+    });
+    document.querySelectorAll("a.md-source").forEach(function(link) {
+      if (link.href !== tagURL) link.href = tagURL;
+    });
   }, 500);
 })();
