@@ -55,6 +55,19 @@
 
     
     
+<script>
+(function() {
+  var m = location.pathname.match(/\/(\d+\.\d+\.\d+)\//);
+  if (!m) return;
+  var tag = "v" + m[1] + "-etc.1";
+  var key = location.pathname + ".__source";
+  var cached = sessionStorage.getItem(key);
+  var data = cached ? JSON.parse(cached) : {stars: 0, forks: 0};
+  data.version = tag;
+  sessionStorage.setItem(key, JSON.stringify(data));
+})();
+</script>
+
   </head>
   
   
