@@ -674,7 +674,7 @@
 </tr>
 <tr>
 <td>Changed</td>
-<td><strong>+1 -1</strong></td>
+<td><strong>+3 -3</strong></td>
 </tr>
 </tbody>
 </table>
@@ -682,7 +682,7 @@
 <p>ETC gas cost adjustments</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/core/state_transition.go b/core/state_transition.go</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 62474b5f5..7b3c9b699 100644</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 62474b5f5..c8072a8df 100644</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gd">--- a/core/state_transition.go</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gi">+++ b/core/state_transition.go</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -338,7 +338,7 @@ func (st *stateTransition) preCheck() error {</span>
@@ -694,6 +694,23 @@
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w"> </span>       // Skip the checks if gas fields are zero and baseFee was explicitly disabled (eth_call)
 <a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span>       skipCheck := st.evm.Config.NoBaseFee &amp;&amp; msg.GasFeeCap.BitLen() == 0 &amp;&amp; msg.GasTipCap.BitLen() == 0
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span>       if !skipCheck {
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="gu">@@ -443,7 +443,7 @@ func (st *stateTransition) execute() (*ExecutionResult, error) {</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>   )
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w"> </span>   // Check clauses 4-5, subtract intrinsic gas if everything is correct
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gd">-   gas, err := IntrinsicGas(msg.Data, msg.AccessList, msg.SetCodeAuthorizations, contractCreation, rules.IsHomestead, rules.IsIstanbul, rules.IsShanghai)</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gi">+   gas, err := IntrinsicGas(msg.Data, msg.AccessList, msg.SetCodeAuthorizations, contractCreation, rules.IsHomestead, rules.IsIstanbul, rules.IsShanghai || rules.IsSpiral)</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w"> </span>   if err != nil {
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w"> </span>       return nil, err
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w"> </span>   }
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gu">@@ -483,7 +483,7 @@ func (st *stateTransition) execute() (*ExecutionResult, error) {</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w"> </span>   }
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w"> </span>   // Check whether the init code size has been exceeded.
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="gd">-   if rules.IsShanghai &amp;&amp; contractCreation &amp;&amp; len(msg.Data) &gt; params.MaxInitCodeSize {</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="gi">+   if (rules.IsShanghai || rules.IsSpiral) &amp;&amp; contractCreation &amp;&amp; len(msg.Data) &gt; params.MaxInitCodeSize {</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w"> </span>       return nil, fmt.Errorf(&quot;%w: code size %v limit %v&quot;, ErrMaxInitCodeSizeExceeded, len(msg.Data), params.MaxInitCodeSize)
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w"> </span>   }
 </code></pre></div>
 <p><a href="../../../file-diffs-core-and-evm/">← Back to Core and EVM</a></p>
 
