@@ -1,16 +1,14 @@
 (function() {
-  var tag = "v1.17.1-etc.1";
-  var tagURL = "https://github.com/diega/go-ethereum-classic/releases/tag/" + tag;
-  var obs = new MutationObserver(function() {
+  var repo = "https://github.com/diega/go-ethereum-classic/releases/tag/";
+  setInterval(function() {
+    var m = location.pathname.match(/\/(\d+\.\d+\.\d+)\//);
+    if (!m) return;
+    var tag = "v" + m[1] + "-etc.1";
     var el = document.querySelector(".md-source__fact--version");
     if (el && el.textContent !== tag) {
       el.textContent = tag;
       var link = document.querySelector("a.md-source");
-      if (link) link.href = tagURL;
+      if (link) link.href = repo + tag;
     }
-  });
-  document.addEventListener("DOMContentLoaded", function() {
-    var src = document.querySelector(".md-source");
-    if (src) obs.observe(src, {childList: true, subtree: true});
-  });
+  }, 500);
 })();
