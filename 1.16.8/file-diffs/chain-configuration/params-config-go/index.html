@@ -647,7 +647,7 @@
 </tr>
 <tr>
 <td>Changed</td>
-<td><strong>+22 -2</strong></td>
+<td><strong>+21 -1</strong></td>
 </tr>
 </tbody>
 </table>
@@ -655,7 +655,7 @@
 <p>Add ETC chain config fields (ECIP fork blocks, MESS config)</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/params/config.go b/params/config.go</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index c5dfad1cd..a258e1a7f 100644</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index c5dfad1cd..761d55703 100644</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gd">--- a/params/config.go</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gi">+++ b/params/config.go</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -491,6 +491,20 @@ type ChainConfig struct {</span>
@@ -710,22 +710,14 @@
 <a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="w"> </span>       IsByzantium:      c.IsByzantium(num),
 <a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="w"> </span>       IsConstantinople: c.IsConstantinople(num),
 <a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="w"> </span>       IsPetersburg:     c.IsPetersburg(num),
-<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="gu">@@ -1407,12 +1425,14 @@ func (c *ChainConfig) Rules(num *big.Int, isMerge bool, timestamp uint64) Rules</span>
-<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="w"> </span>       IsEIP2929:        c.IsBerlin(num) &amp;&amp; !isVerkle,
-<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="w"> </span>       IsLondon:         c.IsLondon(num),
-<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="w"> </span>       IsMerge:          isMerge,
-<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="gd">-       IsShanghai:       isMerge &amp;&amp; c.IsShanghai(num, timestamp),</span>
-<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="gi">+       IsShanghai:       (isMerge &amp;&amp; c.IsShanghai(num, timestamp)) || isSpiral,</span>
-<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="w"> </span>       IsCancun:         isMerge &amp;&amp; c.IsCancun(num, timestamp),
-<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="w"> </span>       IsPrague:         isMerge &amp;&amp; c.IsPrague(num, timestamp),
-<a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a><span class="w"> </span>       IsOsaka:          isMerge &amp;&amp; c.IsOsaka(num, timestamp),
-<a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a><span class="w"> </span>       IsAmsterdam:      isMerge &amp;&amp; c.IsAmsterdam(num, timestamp),
-<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a><span class="w"> </span>       IsVerkle:         isVerkle,
-<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a><span class="w"> </span>       IsEIP4762:        isVerkle,
-<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a><span class="gi">+       IsMystique:       c.IsLondon(num) &amp;&amp; !c.IsEIP1559(num),</span>
-<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="gi">+       IsSpiral:         isSpiral,</span>
-<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="w"> </span>   }
-<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="w"> </span>}
+<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="gu">@@ -1414,5 +1432,7 @@ func (c *ChainConfig) Rules(num *big.Int, isMerge bool, timestamp uint64) Rules</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="w"> </span>       IsAmsterdam:      isMerge &amp;&amp; c.IsAmsterdam(num, timestamp),
+<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="w"> </span>       IsVerkle:         isVerkle,
+<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="w"> </span>       IsEIP4762:        isVerkle,
+<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="gi">+       IsMystique:       c.IsLondon(num) &amp;&amp; !c.IsEIP1559(num),</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="gi">+       IsSpiral:         isSpiral,</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="w"> </span>   }
+<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="w"> </span>}
 </code></pre></div>
 <p><a href="../../../file-diffs-chain-configuration/">← Back to Chain Configuration</a></p>
 
