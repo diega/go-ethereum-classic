@@ -702,7 +702,8 @@
 </tbody>
 </table>
 <blockquote>
-<p>Based on upstream <code>processHeaders</code>. Re-adds TD promise validation (<code>gotHeaders</code> + <code>errStallingPeer</code>) and snap sync TD check — required for PoW chain security, removed by upstream post-merge</p>
+<p>Based on upstream <code>processHeaders</code>. Re-adds TD promise validation (<code>gotHeaders</code> + <code>errStallingPeer</code>) and snap sync TD check — required for PoW chain security, removed by upstream post-merge.
+<strong>BUG (open)</strong>: Missing <code>InsertHeaderChain</code> call for snap sync headers. Core-geth always calls <code>d.lightchain.InsertHeaderChain(chunkHeaders, frequency)</code> which writes TDs incrementally via <code>headerchain.WriteHeaders</code> → <code>WriteTd</code>. Our version only calls <code>InsertHeadersBeforeCutoff</code> when <code>chainCutoffNumber != 0</code>, otherwise headers are just scheduled for body download without TD computation. This leaves the chain with headers but no TDs, causing nil TD panics in <code>modeAndLocalHead</code> and <code>BroadcastBlock</code>.</p>
 </blockquote>
 <h3 id="diff-vs-upstream-v1168-modified-in-place">Diff — vs upstream v1.16.8 (modified in-place)<a class="headerlink" href="#diff-vs-upstream-v1168-modified-in-place" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/eth/downloader/downloader.go</span>
