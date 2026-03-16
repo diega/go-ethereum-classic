@@ -617,10 +617,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#diff-vs-upstream-v1168-modified-in-place" class="md-nav__link">
+  <a href="#diff-vs-pre-nuke-original-reimplemented" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Diff — vs upstream v1.16.8 (modified in-place)
+        Diff — vs pre-nuke original (reimplemented)
       
     </span>
   </a>
@@ -652,7 +652,7 @@
 <thead>
 <tr>
 <th></th>
-<th>Source (upstream)</th>
+<th>Source (upstream pre-purge)</th>
 <th>Current</th>
 </tr>
 </thead>
@@ -669,23 +669,23 @@
 </tr>
 <tr>
 <td>Ref</td>
-<td><code>v1.16.8</code></td>
+<td><code>45baf2111~1</code></td>
 <td><code>etc/v1.16.8</code></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>Renamed from synchronise. Upstream delegates to <code>syncToHead</code> (beacon-only); ours resolves the peer and delegates to <code>syncWithPeer</code> (PoW legacy sync), matching core-geth's pattern.</p>
+<p>Renamed from synchronise. Removed <code>beaconMode</code>/<code>beaconPing</code> params and <code>ttd</code> (not applicable to ETC perpetual PoW). Otherwise identical to pre-purge.</p>
 </blockquote>
-<h3 id="diff-vs-upstream-v1168-modified-in-place">Diff — vs upstream v1.16.8 (modified in-place)<a class="headerlink" href="#diff-vs-upstream-v1168-modified-in-place" title="Permanent link">&para;</a></h3>
+<h3 id="diff-vs-pre-nuke-original-reimplemented">Diff — vs pre-nuke original (reimplemented)<a class="headerlink" href="#diff-vs-pre-nuke-original-reimplemented" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/eth/downloader/downloader.go</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gi">+++ b/eth/downloader/downloader_pow.go</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -1,21 +1,7 @@</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -1,25 +1,7 @@</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gd">-// synchronise will select the peer and use it for synchronising. If an empty string is given</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gi">+// synchronisePoW will select the peer and use it for synchronising. If an empty string is given</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>// it will use the best peer possible and synchronize if its TD is higher than our own. If any of the
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span>// checks fail an error will be returned. This method is synchronous
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gd">-func (d *Downloader) synchronise(mode SyncMode, beaconPing chan struct{}) error {</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gd">-func (d *Downloader) synchronise(id string, hash common.Hash, td, ttd *big.Int, mode SyncMode, beaconMode bool, beaconPing chan struct{}) error {</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gd">-   // The beacon header syncer is async. It will start this synchronization and</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gd">-   // will continue doing other tasks. However, if synchronization needs to be</span>
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gd">-   // cancelled, the syncer needs to know if we reached the startup point (and</span>
@@ -700,32 +700,41 @@
 <a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gd">-           }</span>
 <a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="gd">-       }()</span>
 <a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gd">-   }</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gi">+func (d *Downloader) synchronisePoW(id string, hash common.Hash, td *big.Int, mode SyncMode) error {</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w"> </span>   // Make sure only one goroutine is ever allowed past this point at once
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w"> </span>   if !d.synchronising.CompareAndSwap(false, true) {
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w"> </span>       return errBusy
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="gu">@@ -63,6 +49,7 @@</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w"> </span>   // Create cancel channel for aborting mid-flight and mark the master peer
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w"> </span>   d.cancelLock.Lock()
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w"> </span>   d.cancelCh = make(chan struct{})
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="gi">+   d.cancelPeer = id</span>
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="w"> </span>   d.cancelLock.Unlock()
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w"> </span>   defer d.Cancel() // No matter what, we can&#39;t leave the cancel channel open
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="gu">@@ -70,8 +57,10 @@</span>
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="w"> </span>   // Atomically set the requested sync mode
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="w"> </span>   d.mode.Store(uint32(mode))
-<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>
-<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="gd">-   if beaconPing != nil {</span>
-<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="gd">-       close(beaconPing)</span>
-<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="gi">+   // Retrieve the origin peer and initiate the downloading process</span>
-<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="gi">+   p := d.peers.Peer(id)</span>
-<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="gi">+   if p == nil {</span>
-<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="gi">+       return errUnknownPeer</span>
-<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="w"> </span>   }
-<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="gd">-   return d.syncToHead()</span>
-<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="gi">+   return d.syncWithPeer(p, hash, td)</span>
-<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="w"> </span>}
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gd">-   // Mock out the synchronisation if testing</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="gd">-   if d.synchroniseMock != nil {</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="gd">-       return d.synchroniseMock(id, hash)</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="gd">-   }</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="gi">+func (d *Downloader) synchronisePoW(id string, hash common.Hash, td *big.Int, mode SyncMode) error {</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w"> </span>   // Make sure only one goroutine is ever allowed past this point at once
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w"> </span>   if !d.synchronising.CompareAndSwap(false, true) {
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w"> </span>       return errBusy
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="gu">@@ -30,7 +12,7 @@</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="w"> </span>   if d.notified.CompareAndSwap(false, true) {
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w"> </span>       log.Info(&quot;Block synchronisation started&quot;)
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w"> </span>   }
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="gd">-   if mode == SnapSync {</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="gi">+   if mode == ethconfig.SnapSync {</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="w"> </span>       // Snap sync will directly modify the persistent state, making the entire
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="w"> </span>       // trie database unusable until the state is fully synced. To prevent any
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w"> </span>       // subsequent state reads, explicitly disable the trie database and state
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="gu">@@ -76,15 +58,9 @@</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w"> </span>   d.mode.Store(uint32(mode))
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="w"> </span>   // Retrieve the origin peer and initiate the downloading process
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="gd">-   var p *peerConnection</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="gd">-   if !beaconMode { // Beacon mode doesn&#39;t need a peer to sync from</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="gd">-       p = d.peers.Peer(id)</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="gi">+   p := d.peers.Peer(id)</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="w"> </span>       if p == nil {
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="w"> </span>           return errUnknownPeer
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="w"> </span>       }
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="gd">-   }</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="gd">-   if beaconPing != nil {</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="gd">-       close(beaconPing)</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="gd">-   }</span>
+<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="gd">-   return d.syncWithPeer(p, hash, td, ttd, beaconMode)</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="gi">+   return d.syncWithPeer(p, hash, td)</span>
+<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="w"> </span>}
 </code></pre></div>
 <details>
 <summary>core-geth validation — +5 -35</summary>
