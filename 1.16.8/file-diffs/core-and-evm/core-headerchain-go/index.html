@@ -647,7 +647,7 @@
 </tr>
 <tr>
 <td>Changed</td>
-<td><strong>+12 -1</strong></td>
+<td><strong>+17 -1</strong></td>
 </tr>
 </tbody>
 </table>
@@ -655,7 +655,7 @@
 <p>Add TD tracking and PoW total difficulty management</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/core/headerchain.go b/core/headerchain.go</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index a33222e9f..ab7558219 100644</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index a33222e9f..91115ad61 100644</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gd">--- a/core/headerchain.go</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gi">+++ b/core/headerchain.go</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -19,6 +19,7 @@ package core</span>
@@ -692,40 +692,45 @@
 <a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="w"> </span>       numberCache:   lru.NewCache[common.Hash, uint64](numberCacheLimit),
 <a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="w"> </span>       procInterrupt: procInterrupt,
 <a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="w"> </span>       engine:        engine,
-<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="gu">@@ -196,6 +200,8 @@ func (hc *HeaderChain) WriteHeaders(headers []*types.Header) (int, error) {</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="gu">@@ -196,6 +200,13 @@ func (hc *HeaderChain) WriteHeaders(headers []*types.Header) (int, error) {</span>
 <a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="w"> </span>   if !hc.HasHeader(headers[0].ParentHash, headers[0].Number.Uint64()-1) {
 <a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w"> </span>       return 0, consensus.ErrUnknownAncestor
 <a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="w"> </span>   }
-<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="gi">+   // Get parent TD for chain sync (may be nil for post-merge chains)</span>
-<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="gi">+   parentTd := hc.GetTd(headers[0].ParentHash, headers[0].Number.Uint64()-1)</span>
-<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="w"> </span>   var (
-<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="w"> </span>       inserted    []rawdb.NumberHash // Ephemeral lookup of number/hash for the chain
-<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="w"> </span>       parentKnown = true             // Set to true to force hc.HasHeader check the first iteration
-<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="gu">@@ -218,6 +224,9 @@ func (hc *HeaderChain) WriteHeaders(headers []*types.Header) (int, error) {</span>
-<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="w"> </span>       alreadyKnown := parentKnown &amp;&amp; hc.HasHeader(hash, number)
-<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="w"> </span>       if !alreadyKnown {
-<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="w"> </span>           rawdb.WriteHeader(batch, header)
-<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="gi">+           if parentTd != nil {</span>
-<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="gi">+               parentTd = hc.writeTd(batch, hash, number, header.Difficulty, parentTd)</span>
-<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="gi">+           }</span>
-<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="w"> </span>           inserted = append(inserted, rawdb.NumberHash{Number: number, Hash: hash})
-<a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="w"> </span>           hc.headerCache.Add(hash, header)
-<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="w"> </span>           hc.numberCache.Add(hash, number)
-<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="gu">@@ -598,6 +607,7 @@ func (hc *HeaderChain) setHead(headBlock uint64, headTime uint64, updateFn Updat</span>
-<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="w"> </span>               if delFn != nil {
-<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="w"> </span>                   delFn(batch, hash, num)
-<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="w"> </span>               }
-<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="gi">+               hc.deleteTd(batch, hash, num)</span>
-<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="w"> </span>               // Remove the hash-&gt;number mapping along with the header itself
-<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="w"> </span>               rawdb.DeleteHeader(batch, hash, num)
-<a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a><span class="w"> </span>           }
-<a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a><span class="gu">@@ -638,6 +648,7 @@ func (hc *HeaderChain) setHead(headBlock uint64, headTime uint64, updateFn Updat</span>
-<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a><span class="w"> </span>   }
-<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a><span class="w"> </span>   // Clear out any stale content from the caches
-<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a><span class="w"> </span>   hc.headerCache.Purge()
-<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="gi">+   hc.tdCache.Purge()</span>
-<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="w"> </span>   hc.numberCache.Purge()
-<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="w"> </span>}
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="gi">+   // Get parent TD for chain sync. For PoW chains (ETC), parent TD must</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="gi">+   // exist — reject headers without it (cf. core-geth WriteHeaders).</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="gi">+   // Post-merge chains don&#39;t use TD so nil is acceptable.</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="gi">+   parentTd := hc.GetTd(headers[0].ParentHash, headers[0].Number.Uint64()-1)</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="gi">+   if parentTd == nil &amp;&amp; hc.config.Ethash != nil {</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="gi">+       return 0, consensus.ErrUnknownAncestor</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="gi">+   }</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="w"> </span>   var (
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="w"> </span>       inserted    []rawdb.NumberHash // Ephemeral lookup of number/hash for the chain
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="w"> </span>       parentKnown = true             // Set to true to force hc.HasHeader check the first iteration
+<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="gu">@@ -218,6 +229,9 @@ func (hc *HeaderChain) WriteHeaders(headers []*types.Header) (int, error) {</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="w"> </span>       alreadyKnown := parentKnown &amp;&amp; hc.HasHeader(hash, number)
+<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="w"> </span>       if !alreadyKnown {
+<a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="w"> </span>           rawdb.WriteHeader(batch, header)
+<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="gi">+           if parentTd != nil {</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="gi">+               parentTd = hc.writeTd(batch, hash, number, header.Difficulty, parentTd)</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="gi">+           }</span>
+<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="w"> </span>           inserted = append(inserted, rawdb.NumberHash{Number: number, Hash: hash})
+<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="w"> </span>           hc.headerCache.Add(hash, header)
+<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="w"> </span>           hc.numberCache.Add(hash, number)
+<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="gu">@@ -598,6 +612,7 @@ func (hc *HeaderChain) setHead(headBlock uint64, headTime uint64, updateFn Updat</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="w"> </span>               if delFn != nil {
+<a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a><span class="w"> </span>                   delFn(batch, hash, num)
+<a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a><span class="w"> </span>               }
+<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a><span class="gi">+               hc.deleteTd(batch, hash, num)</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a><span class="w"> </span>               // Remove the hash-&gt;number mapping along with the header itself
+<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a><span class="w"> </span>               rawdb.DeleteHeader(batch, hash, num)
+<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="w"> </span>           }
+<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="gu">@@ -638,6 +653,7 @@ func (hc *HeaderChain) setHead(headBlock uint64, headTime uint64, updateFn Updat</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="w"> </span>   }
+<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a><span class="w"> </span>   // Clear out any stale content from the caches
+<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a><span class="w"> </span>   hc.headerCache.Purge()
+<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a><span class="gi">+   hc.tdCache.Purge()</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a><span class="w"> </span>   hc.numberCache.Purge()
+<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a><span class="w"> </span>}
 </code></pre></div>
 <p><a href="../../../file-diffs-core-and-evm/">← Back to Core and EVM</a></p>
 
