@@ -70,7 +70,6 @@ import (
 var (
 	goModules = []string{
 		".",
-		"./cmd/keeper",
 	}
 
 	// Files that end up in the geth*.zip archive.

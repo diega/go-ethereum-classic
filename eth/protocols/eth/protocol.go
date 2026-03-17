@@ -39,10 +39,10 @@ const (
 const ProtocolName = "eth"
 
 // ProtocolVersions are the supported versions of the `eth` protocol (first
-// is primary).
-// ETC PoW requires ETH/68 which includes TD in the handshake.
-// ETH/69 removed TD and is incompatible with PoW sync.
-var ProtocolVersions = []uint{ETH68}
+// is primary). Both are kept so tests can exercise ETH/68 against a node
+// that also speaks ETH/69. Production PoW nodes use GetProtocolVersions
+// to advertise only ETH/68.
+var ProtocolVersions = []uint{ETH69, ETH68}
 
 // GetProtocolVersions returns supported protocol versions based on chain type.
 // For perpetual PoW chains, only ETH68 is supported because it includes

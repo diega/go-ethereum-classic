@@ -5,6 +5,10 @@ Golang execution layer implementation supporting Ethereum and Ethereum Classic n
 > **Fork Notice:** This is a fork of [ethereum/go-ethereum](https://github.com/ethereum/go-ethereum)
 > with native support for Ethereum Classic (ETC) mainnet and Mordor testnet.
 
+[![CI](https://github.com/diega/go-ethereum-classic/actions/workflows/ci.yml/badge.svg)](https://github.com/diega/go-ethereum-classic/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/diega/go-ethereum-classic)](https://github.com/diega/go-ethereum-classic/releases)
+[![Go Report Card](https://goreportcard.com/badge/github.com/diega/go-ethereum-classic)](https://goreportcard.com/report/github.com/diega/go-ethereum-classic)
+
 ## Supported Networks
 
 | Network | Chain ID | Flag | Status |
@@ -66,6 +70,21 @@ geth --classic console
 geth --mordor console
 ```
 
+### Database Incompatibility with core-geth
+
+Databases created by [core-geth](https://github.com/etclabscore/core-geth) **cannot** be used directly with this client. There are two key schema differences:
+
+1. **Freezer (ancient DB) compression**: The `diffs` table uses snappy compression in this fork (`noSnappy: false`) but stores data uncompressed in core-geth (`noSnappy: true`). This produces incompatible index files (`.cidx` vs `.ridx`).
+
+2. **Chain config JSON tags**: ETC-specific fields use different JSON keys:
+
+   | Field | go-ethereum-classic | core-geth |
+   |-------|-------------------|-----------|
+   | ECIP-1017 block | `ecip1017Block` | `ecip1017FBlock` |
+   | ECIP-1099 block | `ecip1099Block` | `ecip1099FBlock` |
+
+If you are migrating from core-geth, you must resync from scratch.
+
 ## Running `geth`
 
 Going through all the possible command line flags is out of scope here (please consult our
@@ -105,7 +124,7 @@ This command will:
    causing it to download more data in exchange for avoiding processing the entire history
    of the Ethereum network, which is very CPU intensive.
  * Start the built-in interactive [JavaScript console](https://geth.ethereum.org/docs/interacting-with-geth/javascript-console),
-   (via the trailing `console` subcommand) through which you can interact using [`web3` methods](https://github.com/ChainSafe/web3.js/blob/0.20.7/DOCUMENTATION.md)
+   (via the trailing `console` subcommand) through which you can interact using [`web3` methods](https://github.com/ChainSafe/web3.js/blob/0.20.7/DOCUMENTATION.md) 
    (note: the `web3` version bundled within `geth` is very old, and not up to date with official docs),
    as well as `geth`'s own [management APIs](https://geth.ethereum.org/docs/interacting-with-geth/rpc).
    This tool is optional and if you leave it out you can always attach it to an already running
@@ -128,7 +147,7 @@ useful on the testnet too.
 
 Specifying the `--holesky` flag, however, will reconfigure your `geth` instance a bit:
 
- * Instead of connecting to the main Ethereum network, the client will connect to the Holesky
+ * Instead of connecting to the main Ethereum network, the client will connect to the Holesky 
    test network, which uses different P2P bootnodes, different network IDs and genesis
    states.
  * Instead of using the default data directory (`~/.ethereum` on Linux for example), `geth`

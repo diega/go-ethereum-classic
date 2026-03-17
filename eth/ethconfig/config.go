@@ -87,7 +87,6 @@ type Config struct {
 	// zero, the chain ID is used as network ID.
 	NetworkId uint64
 	SyncMode  SyncMode
-	Ethash    ethash.Config
 
 	// HistoryMode configures chain history retention.
 	HistoryMode history.HistoryMode
