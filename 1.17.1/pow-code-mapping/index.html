@@ -1131,6 +1131,67 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#skipped-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Skipped Tests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Skipped Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engine-api-transaction-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Engine API transaction tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blobcancun-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Blob/Cancun tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blockrangeupdate-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BlockRangeUpdate tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#snap-data-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Snap data tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2230,6 +2291,67 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#skipped-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Skipped Tests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Skipped Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engine-api-transaction-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Engine API transaction tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blobcancun-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Blob/Cancun tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blockrangeupdate-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BlockRangeUpdate tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#snap-data-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Snap data tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2269,7 +2391,7 @@
 <tbody>
 <tr>
 <td>Total symbols</td>
-<td style="text-align: right;">228</td>
+<td style="text-align: right;">232</td>
 </tr>
 <tr>
 <td>Identical ✅</td>
@@ -4487,6 +4609,95 @@
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.1/consensus/ethash/verifyseal.go">verifyseal</a></td>
 <td><strong>+4 -3</strong></td>
 <td><a href="../diffs/ethash-verification/ethash-verifyseal-internal/">view</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="skipped-tests">Skipped Tests<a class="headerlink" href="#skipped-tests" title="Permanent link">&para;</a></h2>
+<p>Tests registered in the suite but skipped in CI via <code>-skip</code> flag.
+They can be run manually with <code>go test</code>.</p>
+<h3 id="engine-api-transaction-tests">Engine API transaction tests<a class="headerlink" href="#engine-api-transaction-tests" title="Permanent link">&para;</a></h3>
+<p>Require forkchoiceUpdated to mine blocks (PoS-only engine API)</p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TestEthSuite/LargeTxRequest</code></td>
+</tr>
+<tr>
+<td><code>TestEthSuite/Transaction</code></td>
+</tr>
+<tr>
+<td><code>TestEthSuite/InvalidTxs</code></td>
+</tr>
+<tr>
+<td><code>TestEthSuite/NewPooledTxs</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="blobcancun-tests">Blob/Cancun tests<a class="headerlink" href="#blobcancun-tests" title="Permanent link">&para;</a></h3>
+<p>Require Cancun fork (EIP-4844 blob transactions, not applicable to ETC)</p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TestEthSuite/BlobViolations</code></td>
+</tr>
+<tr>
+<td><code>TestEthSuite/TestBlobTxWithoutSidecar</code></td>
+</tr>
+<tr>
+<td><code>TestEthSuite/TestBlobTxWithMismatchedSidecar</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="blockrangeupdate-tests">BlockRangeUpdate tests<a class="headerlink" href="#blockrangeupdate-tests" title="Permanent link">&para;</a></h3>
+<p>ETH/69-only message (BlockRangeUpdateMsg code 0x11, outside ETH/68 range)</p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TestEthSuite/BlockRangeUpdateExpired</code></td>
+</tr>
+<tr>
+<td><code>TestEthSuite/BlockRangeUpdateFuture</code></td>
+</tr>
+<tr>
+<td><code>TestEthSuite/BlockRangeUpdateInvalid</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="snap-data-tests">Snap data tests<a class="headerlink" href="#snap-data-tests" title="Permanent link">&para;</a></h3>
+<p>Snap handler closes connection on PoW test node after ETH/68 handshake</p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TestSnapSuite/AccountRange</code></td>
+</tr>
+<tr>
+<td><code>TestSnapSuite/GetByteCodes</code></td>
+</tr>
+<tr>
+<td><code>TestSnapSuite/GetTrieNodes</code></td>
+</tr>
+<tr>
+<td><code>TestSnapSuite/GetStorageRanges</code></td>
 </tr>
 </tbody>
 </table>
