@@ -682,17 +682,17 @@
 <p>Add ETC-specific flags and MESS flag registration</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/cmd/geth/main.go b/cmd/geth/main.go</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 109b36836..e5b63d6fc 100644</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 109b36836..ed7a41f0f 100644</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gd">--- a/cmd/geth/main.go</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gi">+++ b/cmd/geth/main.go</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -28,6 +28,7 @@ import (</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/accounts&quot;
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/cmd/utils&quot;
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/common&quot;
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -29,6 +29,7 @@ import (</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/cmd/utils&quot;
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/common&quot;
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/console/prompt&quot;
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gi">+   &quot;github.com/ethereum/go-ethereum/eth&quot;</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/console/prompt&quot;
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/eth/downloader&quot;
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/ethclient&quot;
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/eth/downloader&quot;
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/ethclient&quot;
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/internal/debug&quot;
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="gu">@@ -46,7 +47,7 @@ import (</span>
 <a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w"> </span>)
 <a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
