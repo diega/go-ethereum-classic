@@ -682,7 +682,7 @@
 <p>Add ETC chain config fields (ECIP fork blocks, MESS config)</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/params/config.go b/params/config.go</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index c5dfad1cd..761d55703 100644</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index c5dfad1cd..1f8266d49 100644</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gd">--- a/params/config.go</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gi">+++ b/params/config.go</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -491,6 +491,20 @@ type ChainConfig struct {</span>
@@ -700,9 +700,9 @@
 <a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gi">+   ECIP1017EraRounds  *big.Int `json:&quot;ecip1017EraRounds,omitempty&quot;`  // ECIP-1017 era length (5M mainnet, 2M Mordor)</span>
 <a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gi">+   ECIP1010Transition *big.Int `json:&quot;ecip1010Transition,omitempty&quot;` // ECIP-1010 DieHard bomb pause block</span>
 <a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gi">+   ECIP1010Length     *big.Int `json:&quot;ecip1010Length,omitempty&quot;`     // ECIP-1010 pause duration</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gi">+   // ECBP-1100 (MESS) artificial finality - uses &quot;Transition&quot; suffix to NOT affect Fork ID</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="gi">+   ECBP1100Transition           *big.Int `json:&quot;ecbp1100Transition,omitempty&quot;`           // ECBP-1100 activation block (optional)</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gi">+   ECBP1100DeactivateTransition *big.Int `json:&quot;ecbp1100DeactivateTransition,omitempty&quot;` // ECBP-1100 deactivation block (optional)</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gi">+   // ECBP-1100 (MESS) artificial finality — included in Fork ID via &quot;Block&quot; suffix</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="gi">+   ECBP1100Block           *big.Int `json:&quot;ecbp1100Block,omitempty&quot;`           // ECBP-1100 activation block (optional)</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gi">+   ECBP1100DeactivateBlock *big.Int `json:&quot;ecbp1100DeactivateBlock,omitempty&quot;` // ECBP-1100 deactivation block (optional)</span>
 <a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w"> </span>}
 <a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>
 <a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w"> </span>// EthashConfig is the consensus engine configs for proof-of-work based sealing.

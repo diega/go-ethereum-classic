@@ -702,7 +702,7 @@
 </tbody>
 </table>
 <blockquote>
-<p>Internal header validation. Adapted for ETC: BaseFee always nil (no EIP-1559), rejects post-merge fields unconditionally, uses ETC difficulty calculation. KNOWN GAP: missing future block time check (allowedFutureBlockTimeSeconds=15) present in upstream and core-geth.</p>
+<p>Internal header validation. Adapted for ETC: BaseFee always nil (no EIP-1559), rejects post-merge fields unconditionally, uses ETC difficulty calculation. Includes future block time check (allowedFutureBlockTimeSeconds=15) and unixNow parameter for consistent batch verification.</p>
 </blockquote>
 <h3 id="diff-vs-pre-nuke-original-reimplemented">Diff — vs pre-nuke original (reimplemented)<a class="headerlink" href="#diff-vs-pre-nuke-original-reimplemented" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/consensus/ethash/consensus.go</span>
