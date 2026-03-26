@@ -674,7 +674,7 @@
 </tr>
 <tr>
 <td>Changed</td>
-<td><strong>+26 -12</strong></td>
+<td><strong>+38 -12</strong></td>
 </tr>
 </tbody>
 </table>
@@ -682,7 +682,7 @@
 <p>Wire ethash engine, MESS, and PoW sync into eth.Ethereum</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/eth/backend.go b/eth/backend.go</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 850956182..9230d3239 100644</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 850956182..d1446edb7 100644</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gd">--- a/eth/backend.go</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gi">+++ b/eth/backend.go</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -179,7 +179,10 @@ func New(stack *node.Node, config *ethconfig.Config) (*Ethereum, error) {</span>
@@ -738,25 +738,47 @@
 <a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="w"> </span>   eth.miner.SetExtra(makeExtraData(config.Miner.ExtraData))
 <a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="w"> </span>   eth.miner.SetPrioAddresses(config.TxPool.Locals)
 <a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>
-<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="gu">@@ -430,7 +441,7 @@ func (s *Ethereum) ArchiveMode() bool                  { return s.config.NoPruni</span>
-<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="w"> </span>// Protocols returns all the currently configured
-<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="w"> </span>// network protocols to start.
-<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="w"> </span>func (s *Ethereum) Protocols() []p2p.Protocol {
-<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="gd">-   protos := eth.MakeProtocols((*ethHandler)(s.handler), s.networkID, s.discmix)</span>
-<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="gi">+   protos := eth.MakeProtocols((*ethHandler)(s.handler), s.networkID, s.discmix, eth.GetProtocolVersions(s.blockchain.Config().IsPow()))</span>
-<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="w"> </span>   if s.config.SnapshotCache &gt; 0 {
-<a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a><span class="w"> </span>       protos = append(protos, snap.MakeProtocols((*snapHandler)(s.handler))...)
-<a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a><span class="w"> </span>   }
-<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a><span class="gu">@@ -569,6 +580,9 @@ func (s *Ethereum) setupDiscovery() error {</span>
-<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a><span class="w"> </span>// Stop implements node.Lifecycle, terminating all internal goroutines used by the
-<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a><span class="w"> </span>// Ethereum protocol.
-<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="w"> </span>func (s *Ethereum) Stop() error {
-<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="gi">+   // Stop PoW miner if running.</span>
-<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="gi">+   s.miner.CloseMining()</span>
-<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a><span class="gi">+</span>
-<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a><span class="w"> </span>   // Stop all the peer-related stuff first.
-<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a><span class="w"> </span>   s.discmix.Close()
-<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a><span class="w"> </span>   s.dropper.Stop()
+<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="gu">@@ -388,9 +399,21 @@ func makeExtraData(extra []byte) []byte {</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="w"> </span>func (s *Ethereum) APIs() []rpc.API {
+<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="w"> </span>   apis := ethapi.GetAPIs(s.APIBackend)
+<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>
+<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="gi">+   // Register ethash engine APIs (eth_getWork, eth_submitWork, etc.) if available.</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="gi">+   // Removed from consensus.Engine interface in upstream; restored for PoW chains.</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="gi">+   type engineAPIs interface {</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a><span class="gi">+       APIs(consensus.ChainHeaderReader) []rpc.API</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a><span class="gi">+   }</span>
+<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a><span class="gi">+   if ea, ok := s.engine.(engineAPIs); ok {</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a><span class="gi">+       apis = append(apis, ea.APIs(s.blockchain)...)</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a><span class="gi">+   }</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="gi">+</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="w"> </span>   // Append all the local APIs and return
+<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="w"> </span>   return append(apis, []rpc.API{
+<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a><span class="w"> </span>       {
+<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a><span class="gi">+           Namespace: &quot;eth&quot;,</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a><span class="gi">+           Service:   NewEthereumAPI(s),</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a><span class="gi">+       }, {</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a><span class="w"> </span>           Namespace: &quot;miner&quot;,
+<a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a><span class="w"> </span>           Service:   NewMinerAPI(s),
+<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a><span class="w"> </span>       }, {
+<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a><span class="gu">@@ -430,7 +453,7 @@ func (s *Ethereum) ArchiveMode() bool                  { return s.config.NoPruni</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a><span class="w"> </span>// Protocols returns all the currently configured
+<a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a><span class="w"> </span>// network protocols to start.
+<a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a><span class="w"> </span>func (s *Ethereum) Protocols() []p2p.Protocol {
+<a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a><span class="gd">-   protos := eth.MakeProtocols((*ethHandler)(s.handler), s.networkID, s.discmix)</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a><span class="gi">+   protos := eth.MakeProtocols((*ethHandler)(s.handler), s.networkID, s.discmix, eth.GetProtocolVersions(s.blockchain.Config().IsPow()))</span>
+<a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a><span class="w"> </span>   if s.config.SnapshotCache &gt; 0 {
+<a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a><span class="w"> </span>       protos = append(protos, snap.MakeProtocols((*snapHandler)(s.handler))...)
+<a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a><span class="w"> </span>   }
+<a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a><span class="gu">@@ -569,6 +592,9 @@ func (s *Ethereum) setupDiscovery() error {</span>
+<a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a><span class="w"> </span>// Stop implements node.Lifecycle, terminating all internal goroutines used by the
+<a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a><span class="w"> </span>// Ethereum protocol.
+<a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a><span class="w"> </span>func (s *Ethereum) Stop() error {
+<a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a><span class="gi">+   // Stop PoW miner if running.</span>
+<a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a><span class="gi">+   s.miner.CloseMining()</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a><span class="gi">+</span>
+<a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a><span class="w"> </span>   // Stop all the peer-related stuff first.
+<a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a><span class="w"> </span>   s.discmix.Close()
+<a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a><span class="w"> </span>   s.dropper.Stop()
 </code></pre></div>
 <p><a href="../../../file-diffs-eth-service-and-downloader/">← Back to Eth Service and Downloader</a></p>
 

@@ -2328,7 +2328,8 @@
 - <a href="https://github.com/ethereum/go-ethereum/pull/30809">ethereum/go-ethereum#30809</a> — all: nuke total difficulty (<code>39638c81c</code>)
 - <a href="https://github.com/ethereum/go-ethereum/pull/30386">ethereum/go-ethereum#30386</a> — internal/ethapi: remove td field from block (<code>40fd887df</code>)
 - <a href="https://github.com/ethereum/go-ethereum/pull/27218">ethereum/go-ethereum#27218</a> — miner: suspend miner if node is syncing (removed unconfirmed.go, worker loops) (<code>d4961881d</code>)
-- <a href="https://github.com/ethereum/go-ethereum/pull/30601">ethereum/go-ethereum#30601</a> — core, eth, ethstats: simplify chain head events (removed NewMinedBlockEvent) (<code>368e16f39</code>)</p>
+- <a href="https://github.com/ethereum/go-ethereum/pull/30601">ethereum/go-ethereum#30601</a> — core, eth, ethstats: simplify chain head events (removed NewMinedBlockEvent) (<code>368e16f39</code>)
+- <a href="https://github.com/ethereum/go-ethereum/pull/28623">ethereum/go-ethereum#28623</a> — miner: refactor the miner, make the pending block on demand (removed EthereumAPI and MinerAPI RPCs) (<code>d8e0807da</code>)</p>
 <table>
 <thead>
 <tr>
@@ -2339,7 +2340,7 @@
 <tbody>
 <tr>
 <td>Total symbols</td>
-<td style="text-align: right;">244</td>
+<td style="text-align: right;">246</td>
 </tr>
 <tr>
 <td>Identical ✅</td>
@@ -2351,7 +2352,7 @@
 </tr>
 <tr>
 <td>NEW-ETC 🆕</td>
-<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
 </tr>
 <tr>
 <td>Lines added</td>
@@ -4551,6 +4552,13 @@
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/handler_mining_pow.go">handler_mining_pow</a></td>
 <td><strong>+5 -1</strong></td>
 <td><a href="../diffs/pow-mining/minedbroadcastloop/">view</a></td>
+</tr>
+<tr>
+<td><code>Engine APIs registration</code></td>
+<td>—</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8/eth/backend.go">backend</a></td>
+<td>🆕</td>
+<td><a href="../diffs/pow-mining/engine-apis-registration/">view</a></td>
 </tr>
 </tbody>
 </table>
