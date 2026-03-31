@@ -10,25 +10,23 @@
       
       
       
-        <link rel="next" href="pow-code-mapping/">
-      
       
         
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Go Ethereum Classic — Fork Documentation</title>
+        <title>ValidateTransaction (Spiral init code size) - Go Ethereum Classic — Fork Documentation</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -47,9 +45,9 @@
       
     
     
-      <link rel="stylesheet" href="stylesheets/etc.css">
+      <link rel="stylesheet" href="../../../stylesheets/etc.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -87,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#go-ethereum-classic-fork-changelog" class="md-skip">
+        <a href="#validatetransaction-spiral-init-code-size" class="md-skip">
           Skip to content
         </a>
       
@@ -107,7 +105,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Go Ethereum Classic — Fork Documentation" class="md-header__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
+    <a href="../../.." title="Go Ethereum Classic — Fork Documentation" class="md-header__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -127,7 +125,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              ValidateTransaction (Spiral init code size)
             
           </span>
         </div>
@@ -245,7 +243,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Go Ethereum Classic — Fork Documentation" class="md-nav__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
+    <a href="../../.." title="Go Ethereum Classic — Fork Documentation" class="md-nav__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -272,37 +270,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -318,59 +289,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Summary
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#commits" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Commits
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sections" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Sections
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -382,7 +300,7 @@
   
   
     <li class="md-nav__item">
-      <a href="pow-code-mapping/" class="md-nav__link">
+      <a href="../../../pow-code-mapping/" class="md-nav__link">
         
   
   
@@ -409,7 +327,7 @@
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-chain-configuration/" class="md-nav__link">
+      <a href="../../../file-diffs-chain-configuration/" class="md-nav__link">
         
   
   
@@ -436,7 +354,7 @@
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-etc-consensus/" class="md-nav__link">
+      <a href="../../../file-diffs-etc-consensus/" class="md-nav__link">
         
   
   
@@ -463,7 +381,7 @@
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-core-and-evm/" class="md-nav__link">
+      <a href="../../../file-diffs-core-and-evm/" class="md-nav__link">
         
   
   
@@ -490,7 +408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-protocol-layer/" class="md-nav__link">
+      <a href="../../../file-diffs-protocol-layer/" class="md-nav__link">
         
   
   
@@ -517,7 +435,7 @@
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-eth-service-and-downloader/" class="md-nav__link">
+      <a href="../../../file-diffs-eth-service-and-downloader/" class="md-nav__link">
         
   
   
@@ -544,7 +462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-etc-configuration-and-cli/" class="md-nav__link">
+      <a href="../../../file-diffs-etc-configuration-and-cli/" class="md-nav__link">
         
   
   
@@ -571,7 +489,7 @@
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-misc-plumbing/" class="md-nav__link">
+      <a href="../../../file-diffs-misc-plumbing/" class="md-nav__link">
         
   
   
@@ -598,7 +516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-ci-cd-and-build/" class="md-nav__link">
+      <a href="../../../file-diffs-ci-cd-and-build/" class="md-nav__link">
         
   
   
@@ -625,7 +543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extension-points/" class="md-nav__link">
+      <a href="../../../extension-points/" class="md-nav__link">
         
   
   
@@ -652,7 +570,7 @@
   
   
     <li class="md-nav__item">
-      <a href="mess-artificial-finality/" class="md-nav__link">
+      <a href="../../../mess-artificial-finality/" class="md-nav__link">
         
   
   
@@ -679,7 +597,7 @@
   
   
     <li class="md-nav__item">
-      <a href="test-status/" class="md-nav__link">
+      <a href="../../../test-status/" class="md-nav__link">
         
   
   
@@ -726,32 +644,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
+  <a href="#diff-vs-upstream-v1168-modified-in-place" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Summary
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#commits" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Commits
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sections" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Sections
+        Diff — vs upstream v1.16.8 (modified in-place)
       
     </span>
   </a>
@@ -778,199 +674,59 @@
   
 
 
-<h1 id="go-ethereum-classic-fork-changelog">Go Ethereum Classic — Fork Changelog<a class="headerlink" href="#go-ethereum-classic-fork-changelog" title="Permanent link">&para;</a></h1>
-<p>Branch <a href="https://github.com/diega/go-ethereum-classic/tree/etc/v1.16.8"><code>etc/v1.16.8</code></a>
-· Commit <a href="https://github.com/diega/go-ethereum-classic/commit/154d6066699265e47c999dd286a5b9674b7cfd00"><code>154d60666</code></a>
-· Base <a href="https://github.com/ethereum/go-ethereum/releases/tag/v1.16.8"><code>go-ethereum/v1.16.8</code></a></p>
-<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<h1 id="validatetransaction-spiral-init-code-size">ValidateTransaction (Spiral init code size)<a class="headerlink" href="#validatetransaction-spiral-init-code-size" title="Permanent link">&para;</a></h1>
 <table>
 <thead>
 <tr>
-<th>Metric</th>
-<th style="text-align: right;">Value</th>
+<th></th>
+<th>Source (upstream)</th>
+<th>Current</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Commits</td>
-<td style="text-align: right;">9</td>
+<td>File</td>
+<td><code>core/txpool/validation.go</code></td>
+<td><code>validation.go</code></td>
 </tr>
 <tr>
-<td>Files changed</td>
-<td style="text-align: right;">137 (48 new, 89 modified)</td>
+<td>Symbol</td>
+<td><code>ValidateTransaction</code></td>
+<td><code>ValidateTransaction</code></td>
 </tr>
 <tr>
-<td>Lines added</td>
-<td style="text-align: right;"><strong>+13570</strong></td>
-</tr>
-<tr>
-<td>Lines removed</td>
-<td style="text-align: right;"><strong>-3283</strong></td>
-</tr>
-<tr>
-<td>Modified upstream files</td>
-<td style="text-align: right;"><strong>+3059 -3283</strong></td>
-</tr>
-</tbody>
-</table>
-<h2 id="commits">Commits<a class="headerlink" href="#commits" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: right;">#</th>
-<th>Commit</th>
-<th>Description</th>
-<th style="text-align: right;">Files</th>
-<th style="text-align: right;">+/-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: right;">1</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/36492d965"><code>36492d965</code></a></td>
-<td>params: add ETC chain config fields and network configs</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;"><strong>+211 -2</strong></td>
-</tr>
-<tr>
-<td style="text-align: right;">2</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/c72be3e09"><code>c72be3e09</code></a></td>
-<td>consensus,core,params: add ETC consensus engine</td>
-<td style="text-align: right;">51</td>
-<td style="text-align: right;"><strong>+4935 -4213</strong></td>
-</tr>
-<tr>
-<td style="text-align: right;">3</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/4492b0f48"><code>4492b0f48</code></a></td>
-<td>eth,cmd,core: add ETC configuration and genesis</td>
-<td style="text-align: right;">20</td>
-<td style="text-align: right;"><strong>+1754 -39</strong></td>
-</tr>
-<tr>
-<td style="text-align: right;">4</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/92010d2d9"><code>92010d2d9</code></a></td>
-<td>eth/protocols/eth: add PoW protocol messages</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;"><strong>+344 -30</strong></td>
-</tr>
-<tr>
-<td style="text-align: right;">5</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/d68209ba5"><code>d68209ba5</code></a></td>
-<td>eth/downloader: add PoW initial sync</td>
-<td style="text-align: right;">12</td>
-<td style="text-align: right;"><strong>+1419 -6</strong></td>
-</tr>
-<tr>
-<td style="text-align: right;">6</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/b29aaa615"><code>b29aaa615</code></a></td>
-<td>eth: add PoW live sync and broadcast</td>
-<td style="text-align: right;">36</td>
-<td style="text-align: right;"><strong>+2185 -20</strong></td>
-</tr>
-<tr>
-<td style="text-align: right;">7</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/858df395f"><code>858df395f</code></a></td>
-<td>core,eth,params: add MESS artificial finality</td>
-<td style="text-align: right;">14</td>
-<td style="text-align: right;"><strong>+1115 -45</strong></td>
-</tr>
-<tr>
-<td style="text-align: right;">8</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/f86eed63c"><code>f86eed63c</code></a></td>
-<td>cmd/devp2p/internal/ethtest: regenerate testdata for PoW chain</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;"><strong>+2513 -44</strong></td>
-</tr>
-<tr>
-<td style="text-align: right;">9</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/154d60666"><code>154d60666</code></a></td>
-<td>all: prepare for publication as Go Ethereum Classic</td>
-<td style="text-align: right;">14</td>
-<td style="text-align: right;"><strong>+326 -116</strong></td>
-</tr>
-</tbody>
-</table>
-<h2 id="sections">Sections<a class="headerlink" href="#sections" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Section</th>
-<th style="text-align: right;">Files</th>
-<th style="text-align: right;">New</th>
-<th style="text-align: right;">Modified</th>
-<th style="text-align: right;">+/-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="pow-code-mapping/">PoW Code Mapping</a></td>
-<td style="text-align: right;">45</td>
-<td style="text-align: right;">34</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;"><strong>+8616 -137</strong></td>
-</tr>
-<tr>
-<td><a href="file-diffs-chain-configuration/">Chain Configuration</a></td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;"><strong>+239 -1</strong></td>
-</tr>
-<tr>
-<td><a href="file-diffs-etc-consensus/">ETC Consensus</a></td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;"><strong>+1083 -8</strong></td>
-</tr>
-<tr>
-<td><a href="file-diffs-core-and-evm/">Core and EVM</a></td>
-<td style="text-align: right;">15</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">14</td>
-<td style="text-align: right;"><strong>+200 -21</strong></td>
-</tr>
-<tr>
-<td><a href="file-diffs-protocol-layer/">Protocol Layer</a></td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;"><strong>+80 -4</strong></td>
-</tr>
-<tr>
-<td><a href="file-diffs-eth-service-and-downloader/">Eth Service and Downloader</a></td>
-<td style="text-align: right;">12</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;"><strong>+864 -51</strong></td>
-</tr>
-<tr>
-<td><a href="file-diffs-etc-configuration-and-cli/">ETC Configuration and CLI</a></td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;"><strong>+362 -9</strong></td>
-</tr>
-<tr>
-<td><a href="file-diffs-misc-plumbing/">Misc Plumbing</a></td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;"><strong>+17 -7</strong></td>
-</tr>
-<tr>
-<td><a href="file-diffs-ci-cd-and-build/">CI-CD and Build</a></td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;"><strong>+76 -31</strong></td>
+<td>Ref</td>
+<td><a href="https://github.com/ethereum/go-ethereum/commit/abeb78c647e354ed922726a1d719ac7bc64a07e2" title="Merge branch 'dos-fixes' into release/1.16"><code>v1.16.8</code></a></td>
+<td><code>etc/v1.16.8</code></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p><strong><a href="extension-points/">Extension Points</a></strong> — 90 modifications across 39 upstream files | <strong><a href="mess-artificial-finality/">MESS</a></strong></p>
-<p><strong><a href="test-status/">Test Status</a></strong> — 4655 passing, 7 skipped</p>
+<p>Modified in-place on upstream v1.16.8: added <code>|| rules.IsSpiral</code> to init code size check in tx pool validation, matching state_transition.go change.</p>
 </blockquote>
+<h3 id="diff-vs-upstream-v1168-modified-in-place">Diff — vs upstream v1.16.8 (modified in-place)<a class="headerlink" href="#diff-vs-upstream-v1168-modified-in-place" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/core/txpool/validation.go</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gi">+++ b/core/txpool/validation.go</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -32,7 +32,7 @@</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w"> </span>       return fmt.Errorf(&quot;%w: type %d rejected, pool not yet in Prague&quot;, core.ErrTxTypeNotSupported, tx.Type())
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w"> </span>   }
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>   // Check whether the init code size has been exceeded
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gd">-   if rules.IsShanghai &amp;&amp; tx.To() == nil &amp;&amp; len(tx.Data()) &gt; params.MaxInitCodeSize {</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gi">+   if (rules.IsShanghai || rules.IsSpiral) &amp;&amp; tx.To() == nil &amp;&amp; len(tx.Data()) &gt; params.MaxInitCodeSize {</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w"> </span>       return fmt.Errorf(&quot;%w: code size %v, limit %v&quot;, core.ErrMaxInitCodeSizeExceeded, len(tx.Data()), params.MaxInitCodeSize)
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w"> </span>   }
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w"> </span>   if rules.IsOsaka &amp;&amp; tx.Gas() &gt; params.MaxTxGas {
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gu">@@ -68,7 +68,7 @@</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span>   }
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w"> </span>   // Ensure the transaction has more gas than the bare minimum needed to cover
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>   // the transaction metadata
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gd">-   intrGas, err := core.IntrinsicGas(tx.Data(), tx.AccessList(), tx.SetCodeAuthorizations(), tx.To() == nil, true, rules.IsIstanbul, rules.IsShanghai)</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gi">+   intrGas, err := core.IntrinsicGas(tx.Data(), tx.AccessList(), tx.SetCodeAuthorizations(), tx.To() == nil, true, rules.IsIstanbul, rules.IsShanghai || rules.IsSpiral)</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w"> </span>   if err != nil {
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w"> </span>       return err
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w"> </span>   }
+</code></pre></div>
+<p><a href="../../../pow-code-mapping/">← Back to PoW Code Mapping</a></p>
 
 
 
@@ -1026,12 +782,12 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
-        <script src="javascripts/version-tag.js"></script>
+        <script src="../../../javascripts/version-tag.js"></script>
       
     
   </body>
