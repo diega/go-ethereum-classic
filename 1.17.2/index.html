@@ -807,7 +807,7 @@
 
 <h1 id="go-ethereum-classic-fork-changelog">Go Ethereum Classic — Fork Changelog<a class="headerlink" href="#go-ethereum-classic-fork-changelog" title="Permanent link">&para;</a></h1>
 <p>Branch <a href="https://github.com/diega/go-ethereum-classic/tree/etc/v1.17.2"><code>etc/v1.17.2</code></a>
-· Commit <a href="https://github.com/diega/go-ethereum-classic/commit/d896d8ec3d2665161d5bcb3264af3583a75b5c15"><code>d896d8ec3</code></a>
+· Commit <a href="https://github.com/diega/go-ethereum-classic/commit/653eaa920d1085720844eb367be4ff422e9a33c1"><code>653eaa920</code></a>
 · Base <a href="https://github.com/ethereum/go-ethereum/releases/tag/v1.17.2"><code>go-ethereum/v1.17.2</code></a></p>
 <h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
 <table>
@@ -820,23 +820,23 @@
 <tbody>
 <tr>
 <td>Commits</td>
-<td style="text-align: right;">9</td>
+<td style="text-align: right;">148</td>
 </tr>
 <tr>
 <td>Files changed</td>
-<td style="text-align: right;">144 (50 new, 94 modified)</td>
+<td style="text-align: right;">408 (80 new, 328 modified)</td>
 </tr>
 <tr>
 <td>Lines added</td>
-<td style="text-align: right;"><strong>+13745</strong></td>
+<td style="text-align: right;"><strong>+28326</strong></td>
 </tr>
 <tr>
 <td>Lines removed</td>
-<td style="text-align: right;"><strong>-25615</strong></td>
+<td style="text-align: right;"><strong>-31657</strong></td>
 </tr>
 <tr>
 <td>Modified upstream files</td>
-<td style="text-align: right;"><strong>+3022 -25615</strong></td>
+<td style="text-align: right;"><strong>+11101 -31657</strong></td>
 </tr>
 </tbody>
 </table>
@@ -854,66 +854,1039 @@
 <tbody>
 <tr>
 <td style="text-align: right;">1</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/4f47eaf83"><code>4f47eaf83</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/fe47c3990"><code>fe47c3990</code></a></td>
+<td>version: start v1.17.3 release cycle (#34619)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+4 -4</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/965bd6b6a"><code>965bd6b6a</code></a></td>
+<td>eth: implement EIP-7975 (eth/70 - partial block receipt lists) (#33153)</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;"><strong>+8892 -8216</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/dc3794e3d"><code>dc3794e3d</code></a></td>
+<td>core/rawdb: BAL storage layer (#34064)</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;"><strong>+269 -68</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/3da517e23"><code>3da517e23</code></a></td>
+<td>core/state: fix storage counters in binary trie IntermediateRoot (#34110)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+2 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/92b4cb266"><code>92b4cb266</code></a></td>
+<td>eth/tracers/logger: conform structLog tracing to spec (#34093)</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;"><strong>+269 -65</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/fc43170cd"><code>fc43170cd</code></a></td>
+<td>beacon/light: keep retrying checkpoint init if failed (#33966)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+3 -6</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/14a26d9cc"><code>14a26d9cc</code></a></td>
+<td>eth/gasestimator: fix block overrides in estimate gas (#34081)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+46 -28</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/db6c7d06a"><code>db6c7d06a</code></a></td>
+<td>triedb/pathdb: implement history index pruner (#33999)</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;"><strong>+771 -4</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/bcb0efd75"><code>bcb0efd75</code></a></td>
+<td>core/types: copy block access list hash in CopyHeader (#34636)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+4 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">10</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/0ba431432"><code>0ba431432</code></a></td>
+<td>core/state: introduce state iterator interface (#33102)</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;"><strong>+763 -128</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">11</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/00da4f51f"><code>00da4f51f</code></a></td>
+<td>core, eth/protocols/snap: Snap/2 Protocol + BAL Serving (#34083)</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;"><strong>+874 -527</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">12</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/a608ac94e"><code>a608ac94e</code></a></td>
+<td>eth/protocols/snap: restore Bytes soft limit to GetAccessListsPacket (#34649)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+9 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">13</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/d8cb8a962"><code>d8cb8a962</code></a></td>
+<td>core, eth, ethclient, triedb: report trienode index progress (#34633)</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;"><strong>+40 -16</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">14</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/44257950f"><code>44257950f</code></a></td>
+<td>tests: enable execution of amsterdam statetests (#34671)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+37 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">15</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/bd6530a1d"><code>bd6530a1d</code></a></td>
+<td>triedb, triedb/internal, triedb/pathdb: add GenerateTrie + extract shared pipeline into triedb/internal (#34654)</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;"><strong>+663 -322</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">16</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/b5d322000"><code>b5d322000</code></a></td>
+<td>eth/protocols/snap: fix block accessList encoding rule (#34644)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+174 -55</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">17</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/52b8c09fd"><code>52b8c09fd</code></a></td>
+<td>triedb/pathdb: skip duplicate-root layer insertion (#34642)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+43 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">18</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/0bafb2949"><code>0bafb2949</code></a></td>
+<td>core/types: add accessList to WithSeal and WithBody (#34651)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+2 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">19</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/9878ef926"><code>9878ef926</code></a></td>
+<td>ethclient: omit empty address/topics fields in RPC filter requests (#33884)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+21 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">20</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/04e40995d"><code>04e40995d</code></a></td>
+<td>core: merge access events for all system calls (#34637)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+6 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">21</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/a8ea6319f"><code>a8ea6319f</code></a></td>
+<td>eth/filters: return -32602 when exceeding the block range limit (#34647)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+16 -4</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">22</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/21b19362c"><code>21b19362c</code></a></td>
+<td>core/state: fix tracer hook for EIP-7708 burn logs (#34688)</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"><strong>+17 -12</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">23</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/68c7058a8"><code>68c7058a8</code></a></td>
+<td>core/stateless: fix parsing an empty witness (#34683)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+4 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">24</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/3772bb536"><code>3772bb536</code></a></td>
+<td>triedb/pathdb: fix lookup sentinel collision with zero disk layer root (#34680)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+137 -23</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">25</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/58557cb46"><code>58557cb46</code></a></td>
+<td>cmd/geth: add subcommand for offline binary tree conversion (#33740)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+639 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">26</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/ea5448814"><code>ea5448814</code></a></td>
+<td>core/filtermaps: remove dead condition check (#34695)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -3</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">27</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/f71a884e3"><code>f71a884e3</code></a></td>
+<td>trie/bintrie: fix DeleteAccount no-op (#34676)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+349 -5</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">28</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/deda47f6a"><code>deda47f6a</code></a></td>
+<td>trie/bintrie: fix GetAccount/GetStorage non-membership — verify stem before returning values (#34690)</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"><strong>+208 -2</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">29</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/633385516"><code>633385516</code></a></td>
+<td>core: turn gas into a vector <regularGas, stateGas> (#34691)</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;"><strong>+278 -225</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">30</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/735bfd121"><code>735bfd121</code></a></td>
+<td>trie/bintrie: spec change, big endian hashing of slot key (#34670)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+4 -7</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">31</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/ecae51997"><code>ecae51997</code></a></td>
+<td>beacon/engine, miner: fix testing_buildBlockV1 response (#34704)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+4 -4</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">32</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/f7f57d29d"><code>f7f57d29d</code></a></td>
+<td>crypto/bn256: fix comment in MulXi (#34659)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">33</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/7d463aedd"><code>7d463aedd</code></a></td>
+<td>accounts/keystore: fix flaky TestUpdatedKeyfileContents (#34084)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+13 -4</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">34</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/5b7511eee"><code>5b7511eee</code></a></td>
+<td>core/vm: include operand in error message (#34635)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+55 -20</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">35</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/289826fef"><code>289826fef</code></a></td>
+<td>cmd/abigen/v2: add package-level errors (#34076)</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;"><strong>+125 -56</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">36</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/4da1e2932"><code>4da1e2932</code></a></td>
+<td>signer/core/apitypes: fix encoding of opening parenthesis (#33702)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+3 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">37</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/527ea11e5"><code>527ea11e5</code></a></td>
+<td>core/vm/runtime: don't overwrite user input with default value (#33510)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+18 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">38</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/01e33d14b"><code>01e33d14b</code></a></td>
+<td>build: upgrade -dlgo version to Go 1.25.9 (#34707)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+42 -42</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">39</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/e1fe4a1a9"><code>e1fe4a1a9</code></a></td>
+<td>p2p/discover: fix flaky TestUDPv5_findnodeHandling (#34109)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">40</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/c453b99a5"><code>c453b99a5</code></a></td>
+<td>cmd/devp2p/internal/v5test: fix hive test for discv5 findnode results (#34043)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+150 -88</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">41</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/c2234462a"><code>c2234462a</code></a></td>
+<td>.github/workflows: add freebsd test github action (#34078)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+29 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">42</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/c690d6041"><code>c690d6041</code></a></td>
+<td>cmd/geth: add Prague pruning points for hoodi (#34714)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+4 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">43</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/2414861d3"><code>2414861d3</code></a></td>
+<td>core/state: optimize transient storage (#33695)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+27 -31</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">44</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/eb67d6193"><code>eb67d6193</code></a></td>
+<td>cmd/geth, core/state, tests: rework EIP7610 check (#34718)</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;"><strong>+304 -19</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">45</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/2253fce48"><code>2253fce48</code></a></td>
+<td>core/types: remove redundant ')' (#34719)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">46</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/c9fea4461"><code>c9fea4461</code></a></td>
+<td>eth/catalyst: respect slot num if specified in payload attributes for <code>testing_buildBlockV1</code> (#34722)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">47</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/ef0f1f96f"><code>ef0f1f96f</code></a></td>
+<td>core/state: ignore the root returned in Commit function for simplicity (#34723)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+5 -7</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">48</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/0b35ad95f"><code>0b35ad95f</code></a></td>
+<td>cmd/utils: fix witness stats auto-enable to respect config file (#34729)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">49</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/d07a946a5"><code>d07a946a5</code></a></td>
+<td>log: allow –vmodule to downgrade log levels (#33111)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+139 -66</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">50</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/b1baab442"><code>b1baab442</code></a></td>
+<td>cmd/evm: fix trace.noreturndata usage string (#34731)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">51</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/f63e9f3a8"><code>f63e9f3a8</code></a></td>
+<td>eth/tracers: fix codehash in prestate diffmode (#34675)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+125 -17</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">52</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/ba215fd92"><code>ba215fd92</code></a></td>
+<td>cmd, core, trie, triedb: split CachingDB into merkle + binary dbs. (#34700)</td>
+<td style="text-align: right;">67</td>
+<td style="text-align: right;"><strong>+703 -463</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">53</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/89c1c16a4"><code>89c1c16a4</code></a></td>
+<td>cmd/geth: add code exporter for db export (#34696)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+22 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">54</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/4c03a0631"><code>4c03a0631</code></a></td>
+<td>cmd/evm: compare errors by value in timedExec instead of interface identity (#34733)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+5 -2</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">55</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/573d94013"><code>573d94013</code></a></td>
+<td>core/rawdb: fix incorrect fsync ordering for index file truncation (#34728)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+5 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">56</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/61bfacc52"><code>61bfacc52</code></a></td>
+<td>trie/bintrie: skip clean nodes in CollectNodes to reduce commit write amplification (#34754)</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;"><strong>+292 -9</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">57</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/53ff723cc"><code>53ff723cc</code></a></td>
+<td>core/state: handle *bintrie.BinaryTrie in mustCopyTrie (#34758)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+38 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">58</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/78505e48d"><code>78505e48d</code></a></td>
+<td>triedb/pathdb: fix typo (#34762)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+2 -2</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">59</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/8c7d61fcf"><code>8c7d61fcf</code></a></td>
+<td>tests: fix invalid eip parse error (#34750)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">60</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/5af5510b1"><code>5af5510b1</code></a></td>
+<td>core/rawdb: fix file descriptor leak in freezer error paths (#34735)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+5 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">61</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/29e0a6f40"><code>29e0a6f40</code></a></td>
+<td>core/vm, eth, tests: introduce gas budget (#34712)</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;"><strong>+235 -168</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">62</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/b6d415c88"><code>b6d415c88</code></a></td>
+<td>trie/bintrie: replace BinaryNode interface with GC-free NodeRef arena (#34055)</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;"><strong>+1677 -2080</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">63</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/7e388fd09"><code>7e388fd09</code></a></td>
+<td>core/state: separate trie reader to mptReader and ubtReader (#34763)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+116 -83</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">64</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/acbf699c3"><code>acbf699c3</code></a></td>
+<td>core/state: export StateUpdate struct (#34724)</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;"><strong>+444 -354</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">65</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/e447a2696"><code>e447a2696</code></a></td>
+<td>core/rawdb: clarify ReadLastPivotNumber comment (#34773)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+3 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">66</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/ac406c2fe"><code>ac406c2fe</code></a></td>
+<td>core: implement eip-7976: Increase Calldata Floor Cost (#34748)</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;"><strong>+27 -12</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">67</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/077d83387"><code>077d83387</code></a></td>
+<td>metrics: reset internal value slice in Clear (#34761)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">68</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/f568ab993"><code>f568ab993</code></a></td>
+<td>internal/telemetry: add gRPC transport for OTLP trace export (#33941)</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;"><strong>+75 -51</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">69</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/c374e74ee"><code>c374e74ee</code></a></td>
+<td>trie/bintrie: print todot path in binary (#34777)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+2 -2</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">70</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/d422ab39d"><code>d422ab39d</code></a></td>
+<td>consensus, core, internal, miner: remove FinalizeAndAssemble (#34726)</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;"><strong>+51 -108</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">71</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/dca3cf02a"><code>dca3cf02a</code></a></td>
+<td>core: pre-allocate the receipt slice (#34786)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">72</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/3abc4cea3"><code>3abc4cea3</code></a></td>
+<td>core/state: use address hash cache if available (#34780)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">73</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/6f02965aa"><code>6f02965aa</code></a></td>
+<td>core: track the state access footprint (#34776)</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;"><strong>+130 -48</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">74</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/87b030780"><code>87b030780</code></a></td>
+<td>.github: add windows runner (#34742)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+45 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">75</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/eb3283fb2"><code>eb3283fb2</code></a></td>
+<td>accounts/usbwallet: revert github.com/karalabe/hid to fix freebsd build (#34784)</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"><strong>+5 -5</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">76</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/b0ead5e17"><code>b0ead5e17</code></a></td>
+<td>.gitea: add installer and archive steps for windows (#34793)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+36 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">77</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/8e2107dc3"><code>8e2107dc3</code></a></td>
+<td>cmd/devp2p: fix disconnect decoding in rlpx ping (#34781)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+109 -4</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">78</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/2ca74d2ef"><code>2ca74d2ef</code></a></td>
+<td>eth/fetcher: lazy-allocate hashes slice in scheduleFetches</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+6 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">79</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/526ad4f6f"><code>526ad4f6f</code></a></td>
+<td>crypto/kzg4844: add cell-related functions (#34766)</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;"><strong>+499 -45</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">80</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/6ece4cd14"><code>6ece4cd14</code></a></td>
+<td>crypto: fix unit test (#34811)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">81</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/33c1bd59f"><code>33c1bd59f</code></a></td>
+<td>rpc: send WebSocket close frame on client disconnect (#33909)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+10 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">82</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/c87675583"><code>c87675583</code></a></td>
+<td>Update eth/fetcher/tx_fetcher.go</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+0 -2</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">83</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/8091994e7"><code>8091994e7</code></a></td>
+<td>eth/protocols/snap: fix data race on testPeer counters (#34802)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+11 -10</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">84</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/b70d9a4b8"><code>b70d9a4b8</code></a></td>
+<td>core/state,core/types/bal: copy stateReadList in StateDB.Copy</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+17 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">85</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/b26391773"><code>b26391773</code></a></td>
+<td>core/state: and instead of or (#34819)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">86</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/2d5da6037"><code>2d5da6037</code></a></td>
+<td>core/types/bal: update the BAL definition to the latest spec (#34799)</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;"><strong>+378 -333</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">87</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/a06558042"><code>a06558042</code></a></td>
+<td>triedb/pathdb: compute size in StateSetWithOrigin.decode (#34828)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+12 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">88</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/442bd28b0"><code>442bd28b0</code></a></td>
+<td>cmd/evm/internal/t8ntool: stream t8n alloc to ease heavy memory cases (#34785)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+193 -16</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">89</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/822e7c648"><code>822e7c648</code></a></td>
+<td>accounts/scwallet: truncate before write (#34815)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+3 -6</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">90</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/51c97216c"><code>51c97216c</code></a></td>
+<td>p2p/discover: fix timeout loop early exit when removing expired matchers (#34743)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+19 -7</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">91</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/4dc7d4615"><code>4dc7d4615</code></a></td>
+<td>core/vm: implement stack arena (#33960)</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;"><strong>+350 -196</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">92</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/b5d9c8d1c"><code>b5d9c8d1c</code></a></td>
+<td>core: implement BAL reader for prefetching (#33737)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+392 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">93</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/0c0d299c5"><code>0c0d299c5</code></a></td>
+<td>core/state: opt stateObject.GetState (#34825)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+5 -2</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">94</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/db8d6abce"><code>db8d6abce</code></a></td>
+<td>accounts/keystore: enable fsnotify watcher on linux/arm64 (#34834)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+4 -4</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">95</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/01036bed8"><code>01036bed8</code></a></td>
+<td>core: skip tx gas cap after Amsterdam (#34841)</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;"><strong>+15 -10</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">96</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/75a64ee34"><code>75a64ee34</code></a></td>
+<td>eth/downloader: drop peers sending invalid bodies or receipts (#34745)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+80 -33</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">97</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/19dc690af"><code>19dc690af</code></a></td>
+<td>triedb/pathdb: fix layer 5 key range in account iterator traversal test (#34639)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">98</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/68646229a"><code>68646229a</code></a></td>
+<td>internal/era/onedb: return false if err (#34816)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+4 -7</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">99</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/a15778c52"><code>a15778c52</code></a></td>
+<td>trie: group 2^N binary trie nodes in serialization (#34794)</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;"><strong>+399 -133</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">100</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/b9c5fe6d2"><code>b9c5fe6d2</code></a></td>
+<td>eth/tracers: fix evm trace for t8n (#34862)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+32 -12</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">101</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/41b856d47"><code>41b856d47</code></a></td>
+<td>ethclient: add maxUsedGas to simulate call results (#34820)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+14 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">102</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/d270e211d"><code>d270e211d</code></a></td>
+<td>core/state/snapshot: fix condition in iterator traversal test (#34638)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">103</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/8656efcf5"><code>8656efcf5</code></a></td>
+<td>ethclient/simulated: disable log indexing by default (#32594)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+2 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">104</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/7155c65ab"><code>7155c65ab</code></a></td>
+<td>internal/ethapi: apply block overrides to header in eth_call (#34842)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+25 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">105</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/f0b21fa11"><code>f0b21fa11</code></a></td>
+<td>core/txpool/blobpool: fix gapped queue size cap (#34831)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+15 -3</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">106</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/efd6cdcff"><code>efd6cdcff</code></a></td>
+<td>eth/tracers: forward V2 state hooks through mux tracer (#34869)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+101 -12</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">107</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/d5edb8043"><code>d5edb8043</code></a></td>
+<td>accounts/abi/bind: re-export event signature errors (#34868)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+7 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">108</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/5b837e578"><code>5b837e578</code></a></td>
+<td>eth/downloader: use batch index in deliver reconstruct (#34870)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+2 -2</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">109</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/60db25b07"><code>60db25b07</code></a></td>
+<td>p2p/discover: restore nextTimeout update in UDPv4 resetTimeout loop (#34878)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+2 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">110</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/4ff33ba1b"><code>4ff33ba1b</code></a></td>
+<td>internal/download: only report stale existing downloads (#34849)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+4 -2</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">111</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/84949107c"><code>84949107c</code></a></td>
+<td>beacon/engine: fix wrong presize bound (#34860)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">112</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/4d2af275e"><code>4d2af275e</code></a></td>
+<td>eth/catalyst: allow reorging the head block to a parent (#34767)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+29 -6</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">113</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/aaa2b6628"><code>aaa2b6628</code></a></td>
+<td>core: implement eip-7981: Increase Access List Cost (#34755)</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;"><strong>+354 -17</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">114</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/b92c86deb"><code>b92c86deb</code></a></td>
+<td>internal/download: don't discard <code>dst.Close</code> error (#34866)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+5 -3</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">115</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/06c30cc7e"><code>06c30cc7e</code></a></td>
+<td>triedb/pathdb: add AdoptSyncedState for snap/2 completion path (#34874)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+150 -19</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">116</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/ea1cf7bf5"><code>ea1cf7bf5</code></a></td>
+<td>eth/protocols/eth: stop serving on unavailable responses (#34787)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+21 -14</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">117</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/c5598fe95"><code>c5598fe95</code></a></td>
+<td>core/txpool: change lock in Pending method of legacy pool to read lock (#32924)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+4 -4</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">118</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/f7b7d4c7e"><code>f7b7d4c7e</code></a></td>
+<td>eth/tracers/logger: fix exclude address list (#34887)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+42 -2</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">119</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/e1e3eaa38"><code>e1e3eaa38</code></a></td>
+<td>p2p/discover: copy buffer before sending read errors to unhandled (#34888)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+2 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">120</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/e71098ba4"><code>e71098ba4</code></a></td>
+<td>core/state: fix StateDB Reader Error Discard After Commit (#34899)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">121</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/1abbae239"><code>1abbae239</code></a></td>
+<td>eth,node: replace the deprecated TypeMux  with Feed (#32585)</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;"><strong>+139 -140</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">122</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/281dc4c20"><code>281dc4c20</code></a></td>
+<td>p2p/discover: decouple nodeFeed from Table mutex in waitForNodes (#34898)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+83 -12</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">123</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/0ad890e3a"><code>0ad890e3a</code></a></td>
+<td>core/txpool/blobpool: continue on cell proof error in <code>GetBlobs</code> (#34891)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+2 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">124</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/592209c0e"><code>592209c0e</code></a></td>
+<td>.gitea, build: cross-compile windows binaries (#34889)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><strong>+100 -73</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">125</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/1f3989dc7"><code>1f3989dc7</code></a></td>
+<td>signer/core: avoid mutating the input (#34908)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+3 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">126</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/b927ff8b5"><code>b927ff8b5</code></a></td>
+<td>cmd/devp2p: fix typo in ENR IP printing code (#34909)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">127</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/2ca3a6447"><code>2ca3a6447</code></a></td>
+<td>cmd/geth: respect --graphql=false (#34914)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">128</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/2ba9be9c0"><code>2ba9be9c0</code></a></td>
+<td>build: upgrade -dlgo version to Go 1.25.10 (#34911)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+42 -42</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">129</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/8581125a2"><code>8581125a2</code></a></td>
+<td>crypto: add hash length check in nocgo VerifySignature (#33839)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">130</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/bcb68d23b"><code>bcb68d23b</code></a></td>
+<td>p2p: handle return false from TCPEndpoint (#34916)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+4 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">131</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/7facf9c12"><code>7facf9c12</code></a></td>
+<td>core/txpool: use cmp.Compare instead of subtraction (#34918)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+2 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">132</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/f63c26509"><code>f63c26509</code></a></td>
+<td>internal/download: close dst on io.Copy error (#34910)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">133</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/18becee8c"><code>18becee8c</code></a></td>
+<td>appveyor.yml: remove appveyor configuration (#34720)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+0 -39</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">134</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/934a0091f"><code>934a0091f</code></a></td>
+<td>triedb/pathdb: fix layer 5 key range in storage iterator traversal test (#34883)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+1 -1</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">135</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/2f11dccca"><code>2f11dccca</code></a></td>
+<td>cmd/geth: respect --dev=false (#34920)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+2 -2</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">136</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/e1047b9c8"><code>e1047b9c8</code></a></td>
+<td>core: use uint256 in core.Message (#34934)</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;"><strong>+142 -87</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">137</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/117e067f0"><code>117e067f0</code></a></td>
+<td>version: release go-ethereum v1.17.3 stable (#34937)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+4 -4</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">138</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/62fae3c02"><code>62fae3c02</code></a></td>
 <td>params: add ETC chain config fields and network configs</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;"><strong>+223 -2</strong></td>
 </tr>
 <tr>
-<td style="text-align: right;">2</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/94524e451"><code>94524e451</code></a></td>
+<td style="text-align: right;">139</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/5d96c35b9"><code>5d96c35b9</code></a></td>
 <td>consensus,core,params: add ETC consensus engine</td>
 <td style="text-align: right;">57</td>
-<td style="text-align: right;"><strong>+4907 -26546</strong></td>
+<td style="text-align: right;"><strong>+4907 -26606</strong></td>
 </tr>
 <tr>
-<td style="text-align: right;">3</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/c0f213f03"><code>c0f213f03</code></a></td>
+<td style="text-align: right;">140</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/3620f95e2"><code>3620f95e2</code></a></td>
 <td>eth,cmd,core: add ETC configuration and genesis</td>
-<td style="text-align: right;">20</td>
-<td style="text-align: right;"><strong>+1753 -40</strong></td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;"><strong>+1810 -40</strong></td>
 </tr>
 <tr>
-<td style="text-align: right;">4</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/c89252dfc"><code>c89252dfc</code></a></td>
+<td style="text-align: right;">141</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/4927b4d34"><code>4927b4d34</code></a></td>
 <td>eth/protocols/eth: add PoW protocol messages</td>
 <td style="text-align: right;">11</td>
-<td style="text-align: right;"><strong>+519 -8</strong></td>
+<td style="text-align: right;"><strong>+524 -9</strong></td>
 </tr>
 <tr>
-<td style="text-align: right;">5</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/f84cfc63a"><code>f84cfc63a</code></a></td>
+<td style="text-align: right;">142</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/97e1de2a6"><code>97e1de2a6</code></a></td>
 <td>eth/downloader: add PoW initial sync</td>
 <td style="text-align: right;">12</td>
 <td style="text-align: right;"><strong>+1419 -6</strong></td>
 </tr>
 <tr>
-<td style="text-align: right;">6</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/90e812162"><code>90e812162</code></a></td>
+<td style="text-align: right;">143</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/d1a228c4b"><code>d1a228c4b</code></a></td>
 <td>eth: add PoW live sync and broadcast</td>
-<td style="text-align: right;">37</td>
-<td style="text-align: right;"><strong>+2192 -24</strong></td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;"><strong>+2213 -49</strong></td>
 </tr>
 <tr>
-<td style="text-align: right;">7</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/927b329cc"><code>927b329cc</code></a></td>
+<td style="text-align: right;">144</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/96acc3914"><code>96acc3914</code></a></td>
 <td>core,eth,params: add MESS artificial finality</td>
 <td style="text-align: right;">14</td>
-<td style="text-align: right;"><strong>+1121 -47</strong></td>
+<td style="text-align: right;"><strong>+1112 -42</strong></td>
 </tr>
 <tr>
-<td style="text-align: right;">8</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/ad8ff4071"><code>ad8ff4071</code></a></td>
+<td style="text-align: right;">145</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/5fab0356a"><code>5fab0356a</code></a></td>
 <td>cmd/devp2p/internal/ethtest: regenerate testdata for PoW chain</td>
 <td style="text-align: right;">5</td>
-<td style="text-align: right;"><strong>+2513 -44</strong></td>
+<td style="text-align: right;"><strong>+2511 -42</strong></td>
 </tr>
 <tr>
-<td style="text-align: right;">9</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/d896d8ec3"><code>d896d8ec3</code></a></td>
+<td style="text-align: right;">146</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/b5278d736"><code>b5278d736</code></a></td>
 <td>all: prepare for publication as Go Ethereum Classic</td>
 <td style="text-align: right;">16</td>
-<td style="text-align: right;"><strong>+338 -138</strong></td>
+<td style="text-align: right;"><strong>+348 -180</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">147</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/4dbbdd2c9"><code>4dbbdd2c9</code></a></td>
+<td>consensus/ethash: fix mockStateDB to match updated vm.StateDB interface</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+4 -2</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">148</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/653eaa920"><code>653eaa920</code></a></td>
+<td>cmd/devp2p/internal/ethtest: add stub txinfo.json for PoW testdata</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><strong>+3 -0</strong></td>
 </tr>
 </tbody>
 </table>
@@ -934,63 +1907,63 @@
 <td style="text-align: right;">46</td>
 <td style="text-align: right;">36</td>
 <td style="text-align: right;">10</td>
-<td style="text-align: right;"><strong>+8830 -128</strong></td>
+<td style="text-align: right;"><strong>+9065 -167</strong></td>
 </tr>
 <tr>
 <td><a href="file-diffs-chain-configuration/">Chain Configuration</a></td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;"><strong>+245 -1</strong></td>
+<td style="text-align: right;"><strong>+273 -33</strong></td>
 </tr>
 <tr>
 <td><a href="file-diffs-etc-consensus/">ETC Consensus</a></td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;"><strong>+1084 -8</strong></td>
+<td style="text-align: right;"><strong>+1084 -27</strong></td>
 </tr>
 <tr>
 <td><a href="file-diffs-core-and-evm/">Core and EVM</a></td>
 <td style="text-align: right;">15</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">14</td>
-<td style="text-align: right;"><strong>+198 -20</strong></td>
+<td style="text-align: right;"><strong>+659 -273</strong></td>
 </tr>
 <tr>
 <td><a href="file-diffs-protocol-layer/">Protocol Layer</a></td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;"><strong>+212 -3</strong></td>
+<td style="text-align: right;"><strong>+470 -38</strong></td>
 </tr>
 <tr>
 <td><a href="file-diffs-eth-service-and-downloader/">Eth Service and Downloader</a></td>
 <td style="text-align: right;">12</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">11</td>
-<td style="text-align: right;"><strong>+869 -52</strong></td>
+<td style="text-align: right;"><strong>+984 -114</strong></td>
 </tr>
 <tr>
 <td><a href="file-diffs-etc-configuration-and-cli/">ETC Configuration and CLI</a></td>
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">3</td>
-<td style="text-align: right;"><strong>+362 -12</strong></td>
+<td style="text-align: right;"><strong>+382 -53</strong></td>
 </tr>
 <tr>
 <td><a href="file-diffs-misc-plumbing/">Misc Plumbing</a></td>
 <td style="text-align: right;">6</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">6</td>
-<td style="text-align: right;"><strong>+17 -7</strong></td>
+<td style="text-align: right;"><strong>+66 -31</strong></td>
 </tr>
 <tr>
 <td><a href="file-diffs-ci-cd-and-build/">CI-CD and Build</a></td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">4</td>
-<td style="text-align: right;"><strong>+67 -31</strong></td>
+<td style="text-align: right;"><strong>+107 -68</strong></td>
 </tr>
 </tbody>
 </table>

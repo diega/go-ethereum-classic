@@ -745,9 +745,18 @@
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w"> </span>   }
 <a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span>   if err := ann.sanityCheck(); err != nil {
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span>       return err
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="gu">@@ -15,7 +15,7 @@</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>       log.Warn(&quot;Propagated block has invalid body&quot;, &quot;have&quot;, hash, &quot;exp&quot;, ann.Block.TxHash())
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w"> </span>       return nil // TODO(karalabe): return error eventually, but wait a few releases
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w"> </span>   }
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gd">-   ann.Block.ReceivedAt = msg.Time()</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gi">+   ann.Block.ReceivedAt = time.Now()</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w"> </span>   ann.Block.ReceivedFrom = peer
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w"> </span>   // Mark the peer as owning the block
 </code></pre></div>
 <details>
-<summary>core-geth validation — +2 -2</summary>
+<summary>core-geth validation — +3 -3</summary>
 
 | | |
 |---|---|
@@ -768,6 +777,15 @@
 <a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w"> </span>   }
 <a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w"> </span>   if err := ann.sanityCheck(); err != nil {
 <a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w"> </span>       return err
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="gu">@@ -15,7 +15,7 @@</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w"> </span>       log.Warn(&quot;Propagated block has invalid body&quot;, &quot;have&quot;, hash, &quot;exp&quot;, ann.Block.TxHash())
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w"> </span>       return nil // TODO(karalabe): return error eventually, but wait a few releases
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w"> </span>   }
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="gd">-   ann.Block.ReceivedAt = msg.Time()</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="gi">+   ann.Block.ReceivedAt = time.Now()</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w"> </span>   ann.Block.ReceivedFrom = peer
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w"> </span>   // Mark the peer as owning the block
 </code></pre></div>
 
 </details>

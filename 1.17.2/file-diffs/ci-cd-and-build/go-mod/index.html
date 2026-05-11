@@ -701,7 +701,7 @@
 </tr>
 <tr>
 <td>Changed</td>
-<td><strong>+2 -0</strong></td>
+<td><strong>+16 -13</strong></td>
 </tr>
 </tbody>
 </table>
@@ -709,25 +709,84 @@
 <p>Add ethash dependencies (hashicorp/golang-lru)</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/go.mod b/go.mod</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 37a2537dd..965d00b8d 100644</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 37a2537dd..3957f9295 100644</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gd">--- a/go.mod</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gi">+++ b/go.mod</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -21,6 +21,7 @@ require (</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -21,8 +21,10 @@ require (</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>   github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span>   github.com/donovanhide/eventsource v0.0.0-20210830082556-c59027999da0
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w"> </span>   github.com/dop251/goja v0.0.0-20230605162241-28ee0ee714f3
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gi">+   github.com/edsrzf/mmap-go v1.2.0</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w"> </span>   github.com/ethereum/c-kzg-4844/v2 v2.1.6
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w"> </span>   github.com/ethereum/go-bigmodexpfix v0.0.0-20250911101455-f9e208c548ab
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span>   github.com/fatih/color v1.16.0
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="gu">@@ -75,6 +76,7 @@ require (</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w"> </span>   golang.org/x/text v0.31.0
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>   golang.org/x/time v0.9.0
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w"> </span>   golang.org/x/tools v0.38.0
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gi">+   gonum.org/v1/gonum v0.17.0</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w"> </span>   google.golang.org/protobuf v1.36.11
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w"> </span>   gopkg.in/natefinch/lumberjack.v2 v2.2.1
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w"> </span>   gopkg.in/yaml.v3 v3.0.1
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gi">+   github.com/ethereum/hid v1.0.1-0.20260421154323-c2ab8d9bf68a</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span>   github.com/fatih/color v1.16.0
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w"> </span>   github.com/ferranbt/fastssz v0.1.4
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>   github.com/fsnotify/fsnotify v1.6.0
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gu">@@ -43,7 +45,6 @@ require (</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w"> </span>   github.com/influxdata/influxdb1-client v0.0.0-20220302092344-a9ab5670611c
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w"> </span>   github.com/jackpal/go-nat-pmp v1.0.2
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w"> </span>   github.com/jedisct1/go-minisign v0.0.0-20230811132847-661be99b8267
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gd">-   github.com/karalabe/hid v1.0.1-0.20260315100226-f5d04adeffeb</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w"> </span>   github.com/klauspost/compress v1.17.8
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w"> </span>   github.com/kylelemons/godebug v1.1.0
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w"> </span>   github.com/mattn/go-colorable v0.1.13
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="gu">@@ -62,19 +63,21 @@ require (</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w"> </span>   github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w"> </span>   github.com/urfave/cli/v2 v2.27.5
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w"> </span>   go.opentelemetry.io/otel v1.40.0
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="gd">-   go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.39.0</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="gd">-   go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.39.0</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="gi">+   go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.40.0</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="gi">+   go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.40.0</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="gi">+   go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.40.0</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w"> </span>   go.opentelemetry.io/otel/sdk v1.40.0
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w"> </span>   go.opentelemetry.io/otel/trace v1.40.0
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="w"> </span>   go.uber.org/automaxprocs v1.5.2
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="w"> </span>   go.uber.org/goleak v1.3.0
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="gd">-   golang.org/x/crypto v0.44.0</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="gi">+   golang.org/x/crypto v0.47.0</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w"> </span>   golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="gd">-   golang.org/x/sync v0.18.0</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="gi">+   golang.org/x/sync v0.19.0</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="w"> </span>   golang.org/x/sys v0.40.0
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="gd">-   golang.org/x/text v0.31.0</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="gi">+   golang.org/x/text v0.33.0</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="w"> </span>   golang.org/x/time v0.9.0
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="gd">-   golang.org/x/tools v0.38.0</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="gi">+   golang.org/x/tools v0.40.0</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="gi">+   gonum.org/v1/gonum v0.16.0</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="w"> </span>   google.golang.org/protobuf v1.36.11
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="w"> </span>   gopkg.in/natefinch/lumberjack.v2 v2.2.1
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="w"> </span>   gopkg.in/yaml.v3 v3.0.1
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="gu">@@ -84,13 +87,13 @@ require (</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="w"> </span>   github.com/cenkalti/backoff/v5 v5.0.3 // indirect
+<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="w"> </span>   github.com/go-logr/logr v1.4.3 // indirect
+<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="w"> </span>   github.com/go-logr/stdr v1.2.2 // indirect
+<a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="gd">-   github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.3 // indirect</span>
+<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="gi">+   github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.7 // indirect</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="w"> </span>   go.opentelemetry.io/auto/sdk v1.2.1 // indirect
+<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="w"> </span>   go.opentelemetry.io/otel/metric v1.40.0 // indirect
+<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="w"> </span>   go.opentelemetry.io/proto/otlp v1.9.0 // indirect
+<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="gd">-   google.golang.org/genproto/googleapis/api v0.0.0-20251222181119-0a764e51fe1b // indirect</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="gd">-   google.golang.org/genproto/googleapis/rpc v0.0.0-20251222181119-0a764e51fe1b // indirect</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="gd">-   google.golang.org/grpc v1.77.0 // indirect</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="gi">+   google.golang.org/genproto/googleapis/api v0.0.0-20260128011058-8636f8732409 // indirect</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a><span class="gi">+   google.golang.org/genproto/googleapis/rpc v0.0.0-20260128011058-8636f8732409 // indirect</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a><span class="gi">+   google.golang.org/grpc v1.78.0 // indirect</span>
+<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a><span class="w"> </span>)
+<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>
+<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a><span class="w"> </span>require (
+<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="gu">@@ -161,8 +164,8 @@ require (</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="w"> </span>   github.com/tklauser/go-sysconf v0.3.12 // indirect
+<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="w"> </span>   github.com/tklauser/numcpus v0.6.1 // indirect
+<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a><span class="w"> </span>   github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
+<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a><span class="gd">-   golang.org/x/mod v0.29.0 // indirect</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a><span class="gd">-   golang.org/x/net v0.47.0 // indirect</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a><span class="gi">+   golang.org/x/mod v0.31.0 // indirect</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a><span class="gi">+   golang.org/x/net v0.49.0 // indirect</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a><span class="w"> </span>   gopkg.in/yaml.v2 v2.4.0 // indirect
+<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a><span class="w"> </span>)
 </code></pre></div>
 <p><a href="../../../file-diffs-ci-cd-and-build/">← Back to CI-CD and Build</a></p>
 

@@ -701,7 +701,7 @@
 </tr>
 <tr>
 <td>Changed</td>
-<td><strong>+3 -0</strong></td>
+<td><strong>+4 -1</strong></td>
 </tr>
 </tbody>
 </table>
@@ -709,7 +709,7 @@
 <p>Pass chainConfig.ChainID to EVM context</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/core/evm.go b/core/evm.go</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 818b23bee..322a921f8 100644</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 818b23bee..fbd0d1233 100644</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gd">--- a/core/evm.go</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gi">+++ b/core/evm.go</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -56,6 +56,9 @@ func NewEVMBlockContext(header *types.Header, chain ChainContext, author *common</span>
@@ -722,6 +722,15 @@
 <a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span>   }
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span>   if header.ExcessBlobGas != nil {
 <a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w"> </span>       blobBaseFee = eip4844.CalcBlobFee(chain.Config(), header)
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="gu">@@ -87,7 +90,7 @@ func NewEVMBlockContext(header *types.Header, chain ChainContext, author *common</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w"> </span>func NewEVMTxContext(msg *Message) vm.TxContext {
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w"> </span>   ctx := vm.TxContext{
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w"> </span>       Origin:     msg.From,
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gd">-       GasPrice:   uint256.MustFromBig(msg.GasPrice),</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gi">+       GasPrice:   msg.GasPrice,</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w"> </span>       BlobHashes: msg.BlobHashes,
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w"> </span>   }
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w"> </span>   return ctx
 </code></pre></div>
 <p><a href="../../../file-diffs-core-and-evm/">← Back to Core and EVM</a></p>
 
