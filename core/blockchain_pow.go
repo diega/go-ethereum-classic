@@ -21,6 +21,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/rawdb"
+	"github.com/ethereum/go-ethereum/event"
 )
 
 // GetTd retrieves a block's total difficulty in the canonical chain from the
@@ -33,4 +34,14 @@ func (bc *BlockChain) GetTd(hash common.Hash, number uint64) *big.Int {
 // This is used by ETC/PoW networks during chain insertion.
 func (bc *BlockChain) WriteTd(hash common.Hash, number uint64, td *big.Int) {
 	rawdb.WriteTd(bc.db, hash, number, td)
+}
+
+// SubscribeChainSideEvent registers a subscription for side-block headers
+// (uncle candidates) surfaced by the TD-based fork choice. On non-PoW chains,
+// where no fork choice is installed, the returned subscription never fires.
+func (bc *BlockChain) SubscribeChainSideEvent(ch chan<- ChainSideEvent) event.Subscription {
+	if bc.forker == nil {
+		return bc.scope.Track(new(event.Feed).Subscribe(ch))
+	}
+	return bc.scope.Track(bc.forker.SubscribeSideBlocks(ch))
 }

@@ -475,7 +475,7 @@ func decodeStorageKey(s string) (h common.Hash, inputLength int, err error) {
 func (api *BlockChainAPI) GetHeaderByNumber(ctx context.Context, number rpc.BlockNumber) (map[string]interface{}, error) {
 	header, err := api.b.HeaderByNumber(ctx, number)
 	if header != nil && err == nil {
-		response := RPCMarshalHeader(header)
+		response := api.rpcMarshalHeader(ctx, header)
 		if number == rpc.PendingBlockNumber {
 			// Pending header need to nil out a few fields
 			for _, field := range []string{"hash", "nonce", "miner"} {
@@ -491,7 +491,7 @@ func (api *BlockChainAPI) GetHeaderByNumber(ctx context.Context, number rpc.Bloc
 func (api *BlockChainAPI) GetHeaderByHash(ctx context.Context, hash common.Hash) map[string]interface{} {
 	header, _ := api.b.HeaderByHash(ctx, hash)
 	if header != nil {
-		return RPCMarshalHeader(header)
+		return api.rpcMarshalHeader(ctx, header)
 	}
 	return nil
 }
@@ -506,7 +506,10 @@ func (api *BlockChainAPI) GetHeaderByHash(ctx context.Context, hash common.Hash)
 func (api *BlockChainAPI) GetBlockByNumber(ctx context.Context, number rpc.BlockNumber, fullTx bool) (map[string]interface{}, error) {
 	block, err := api.b.BlockByNumber(ctx, number)
 	if block != nil && err == nil {
-		response := RPCMarshalBlock(block, true, fullTx, api.b.ChainConfig())
+		response, err := api.rpcMarshalBlock(ctx, block, true, fullTx)
+		if err != nil {
+			return nil, err
+		}
 		if number == rpc.PendingBlockNumber {
 			// Pending blocks need to nil out a few fields
 			for _, field := range []string{"hash", "nonce", "miner"} {
@@ -523,7 +526,7 @@ func (api *BlockChainAPI) GetBlockByNumber(ctx context.Context, number rpc.Block
 func (api *BlockChainAPI) GetBlockByHash(ctx context.Context, hash common.Hash, fullTx bool) (map[string]interface{}, error) {
 	block, err := api.b.BlockByHash(ctx, hash)
 	if block != nil {
-		return RPCMarshalBlock(block, true, fullTx, api.b.ChainConfig()), nil
+		return api.rpcMarshalBlock(ctx, block, true, fullTx)
 	}
 	return nil, err
 }
@@ -538,7 +541,7 @@ func (api *BlockChainAPI) GetUncleByBlockNumberAndIndex(ctx context.Context, blo
 			return nil, nil
 		}
 		block = types.NewBlockWithHeader(uncles[index])
-		return RPCMarshalBlock(block, false, false, api.b.ChainConfig()), nil
+		return api.rpcMarshalBlock(ctx, block, false, false)
 	}
 	return nil, err
 }
@@ -553,7 +556,7 @@ func (api *BlockChainAPI) GetUncleByBlockHashAndIndex(ctx context.Context, block
 			return nil, nil
 		}
 		block = types.NewBlockWithHeader(uncles[index])
-		return RPCMarshalBlock(block, false, false, api.b.ChainConfig()), nil
+		return api.rpcMarshalBlock(ctx, block, false, false)
 	}
 	return nil, err
 }

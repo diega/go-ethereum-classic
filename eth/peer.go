@@ -17,7 +17,10 @@
 package eth
 
 import (
+	"math/big"
+
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/eth/protocols/eth"
 	"github.com/ethereum/go-ethereum/eth/protocols/snap"
 )
@@ -25,7 +28,9 @@ import (
 // ethPeerInfo represents a short summary of the `eth` sub-protocol metadata known
 // about a connected peer.
 type ethPeerInfo struct {
-	Version uint `json:"version"` // Ethereum protocol version negotiated
+	Version    uint     `json:"version"`              // Ethereum protocol version negotiated
+	Difficulty *big.Int `json:"difficulty,omitempty"` // Total difficulty of the peer's blockchain (PoW only)
+	Head       string   `json:"head,omitempty"`       // Hex hash of the peer's best owned block (PoW only)
 	*peerBlockRange
 }
 
@@ -44,6 +49,14 @@ type ethPeer struct {
 // info gathers and returns some `eth` protocol metadata known about a peer.
 func (p *ethPeer) info() *ethPeerInfo {
 	info := &ethPeerInfo{Version: p.Version()}
+
+	// For PoW networks, include head and TD from handshake
+	if hash, td := p.Head(); td != nil {
+		info.Difficulty = td
+		info.Head = hash.Hex()
+	}
+
+	// For PoS networks, include block range info
 	if br := p.BlockRange(); br != nil {
 		info.peerBlockRange = &peerBlockRange{
 			Earliest:   br.EarliestBlock,
@@ -52,6 +65,24 @@ func (p *ethPeer) info() *ethPeerInfo {
 		}
 	}
 	return info
+}
+
+// KnownBlock returns whether peer is known to already have a block.
+// This delegates to the underlying eth.Peer.
+func (p *ethPeer) KnownBlock(hash common.Hash) bool {
+	return p.Peer.KnownBlock(hash)
+}
+
+// AsyncSendNewBlock queues an entire block for propagation to a remote peer.
+// This delegates to the underlying eth.Peer.
+func (p *ethPeer) AsyncSendNewBlock(block *types.Block, td *big.Int) {
+	p.Peer.AsyncSendNewBlock(block, td)
+}
+
+// AsyncSendNewBlockHash queues a block hash for announcement to a remote peer.
+// This delegates to the underlying eth.Peer.
+func (p *ethPeer) AsyncSendNewBlockHash(block *types.Block) {
+	p.Peer.AsyncSendNewBlockHash(block)
 }
 
 // snapPeerInfo represents a short summary of the `snap` sub-protocol metadata known
