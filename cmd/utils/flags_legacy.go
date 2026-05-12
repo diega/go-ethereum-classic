@@ -43,7 +43,6 @@ var DeprecatedFlags = []cli.Flag{
 	LogDebugFlag,
 	MinerNewPayloadTimeoutFlag,
 	MinerEtherbaseFlag,
-	MiningEnabledFlag,
 	MetricsEnabledExpensiveFlag,
 	EnablePersonal,
 	UnlockedAccountFlag,
@@ -122,9 +121,8 @@ var (
 	}
 	MiningEnabledFlag = &cli.BoolFlag{
 		Name:     "mine",
-		Hidden:   true,
-		Usage:    "Enable mining (deprecated)",
-		Category: flags.DeprecatedCategory,
+		Usage:    "Enable PoW mining",
+		Category: flags.MinerCategory,
 	}
 	MetricsEnabledExpensiveFlag = &cli.BoolFlag{
 		Name:     "metrics.expensive",

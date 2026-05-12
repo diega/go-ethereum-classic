@@ -181,7 +181,11 @@ func New(stack *node.Node, config *ethconfig.Config) (*Ethereum, error) {
 	// Resolve ethash cache directory relative to datadir (pre-purge3: stack.ResolvePath).
 	// Without this, the relative "etchash" path is created in CWD (e.g. / under systemd).
 	config.Ethash.CacheDir = stack.ResolvePath(config.Ethash.CacheDir)
-	engine, err := ethconfig.CreateConsensusEngineWithConfig(chainConfig, chainDb, config.Ethash)
+	// Transfer the miner-side notify settings into the ethash config so
+	// --miner.notify / --miner.notify.full / --miner.noverify actually reach
+	// the underlying engine (mirrors the pre-purge plumbing).
+	config.Ethash.NotifyFull = config.Miner.NotifyFull
+	engine, err := ethconfig.CreateConsensusEngineWithConfig(chainConfig, chainDb, config.Ethash, config.Miner.Notify, config.Miner.Noverify)
 	if err != nil {
 		return nil, err
 	}
