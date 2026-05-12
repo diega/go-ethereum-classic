@@ -759,11 +759,15 @@ func writeAncientBlock(op ethdb.AncientWriteOp, block *types.Block, header *type
 	if err := op.Append(ChainFreezerReceiptTable, num, receipts); err != nil {
 		return fmt.Errorf("can't append block %d receipts: %v", num, err)
 	}
+	// Write nil TD placeholder to keep freezer tables in sync
+	if err := op.AppendRaw(ChainFreezerDifficultyTable, num, nil); err != nil {
+		return fmt.Errorf("can't append block %d td: %v", num, err)
+	}
 	return nil
 }
 
 // WriteAncientHeaderChain writes the supplied headers along with nil block
-// bodies and receipts into the ancient store. It's supposed to be used for
+// bodies, receipts and TD into the ancient store. It's supposed to be used for
 // storing chain segment before the chain cutoff.
 func WriteAncientHeaderChain(db ethdb.AncientWriter, headers []*types.Header) (int64, error) {
 	return db.ModifyAncients(func(op ethdb.AncientWriteOp) error {
@@ -781,6 +785,9 @@ func WriteAncientHeaderChain(db ethdb.AncientWriter, headers []*types.Header) (i
 			if err := op.AppendRaw(ChainFreezerReceiptTable, num, nil); err != nil {
 				return fmt.Errorf("can't append block %d receipts: %v", num, err)
 			}
+			if err := op.AppendRaw(ChainFreezerDifficultyTable, num, nil); err != nil {
+				return fmt.Errorf("can't append block %d td: %v", num, err)
+			}
 		}
 		return nil
 	})
@@ -791,6 +798,7 @@ func DeleteBlock(db ethdb.KeyValueWriter, hash common.Hash, number uint64) {
 	DeleteReceipts(db, hash, number)
 	DeleteHeader(db, hash, number)
 	DeleteBody(db, hash, number)
+	DeleteTd(db, hash, number) // ETC: delete total difficulty
 }
 
 // DeleteBlockWithoutNumber removes all block data associated with a hash, except
@@ -799,6 +807,7 @@ func DeleteBlockWithoutNumber(db ethdb.KeyValueWriter, hash common.Hash, number 
 	DeleteReceipts(db, hash, number)
 	deleteHeaderWithoutNumber(db, hash, number)
 	DeleteBody(db, hash, number)
+	DeleteTd(db, hash, number) // ETC: delete total difficulty
 }
 
 const badBlockToKeep = 10
