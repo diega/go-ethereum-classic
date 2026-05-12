@@ -134,6 +134,13 @@ type downloadTesterPeer struct {
 	dropped chan error // signaled when res.Done receives an error
 }
 
+// Head constructs a function to retrieve a peer's current head hash
+// and total difficulty.
+func (dlp *downloadTesterPeer) Head() (common.Hash, *big.Int) {
+	head := dlp.chain.CurrentBlock()
+	return head.Hash(), dlp.chain.GetTd(head.Hash(), head.Number.Uint64())
+}
+
 func unmarshalRlpHeaders(rlpdata []rlp.RawValue) []*types.Header {
 	var headers = make([]*types.Header, len(rlpdata))
 	for i, data := range rlpdata {
