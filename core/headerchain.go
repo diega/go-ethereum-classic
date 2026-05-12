@@ -19,6 +19,7 @@ package core
 import (
 	"errors"
 	"fmt"
+	"math/big"
 	"sync/atomic"
 	"time"
 
@@ -35,6 +36,7 @@ import (
 
 const (
 	headerCacheLimit = 512
+	tdCacheLimit     = 1024 // ETC: cache for TD
 	numberCacheLimit = 2048
 )
 
@@ -63,7 +65,8 @@ type HeaderChain struct {
 	currentHeaderHash common.Hash                  // Hash of the current head of the header chain (prevent recomputing all the time)
 
 	headerCache *lru.Cache[common.Hash, *types.Header]
-	numberCache *lru.Cache[common.Hash, uint64] // most recent block numbers
+	tdCache     *lru.Cache[common.Hash, *big.Int] // ETC: TD cache for PoW chains
+	numberCache *lru.Cache[common.Hash, uint64]   // most recent block numbers
 
 	procInterrupt func() bool
 	engine        consensus.Engine
@@ -76,6 +79,7 @@ func NewHeaderChain(chainDb ethdb.Database, config *params.ChainConfig, engine c
 		config:        config,
 		chainDb:       chainDb,
 		headerCache:   lru.NewCache[common.Hash, *types.Header](headerCacheLimit),
+		tdCache:       lru.NewCache[common.Hash, *big.Int](tdCacheLimit),
 		numberCache:   lru.NewCache[common.Hash, uint64](numberCacheLimit),
 		procInterrupt: procInterrupt,
 		engine:        engine,
@@ -196,6 +200,15 @@ func (hc *HeaderChain) WriteHeaders(headers []*types.Header) (int, error) {
 	if !hc.HasHeader(headers[0].ParentHash, headers[0].Number.Uint64()-1) {
 		return 0, consensus.ErrUnknownAncestor
 	}
+	// Get parent TD for chain sync. For PoW chains (ETC), parent TD must
+	// exist — reject headers without it (cf. core-geth WriteHeaders).
+	// Post-merge chains don't use TD so nil is acceptable. Gate on IsPow()
+	// rather than Ethash != nil so PoS configs that retain an Ethash block
+	// (upstream merge configs) aren't tripped by a missing TD.
+	parentTd := hc.GetTd(headers[0].ParentHash, headers[0].Number.Uint64()-1)
+	if parentTd == nil && hc.config.IsPow() {
+		return 0, consensus.ErrUnknownAncestor
+	}
 	var (
 		inserted    []rawdb.NumberHash // Ephemeral lookup of number/hash for the chain
 		parentKnown = true             // Set to true to force hc.HasHeader check the first iteration
@@ -212,12 +225,22 @@ func (hc *HeaderChain) WriteHeaders(headers []*types.Header) (int, error) {
 			hash = header.Hash()
 		}
 		number := header.Number.Uint64()
+		// Advance the running TD for every header, regardless of whether it
+		// is already known. Otherwise a batch shaped like [known, new] would
+		// persist the new header's TD without the known sibling's difficulty.
+		if parentTd != nil {
+			parentTd = new(big.Int).Add(parentTd, header.Difficulty)
+		}
 
 		// If the parent was not present, store it
 		// If the header is already known, skip it, otherwise store
 		alreadyKnown := parentKnown && hc.HasHeader(hash, number)
 		if !alreadyKnown {
 			rawdb.WriteHeader(batch, header)
+			if parentTd != nil {
+				rawdb.WriteTd(batch, hash, number, parentTd)
+				hc.tdCache.Add(hash, new(big.Int).Set(parentTd))
+			}
 			inserted = append(inserted, rawdb.NumberHash{Number: number, Hash: hash})
 			hc.headerCache.Add(hash, header)
 			hc.numberCache.Add(hash, number)
@@ -598,6 +621,7 @@ func (hc *HeaderChain) setHead(headBlock uint64, headTime uint64, updateFn Updat
 				if delFn != nil {
 					delFn(batch, hash, num)
 				}
+				hc.deleteTd(batch, hash, num)
 				// Remove the hash->number mapping along with the header itself
 				rawdb.DeleteHeader(batch, hash, num)
 			}
@@ -638,6 +662,7 @@ func (hc *HeaderChain) setHead(headBlock uint64, headTime uint64, updateFn Updat
 	}
 	// Clear out any stale content from the caches
 	hc.headerCache.Purge()
+	hc.tdCache.Purge()
 	hc.numberCache.Purge()
 }
 

@@ -39,6 +39,9 @@ const (
 	// ChainFreezerBALTable indicates the name of the freezer block access list
 	// table introduced by EIP-7928.
 	ChainFreezerBALTable = "bals"
+
+	// ETC: ChainFreezerDifficultyTable indicates the name of the freezer total difficulty table.
+	ChainFreezerDifficultyTable = "diffs"
 )
 
 // Identifiers of tail groups used by the chain freezer.
@@ -64,6 +67,8 @@ var chainFreezerTableConfigs = map[string]freezerTableConfig{
 	ChainFreezerBodiesTable:  {noSnappy: false, tailGroup: ChainFreezerBlockDataGroup},
 	ChainFreezerReceiptTable: {noSnappy: false, tailGroup: ChainFreezerBlockDataGroup},
 	ChainFreezerBALTable:     {noSnappy: false, tailGroup: ChainFreezerBALGroup},
+	// ETC: total difficulty is retained long-term (not tail-pruned), like headers.
+	ChainFreezerDifficultyTable: {noSnappy: true},
 }
 
 // freezerTableConfig contains the settings for a freezer table.

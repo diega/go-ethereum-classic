@@ -364,6 +364,7 @@ type BlockChain struct {
 
 	stopping      atomic.Bool // false if chain is running, true when stopped
 	procInterrupt atomic.Bool // interrupt signaler for block processing
+	forker        *ForkChoice // ETC: PoW fork choice (nil for non-PoW chains)
 
 	engine     consensus.Engine
 	validator  Validator // Block and state validator interface
@@ -1231,6 +1232,7 @@ func (bc *BlockChain) ResetWithGenesisBlock(genesis *types.Block) error {
 
 	// Prepare the genesis block and reinitialise the chain
 	batch := bc.db.NewBatch()
+	rawdb.WriteTd(batch, genesis.Hash(), genesis.NumberU64(), genesis.Difficulty()) // ETC: write genesis TD
 	rawdb.WriteBlock(batch, genesis)
 	if err := batch.Write(); err != nil {
 		log.Crit("Failed to write genesis block", "err", err)
@@ -1497,7 +1499,9 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [
 		// Ensure genesis is in the ancient store
 		if blockChain[0].NumberU64() == 1 {
 			if frozen, _ := bc.db.Ancients(); frozen == 0 {
-				writeSize, err := rawdb.WriteAncientBlocks(bc.db, []*types.Block{bc.genesisBlock}, []rlp.RawValue{rlp.EmptyList})
+				// ETC: use PoW version to write real TD
+				td := bc.genesisBlock.Difficulty()
+				writeSize, err := rawdb.WriteAncientBlocksPoW(bc.db, []*types.Block{bc.genesisBlock}, []rlp.RawValue{rlp.EmptyList}, td)
 				if err != nil {
 					log.Error("Error writing genesis to ancients", "err", err)
 					return 0, err
@@ -1506,8 +1510,22 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [
 				log.Info("Wrote genesis to ancients")
 			}
 		}
-		// Write all chain data to ancients.
-		writeSize, err := rawdb.WriteAncientBlocks(bc.db, blockChain, receiptChain)
+		// ETC: use PoW version to write real TD if parent TD is available.
+		// On PoW chains a missing parent TD means the ancestor is unknown
+		// (or the TD store is corrupt); falling back to the no-TD writer
+		// would leave the ancients without difficulty and break sync. Treat
+		// it as an unknown-ancestor error instead.
+		var writeSize int64
+		var err error
+		parentTd := bc.GetTd(blockChain[0].ParentHash(), blockChain[0].NumberU64()-1)
+		if parentTd != nil {
+			td := new(big.Int).Add(parentTd, blockChain[0].Header().Difficulty)
+			writeSize, err = rawdb.WriteAncientBlocksPoW(bc.db, blockChain, receiptChain, td)
+		} else if bc.chainConfig.IsPow() {
+			return 0, consensus.ErrUnknownAncestor
+		} else {
+			writeSize, err = rawdb.WriteAncientBlocks(bc.db, blockChain, receiptChain)
+		}
 		if err != nil {
 			log.Error("Error importing chain data to ancients", "err", err)
 			return 0, err
@@ -1566,6 +1584,13 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [
 			rawdb.WriteCanonicalHash(batch, block.Hash(), block.NumberU64())
 			rawdb.WriteBlock(batch, block)
 			rawdb.WriteRawReceipts(batch, block.Hash(), block.NumberU64(), receiptChain[i])
+
+			// ETC: Write TD for PoW chains - writeLive doesn't go through
+			// InsertHeaderChain, so TD must be written here
+			if ptd := bc.GetTd(block.ParentHash(), block.NumberU64()-1); ptd != nil {
+				externTd := new(big.Int).Add(block.Difficulty(), ptd)
+				rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), externTd)
+			}
 
 			// Write everything belongs to the blocks into the database. So that
 			// we can ensure all components of body is completed(body, receipts)
@@ -1638,6 +1663,13 @@ func (bc *BlockChain) writeBlockWithoutState(block *types.Block) (err error) {
 		return errInsertionInterrupted
 	}
 	batch := bc.db.NewBatch()
+
+	// Write TD for sidechain blocks
+	if ptd := bc.GetTd(block.ParentHash(), block.NumberU64()-1); ptd != nil {
+		externTd := new(big.Int).Add(block.Difficulty(), ptd)
+		rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), externTd)
+	}
+
 	rawdb.WriteBlock(batch, block)
 	if err := batch.Write(); err != nil {
 		log.Crit("Failed to write block into disk", "err", err)
@@ -1650,6 +1682,15 @@ func (bc *BlockChain) writeBlockWithoutState(block *types.Block) (err error) {
 func (bc *BlockChain) writeKnownBlock(block *types.Block) error {
 	current := bc.CurrentBlock()
 	if block.ParentHash() != current.Hash() {
+		if bc.forker != nil {
+			reorg, err := bc.forker.ReorgNeeded(current, block.Header())
+			if err != nil {
+				return err
+			}
+			if !reorg {
+				return nil
+			}
+		}
 		if err := bc.reorg(current, block.Header()); err != nil {
 			return err
 		}
@@ -1674,6 +1715,11 @@ func (bc *BlockChain) writeBlockWithState(block *types.Block, receipts []*types.
 	)
 	defer batch.Close()
 
+	// Calculate and write TD for chain sync (if parent TD exists)
+	if ptd := bc.GetTd(block.ParentHash(), block.NumberU64()-1); ptd != nil {
+		externTd := new(big.Int).Add(block.Difficulty(), ptd)
+		rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), externTd)
+	}
 	rawdb.WriteBlock(batch, block)
 	rawdb.WriteReceipts(batch, block.Hash(), block.NumberU64(), receipts)
 	rawdb.WritePreimages(batch, statedb.Preimages())
@@ -1782,6 +1828,15 @@ func (bc *BlockChain) writeBlockAndSetHead(block *types.Block, receipts []*types
 
 	// Reorganise the chain if the parent is not the head block
 	if block.ParentHash() != currentBlock.Hash() {
+		if bc.forker != nil {
+			reorg, err := bc.forker.ReorgNeeded(currentBlock, block.Header())
+			if err != nil {
+				return NonStatTy, err
+			}
+			if !reorg {
+				return SideStatTy, nil
+			}
+		}
 		if err := bc.reorg(currentBlock, block.Header()); err != nil {
 			return NonStatTy, err
 		}
@@ -2953,7 +3008,9 @@ func (bc *BlockChain) InsertHeadersBeforeCutoff(headers []*types.Header) (int, e
 		first     = headers[0].Number.Uint64()
 	)
 	if first == 1 && frozen == 0 {
-		_, err := rawdb.WriteAncientBlocks(bc.db, []*types.Block{bc.genesisBlock}, []rlp.RawValue{rlp.EmptyList})
+		// ETC: use PoW version to write real TD
+		td := bc.genesisBlock.Difficulty()
+		_, err := rawdb.WriteAncientBlocksPoW(bc.db, []*types.Block{bc.genesisBlock}, []rlp.RawValue{rlp.EmptyList}, td)
 		if err != nil {
 			log.Error("Error writing genesis to ancients", "err", err)
 			return 0, err
@@ -2963,9 +3020,28 @@ func (bc *BlockChain) InsertHeadersBeforeCutoff(headers []*types.Header) (int, e
 		return 0, fmt.Errorf("headers are gapped with the ancient store, first: %d, ancient: %d", first, frozen)
 	}
 
+	// ETC: compute parent TD for the header chain and use PoW version if
+	// available. On PoW chains a missing parent TD is corruption / unknown
+	// ancestor; the no-TD writer would leave the freezer inconsistent.
+	var td *big.Int
+	if first == 1 {
+		td = new(big.Int).Add(bc.genesisBlock.Difficulty(), headers[0].Difficulty)
+	} else {
+		parentTd := bc.GetTd(headers[0].ParentHash, first-1)
+		if parentTd != nil {
+			td = new(big.Int).Add(parentTd, headers[0].Difficulty)
+		}
+	}
 	// Write headers to the ancient store, with block bodies and receipts set to nil
 	// to ensure consistency across tables in the freezer.
-	_, err := rawdb.WriteAncientHeaderChain(bc.db, headers)
+	var err error
+	if td != nil {
+		_, err = rawdb.WriteAncientHeaderChainPoW(bc.db, headers, td)
+	} else if bc.chainConfig.IsPow() {
+		return 0, consensus.ErrUnknownAncestor
+	} else {
+		_, err = rawdb.WriteAncientHeaderChain(bc.db, headers)
+	}
 	if err != nil {
 		return 0, err
 	}
