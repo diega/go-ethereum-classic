@@ -1,10 +1,9 @@
 #!/bin/sh
 
 hivechain generate \
-  --pos \
   --fork-interval 6 \
   --tx-interval 1 \
-  --length 600 \
+  --length 500 \
   --outdir testdata \
-  --lastfork prague \
+  --lastfork cancun \
   --outputs accounts,genesis,chain,headstate,txinfo,headblock,headfcu,newpayload,forkenv
