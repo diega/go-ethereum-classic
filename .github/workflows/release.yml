@@ -1,0 +1,115 @@
+name: Release
+
+on:
+  push:
+    tags: ['v1.17.3-etc*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.os }}-${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: linux, arch: amd64, runner: ubuntu-latest }
+          - { os: linux, arch: arm64, runner: ubuntu-latest, cc: aarch64-linux-gnu-gcc }
+          - { os: darwin, arch: amd64, runner: macos-15-intel }
+          - { os: darwin, arch: arm64, runner: macos-latest }
+          - { os: windows, arch: amd64, runner: windows-latest }
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.24'
+          cache: false
+
+      - name: Install ARM64 cross-compiler
+        if: matrix.arch == 'arm64' && matrix.os == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+
+      - name: Build
+        shell: bash
+        run: |
+          if [ -n "${{ matrix.cc }}" ]; then
+            go run build/ci.go install -arch ${{ matrix.arch }} -cc ${{ matrix.cc }}
+          else
+            go run build/ci.go install -arch ${{ matrix.arch }}
+          fi
+
+      - name: Verify binary version matches tag
+        if: matrix.cc == ''
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"            # e.g. v1.17.3-etc.1
+          TAG_UPSTREAM="${TAG#v}"              # 1.17.1-etc.1
+          TAG_UPSTREAM="${TAG_UPSTREAM%%-*}"   # 1.17.1
+          BINARY_VERSION=$(./build/bin/geth version 2>/dev/null | grep '^Version:' | awk '{print $2}' | sed 's/-etc$//')
+          if [ "$BINARY_VERSION" != "$TAG_UPSTREAM" ]; then
+            echo "::error::Binary version ($BINARY_VERSION) does not match tag (v${TAG_UPSTREAM})"
+            echo "The tag was likely created on the wrong branch."
+            exit 1
+          fi
+          echo "Version check passed: binary $BINARY_VERSION matches tag v${TAG_UPSTREAM}"
+
+      - name: Create archive
+        shell: bash
+        run: |
+          # Format: geth-{os}-{arch}-{version}-{commit}.tar.gz
+          VERSION=${GITHUB_REF_NAME#v}  # Remove 'v' prefix
+          COMMIT=${GITHUB_SHA::8}
+          BASENAME="geth-${{ matrix.os }}-${{ matrix.arch }}-${VERSION}-${COMMIT}"
+          cd build/bin
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            7z a "../../${BASENAME}.zip" geth.exe
+          else
+            tar -czvf "../../${BASENAME}.tar.gz" geth
+          fi
+
+      - name: Generate checksum
+        shell: bash
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          COMMIT=${GITHUB_SHA::8}
+          BASENAME="geth-${{ matrix.os }}-${{ matrix.arch }}-${VERSION}-${COMMIT}"
+          if [ "${{ matrix.os }}" = "windows" ]; then FILE="${BASENAME}.zip"; else FILE="${BASENAME}.tar.gz"; fi
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+            shasum -a 256 "$FILE" > "${FILE}.sha256"
+          else
+            sha256sum "$FILE" > "${FILE}.sha256"
+          fi
+
+      - uses: actions/upload-artifact@v5
+        with:
+          name: geth-${{ matrix.os }}-${{ matrix.arch }}
+          path: geth-*.*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete existing release if present
+        run: gh release delete ${{ github.ref_name }} --repo ${{ github.repository }} --yes || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/download-artifact@v5
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create checksums.txt
+        run: cat artifacts/*.sha256 > artifacts/checksums.txt
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          files: artifacts/*

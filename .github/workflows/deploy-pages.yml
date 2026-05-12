@@ -1,0 +1,122 @@
+name: Deploy Wiki to GitHub Pages
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: ['etc/v1.17.3-full-node']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-wiki
+  cancel-in-progress: false
+
+env:
+  VERSION: "1.17.3"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main repo (full history)
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Clone wiki repo
+        uses: actions/checkout@v6
+        with:
+          repository: diega/go-ethereum-classic.wiki
+          path: wiki
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Install mkdocs-material and mike
+        run: pip install mkdocs-material mike
+
+      - name: Clone core-geth
+        run: git clone https://github.com/etclabscore/core-geth.git /tmp/core-geth
+
+      - name: Fetch upstream tags
+        run: |
+          git fetch --no-tags https://github.com/ethereum/go-ethereum.git \
+            'refs/tags/v1.16.*:refs/tags/v1.16.*' \
+            'refs/tags/v1.17.*:refs/tags/v1.17.*'
+
+      - name: Fetch previous-version branch (for version comparison)
+        run: |
+          git fetch --no-tags origin \
+            '+refs/heads/etc/v1.16.8-full-node:refs/heads/etc/v1.16.8-full-node'
+
+      - name: Configure git for mike
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Extract test stats from CI
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RUN_ID="${{ github.event.workflow_run.id }}"
+          if [ -n "$RUN_ID" ]; then
+            gh run view "$RUN_ID" --log 2>/dev/null > /tmp/ci.log || true
+            PASSED=$(grep -c '^.*--- PASS:' /tmp/ci.log || true)
+            SKIPPED=$(grep -c '^.*--- SKIP:' /tmp/ci.log || true)
+            FAILED=$(grep -c '^.*--- FAIL:' /tmp/ci.log || true)
+            : "${PASSED:=0}" "${SKIPPED:=0}" "${FAILED:=0}"
+            echo "TEST_PASSED=$PASSED" >> "$GITHUB_ENV"
+            echo "TEST_SKIPPED=$SKIPPED" >> "$GITHUB_ENV"
+            echo "TEST_FAILED=$FAILED" >> "$GITHUB_ENV"
+            echo "Test stats: passed=$PASSED skipped=$SKIPPED failed=$FAILED"
+            rm -f /tmp/ci.log
+          fi
+
+      - name: Build and deploy
+        run: |
+          TEST_ARGS=""
+          if [ -n "$TEST_PASSED" ]; then
+            TEST_ARGS="--test-passed=$TEST_PASSED --test-skipped=$TEST_SKIPPED --test-failed=$TEST_FAILED"
+          fi
+          cd wiki
+          go run generate.go \
+            --repo-root="$GITHUB_WORKSPACE" \
+            --core-geth-root=/tmp/core-geth \
+            --data-dir="v$VERSION" \
+            --format=mkdocs \
+            --out-dir="/tmp/site" \
+            $TEST_ARGS
+          cd "$GITHUB_WORKSPACE"
+          mike deploy -F "/tmp/site/mkdocs.yml" "$VERSION"
+
+      - name: Set default if highest version
+        run: |
+          MKDOCS="/tmp/site/mkdocs.yml"
+          CURRENT=$(mike list -F "$MKDOCS" 2>/dev/null | grep '\[latest\]' | awk '{print $1}' || echo "0.0.0")
+          if printf '%s\n' "$CURRENT" "$VERSION" | sort -V | tail -1 | grep -qx "$VERSION"; then
+            mike set-default -F "$MKDOCS" "$VERSION"
+          fi
+
+      - name: Remove orphan versions from mike
+        run: |
+          MKDOCS="/tmp/site/mkdocs.yml"
+          for v in $(mike list -F "$MKDOCS" 2>/dev/null | awk '{print $1}'); do
+            if [ ! -d "wiki/v$v" ]; then
+              echo "Removing orphan version $v from mike"
+              mike delete -F "$MKDOCS" "$v"
+            fi
+          done
+
+      - name: Push gh-pages
+        run: git push origin gh-pages --force
