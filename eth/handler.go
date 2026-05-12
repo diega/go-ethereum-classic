@@ -101,15 +101,17 @@ type txPool interface {
 // handlerConfig is the collection of initialization parameters to create a full
 // node network handler.
 type handlerConfig struct {
-	NodeID         enode.ID               // P2P node ID used for tx propagation topology
-	Database       ethdb.Database         // Database for direct sync insertions
-	Chain          *core.BlockChain       // Blockchain to serve data from
-	TxPool         txPool                 // Transaction pool to propagate from
-	Network        uint64                 // Network identifier to advertise
-	Sync           ethconfig.SyncMode     // Whether to snap or full sync
-	BloomCache     uint64                 // Megabytes to alloc for snap sync bloom
-	RequiredBlocks map[uint64]common.Hash // Hard coded map of required block hashes for sync challenges
-	IsPow          bool                   // Whether this is a perpetual PoW chain (uses TD-based sync)
+	NodeID           enode.ID               // P2P node ID used for tx propagation topology
+	Database         ethdb.Database         // Database for direct sync insertions
+	Chain            *core.BlockChain       // Blockchain to serve data from
+	TxPool           txPool                 // Transaction pool to propagate from
+	Network          uint64                 // Network identifier to advertise
+	Sync             ethconfig.SyncMode     // Whether to snap or full sync
+	BloomCache       uint64                 // Megabytes to alloc for snap sync bloom
+	RequiredBlocks   map[uint64]common.Hash // Hard coded map of required block hashes for sync challenges
+	IsPow            bool                   // Whether this is a perpetual PoW chain (uses TD-based sync)
+	MESSForceEnable  bool                   // Force enable MESS (ECBP-1100) artificial finality
+	MESSForceDisable bool                   // Force disable MESS (ECBP-1100) artificial finality
 }
 
 type handler struct {
@@ -119,6 +121,9 @@ type handler struct {
 
 	synced atomic.Bool // Flag whether we're considered synchronised (enables transaction processing)
 	isPow  bool        // Whether this is a perpetual PoW chain (uses TD-based sync)
+
+	messForceEnable  bool // Force enable MESS (emergency override)
+	messForceDisable bool // Force disable MESS (never enable)
 
 	database ethdb.Database
 	txpool   txPool
@@ -152,19 +157,21 @@ type handler struct {
 // newHandler returns a handler for all Ethereum chain management protocol.
 func newHandler(config *handlerConfig) (*handler, error) {
 	h := &handler{
-		nodeID:         config.NodeID,
-		networkID:      config.Network,
-		forkFilter:     forkid.NewFilter(config.Chain),
-		database:       config.Database,
-		txpool:         config.TxPool,
-		chain:          config.Chain,
-		peers:          newPeerSet(),
-		txBroadcastKey: newBroadcastChoiceKey(),
-		requiredBlocks: config.RequiredBlocks,
-		quitSync:       make(chan struct{}),
-		handlerDoneCh:  make(chan struct{}),
-		handlerStartCh: make(chan struct{}),
-		isPow:          config.IsPow,
+		nodeID:           config.NodeID,
+		networkID:        config.Network,
+		forkFilter:       forkid.NewFilter(config.Chain),
+		database:         config.Database,
+		txpool:           config.TxPool,
+		chain:            config.Chain,
+		peers:            newPeerSet(),
+		txBroadcastKey:   newBroadcastChoiceKey(),
+		requiredBlocks:   config.RequiredBlocks,
+		quitSync:         make(chan struct{}),
+		handlerDoneCh:    make(chan struct{}),
+		handlerStartCh:   make(chan struct{}),
+		isPow:            config.IsPow,
+		messForceEnable:  config.MESSForceEnable,
+		messForceDisable: config.MESSForceDisable,
 	}
 	if config.IsPow {
 		h.eventMux = new(event.TypeMux)
@@ -465,6 +472,9 @@ func (h *handler) Start(maxPeers int) {
 		h.minedBlockSub = h.eventMux.Subscribe(core.NewMinedBlockEvent{})
 		h.wg.Add(1)
 		go h.minedBroadcastLoop()
+		// Start MESS safety loop for stale head detection
+		h.wg.Add(1)
+		go h.messSafetyLoop()
 		log.Info("Starting PoW chain syncer and block fetcher")
 	}
 

@@ -346,6 +346,8 @@ func New(stack *node.Node, config *ethconfig.Config) (*Ethereum, error) {
 		BloomCache:       uint64(cacheLimit),
 		RequiredBlocks:   config.RequiredBlocks,
 		IsPow:            eth.blockchain.Config().IsPow(),
+		MESSForceEnable:  config.MESSForceEnable,
+		MESSForceDisable: config.MESSForceDisable,
 	}); err != nil {
 		return nil, err
 	}

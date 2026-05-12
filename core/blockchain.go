@@ -357,9 +357,10 @@ type BlockChain struct {
 	txLookupLock  sync.RWMutex
 	txLookupCache *lru.Cache[common.Hash, txLookup]
 
-	stopping      atomic.Bool // false if chain is running, true when stopped
-	procInterrupt atomic.Bool // interrupt signaler for block processing
-	forker        *ForkChoice // ETC: PoW fork choice (nil for non-PoW chains)
+	stopping      atomic.Bool  // false if chain is running, true when stopped
+	procInterrupt atomic.Bool  // interrupt signaler for block processing
+	forker        *ForkChoice  // ETC: PoW fork choice (nil for non-PoW chains)
+	messEnabled   atomic.Int32 // ETC: MESS runtime activation state (per-chain, not global)
 
 	engine     consensus.Engine
 	validator  Validator // Block and state validator interface
@@ -428,6 +429,9 @@ func NewBlockChain(db ethdb.Database, genesis *Genesis, engine consensus.Engine,
 	bc.validator = NewBlockValidator(chainConfig, bc)
 	bc.prefetcher = newStatePrefetcher(chainConfig, bc.hc)
 	bc.processor = NewStateProcessor(bc.hc)
+	if chainConfig.IsPow() {
+		bc.forker = NewForkChoiceWithMESS(bc, nil)
+	}
 
 	genesisHeader := bc.GetHeaderByNumber(0)
 	if genesisHeader == nil {
