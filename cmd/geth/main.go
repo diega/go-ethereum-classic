@@ -43,7 +43,8 @@ import (
 )
 
 const (
-	clientIdentifier = "Getc" // Client identifier to advertise over the network
+	clientIdentifier   = "getc" // Client identifier to advertise over the network
+	databaseIdentifier = "geth" // On-disk datadir/instance dir name; kept as "geth" for compatibility with go-ethereum and core-geth datadirs
 )
 
 var (

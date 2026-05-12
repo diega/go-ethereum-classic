@@ -313,9 +313,10 @@ func (c *Config) ExtRPCEnabled() bool {
 // NodeName returns the devp2p node identifier.
 func (c *Config) NodeName() string {
 	name := c.name()
-	// Backwards compatibility: previous versions used title-cased "Geth", keep that.
+	// The on-disk instance dir name is "geth" (see databaseIdentifier) for datadir
+	// compatibility with go-ethereum/core-geth, but advertise this node as "getc".
 	if name == "geth" || name == "geth-testnet" {
-		name = "Geth"
+		name = "getc"
 	}
 	if c.UserIdent != "" {
 		name += "/" + c.UserIdent

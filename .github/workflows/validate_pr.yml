@@ -48,7 +48,7 @@ jobs:
             console.log('✅ PR passed spam check');
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Check PR Title Format
         uses: actions/github-script@v7

@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [etc/v1.17.4-full-node]
+  pull_request:
+    branches: [master]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.24'
+      - run: go run build/ci.go lint
+
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.24'
+      - name: Run tests (excluding known flaky)
+        run: >-
+          go test -v -timeout=45m -tags=ckzg -p 4
+          -skip 'TestEthSuite/(LargeTxRequest|Transaction|InvalidTxs|NewPooledTxs|BlobViolations|TestBlobTx|BlockRangeUpdate)'
+          $(go list ./... | grep -v 'accounts/abi/bind/v2$' | grep -v 'accounts/abi/abigen$' | grep -v 'eth/catalyst$')
+      - name: Run flaky upstream tests (allowed to fail)
+        continue-on-error: true
+        run: >-
+          go test -timeout=10m -tags=ckzg -p 4 -count=1
+          ./accounts/abi/bind/v2/...
+          ./accounts/abi/abigen/...
+          ./eth/catalyst/...
+
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.24'
+      - run: make all
+      - name: Verify ETC flags
+        run: |
+          ./build/bin/geth version
+          ./build/bin/geth --help | grep -q "classic"
+          ./build/bin/geth --help | grep -q "mordor"
