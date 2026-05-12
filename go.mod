@@ -21,6 +21,7 @@ require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1
 	github.com/donovanhide/eventsource v0.0.0-20210830082556-c59027999da0
 	github.com/dop251/goja v0.0.0-20230605162241-28ee0ee714f3
+	github.com/edsrzf/mmap-go v1.2.0
 	github.com/ethereum/c-kzg-4844/v2 v2.1.6
 	github.com/ethereum/go-bigmodexpfix v0.0.0-20250911101455-f9e208c548ab
 	github.com/ethereum/hid v1.0.1-0.20260421154323-c2ab8d9bf68a
@@ -77,6 +78,7 @@ require (
 	golang.org/x/text v0.34.0
 	golang.org/x/time v0.10.0
 	golang.org/x/tools v0.41.0
+	gonum.org/v1/gonum v0.16.0
 	google.golang.org/protobuf v1.36.11
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/yaml.v3 v3.0.1

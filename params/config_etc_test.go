@@ -71,6 +71,9 @@ func TestIsEIP1559PerpetualPoW(t *testing.T) {
 	if !rules.IsMystique {
 		t.Error("devnet: expected Rules.IsMystique true (London opcodes without fee market)")
 	}
+	if rules.IsEIP1559 {
+		t.Error("devnet: expected Rules.IsEIP1559 false")
+	}
 
 	// The same config on a merge track (TTD set) is not perpetual PoW, so the
 	// fee market follows London as usual.

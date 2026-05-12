@@ -25,6 +25,7 @@ import (
 	"github.com/ethereum/go-ethereum/consensus"
 	"github.com/ethereum/go-ethereum/consensus/beacon"
 	"github.com/ethereum/go-ethereum/consensus/clique"
+	"github.com/ethereum/go-ethereum/consensus/etc"
 	"github.com/ethereum/go-ethereum/consensus/ethash"
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/history"
@@ -221,12 +222,37 @@ type Config struct {
 
 	// RangeLimit restricts the maximum range (end - start) for range queries.
 	RangeLimit uint64 `toml:",omitempty"`
+
+	// Ethash configuration for ETC PoW mining
+	Ethash ethash.Config
 }
 
 // CreateConsensusEngine creates a consensus engine for the given chain config.
-// Clique is allowed for now to live standalone, but ethash is forbidden and can
-// only exist on already merged networks.
+// The engine is selected from the config alone, mirroring how the config's
+// engine section works elsewhere: an ethash section without a terminal total
+// difficulty means perpetual PoW (the ETCEngine), anything else is post-merge
+// and must carry a TTD. Clique is allowed for now to live standalone.
 func CreateConsensusEngine(config *params.ChainConfig, db ethdb.Database) (consensus.Engine, error) {
+	return CreateConsensusEngineWithConfig(config, db, ethash.Config{}, nil, false)
+}
+
+// CreateConsensusEngineWithConfig creates a consensus engine with explicit ethash configuration.
+// This is used for PoW chains that need full mining support with custom cache/dataset directories.
+// notify URLs and noverify control the remote-sealer plumbing inside ethash;
+// they originate from --miner.notify / --miner.noverify.
+func CreateConsensusEngineWithConfig(config *params.ChainConfig, db ethdb.Database, ethashConfig ethash.Config, notify []string, noverify bool) (consensus.Engine, error) {
+	// Perpetual PoW chains (ethash section present, no TTD): use the ETCEngine.
+	// The engine itself is per-feature — ECIP behavior (bomb, Etchash, rewards)
+	// activates from the individual config keys, so a config without any ECIP
+	// keys behaves exactly like standard pre-merge ethash.
+	if config.IsPow() {
+		if ethashConfig.PowMode == ethash.ModeNormal || ethashConfig.PowMode == ethash.ModeShared {
+			return etc.New(config, ethashConfig, notify, noverify), nil
+		}
+		return etc.NewFaker(config), nil
+	}
+
+	// ETH chains: require TerminalTotalDifficulty for PoS
 	if config.TerminalTotalDifficulty == nil {
 		log.Error("Geth only supports PoS networks. Please transition legacy networks using Geth v1.13.x.")
 		return nil, errors.New("'terminalTotalDifficulty' is not set in genesis block")

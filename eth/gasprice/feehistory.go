@@ -89,7 +89,7 @@ func (oracle *Oracle) processBlock(bf *blockFees, percentiles []float64) {
 	if bf.results.baseFee = bf.header.BaseFee; bf.results.baseFee == nil {
 		bf.results.baseFee = new(big.Int)
 	}
-	if config.IsLondon(big.NewInt(int64(bf.blockNumber + 1))) {
+	if config.IsEIP1559(big.NewInt(int64(bf.blockNumber + 1))) {
 		bf.results.nextBaseFee = eip1559.CalcBaseFee(config, bf.header)
 	} else {
 		bf.results.nextBaseFee = new(big.Int)

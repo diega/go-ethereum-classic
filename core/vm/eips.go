@@ -27,6 +27,7 @@ import (
 )
 
 var activators = map[int]func(*JumpTable){
+	160:  enable160,
 	5656: enable5656,
 	6780: enable6780,
 	3855: enable3855,
@@ -165,6 +166,12 @@ func enable2929(jt *JumpTable) {
 func enable3529(jt *JumpTable) {
 	jt[SSTORE].dynamicGas = gasSStoreEIP3529
 	jt[SELFDESTRUCT].dynamicGas = gasSelfdestructEIP3529
+}
+
+// enable160 applies EIP-160 (EXP gas cost increase from 10 to 50 per byte).
+// https://eips.ethereum.org/EIPS/eip-160
+func enable160(jt *JumpTable) {
+	jt[EXP].dynamicGas = gasExpEIP158
 }
 
 // enable3198 applies EIP-3198 (BASEFEE Opcode)
