@@ -150,6 +150,8 @@ type queue struct {
 	active *sync.Cond
 	closed bool
 
+	revokeHook func(string) // ETC: called by Revoke under lock to also revoke header requests
+
 	logTime time.Time // Time instance when status was last reported
 }
 
@@ -493,6 +495,9 @@ func (q *queue) Revoke(peerID string) {
 	q.lock.Lock()
 	defer q.lock.Unlock()
 
+	if q.revokeHook != nil {
+		q.revokeHook(peerID)
+	}
 	if request, ok := q.blockPendPool[peerID]; ok {
 		for _, header := range request.Headers {
 			q.blockTaskQueue.Push(header, -int64(header.Number.Uint64()))
