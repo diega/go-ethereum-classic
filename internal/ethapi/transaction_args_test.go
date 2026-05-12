@@ -370,6 +370,9 @@ func (b *backendMock) Pending() (*types.Block, types.Receipts, *state.StateDB) {
 func (b *backendMock) GetReceipts(ctx context.Context, hash common.Hash) (types.Receipts, error) {
 	return nil, nil
 }
+func (b *backendMock) GetTd(ctx context.Context, hash common.Hash) *big.Int {
+	return nil
+}
 func (b *backendMock) GetCanonicalReceipt(tx *types.Transaction, blockHash common.Hash, blockNumber, blockIndex uint64) (*types.Receipt, error) {
 	return nil, nil
 }

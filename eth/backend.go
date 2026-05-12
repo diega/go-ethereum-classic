@@ -187,7 +187,10 @@ func New(stack *node.Node, config *ethconfig.Config) (*Ethereum, error) {
 	if err != nil {
 		return nil, err
 	}
-	engine, err := ethconfig.CreateConsensusEngine(chainConfig, chainDb)
+	// Resolve ethash cache directory relative to datadir (pre-purge3: stack.ResolvePath).
+	// Without this, the relative "etchash" path is created in CWD (e.g. / under systemd).
+	config.Ethash.CacheDir = stack.ResolvePath(config.Ethash.CacheDir)
+	engine, err := ethconfig.CreateConsensusEngineWithConfig(chainConfig, chainDb, config.Ethash, config.Miner.Notify, config.Miner.Noverify)
 	if err != nil {
 		return nil, err
 	}
@@ -355,13 +358,21 @@ func New(stack *node.Node, config *ethconfig.Config) (*Ethereum, error) {
 		BloomCache:     uint64(cacheLimit),
 		RequiredBlocks: config.RequiredBlocks,
 		SnapV2:         config.SnapV2,
+		IsPow:          eth.blockchain.Config().IsPow(),
 	}); err != nil {
 		return nil, err
 	}
 
 	eth.dropper = newDropper(eth.p2pServer.MaxDialedConns(), eth.p2pServer.MaxInboundConns())
 
-	eth.miner = miner.New(eth, config.Miner, eth.engine)
+	if chainConfig.IsPow() {
+		etherbase = config.Miner.PendingFeeRecipient
+		eth.miner = miner.NewPoW(eth, config.Miner, eth.engine, eth.handler.EventMux())
+		go eth.minerUpdate()
+		eth.blockchain.SetPreserve(eth.isLocalBlock)
+	} else {
+		eth.miner = miner.New(eth, config.Miner, eth.engine)
+	}
 	eth.miner.SetExtra(makeExtraData(config.Miner.ExtraData))
 	eth.miner.SetPrioAddresses(config.TxPool.Locals)
 
@@ -407,9 +418,21 @@ func makeExtraData(extra []byte) []byte {
 func (s *Ethereum) APIs() []rpc.API {
 	apis := ethapi.GetAPIs(s.APIBackend)
 
+	// Register ethash engine APIs (eth_getWork, eth_submitWork, etc.) if available.
+	// Removed from consensus.Engine interface in upstream; restored for PoW chains.
+	type engineAPIs interface {
+		APIs(consensus.ChainHeaderReader) []rpc.API
+	}
+	if ea, ok := s.engine.(engineAPIs); ok {
+		apis = append(apis, ea.APIs(s.blockchain)...)
+	}
+
 	// Append all the local APIs and return
 	return append(apis, []rpc.API{
 		{
+			Namespace: "eth",
+			Service:   NewEthereumAPI(s),
+		}, {
 			Namespace: "miner",
 			Service:   NewMinerAPI(s),
 		}, {
@@ -594,6 +617,9 @@ func (s *Ethereum) setupDiscovery() error {
 // Stop implements node.Lifecycle, terminating all internal goroutines used by the
 // Ethereum protocol.
 func (s *Ethereum) Stop() error {
+	// Stop PoW miner if running.
+	s.miner.CloseMining()
+
 	// Stop all the peer-related stuff first.
 	s.discmix.Close()
 	s.dropper.Stop()

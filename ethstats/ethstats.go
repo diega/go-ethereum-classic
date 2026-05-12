@@ -39,6 +39,7 @@ import (
 	ethproto "github.com/ethereum/go-ethereum/eth/protocols/eth"
 	"github.com/ethereum/go-ethereum/event"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/ethereum/go-ethereum/miner"
 	"github.com/ethereum/go-ethereum/node"
 	"github.com/ethereum/go-ethereum/p2p"
 	"github.com/ethereum/go-ethereum/rpc"
@@ -66,6 +67,7 @@ type backend interface {
 	SubscribeNewPayloadEvent(ch chan<- core.NewPayloadEvent) event.Subscription
 	CurrentHeader() *types.Header
 	HeaderByNumber(ctx context.Context, number rpc.BlockNumber) (*types.Header, error)
+	GetTd(ctx context.Context, hash common.Hash) *big.Int
 	Stats() (pending int, queued int)
 	SyncProgress(ctx context.Context) ethereum.SyncProgress
 }
@@ -77,6 +79,13 @@ type fullNodeBackend interface {
 	BlockByNumber(ctx context.Context, number rpc.BlockNumber) (*types.Block, error)
 	CurrentBlock() *types.Header
 	SuggestGasTipCap(ctx context.Context) (*big.Int, error)
+}
+
+// miningNodeBackend encompasses the functionality necessary for a mining node
+// reporting to ethstats
+type miningNodeBackend interface {
+	fullNodeBackend
+	Miner() *miner.Miner
 }
 
 // Service implements an Ethereum netstats reporting daemon that pushes local
@@ -673,6 +682,7 @@ func (s *Service) reportBlock(conn *connWrapper, header *types.Header) error {
 func (s *Service) assembleBlockStats(header *types.Header) *blockStats {
 	// Gather the block infos from the local blockchain
 	var (
+		td     *big.Int
 		txs    []txStats
 		uncles []*types.Header
 	)
@@ -688,6 +698,7 @@ func (s *Service) assembleBlockStats(header *types.Header) *blockStats {
 		if block == nil {
 			return nil
 		}
+		td = s.backend.GetTd(context.Background(), header.Hash())
 		txs = make([]txStats, len(block.Transactions()))
 		for i, tx := range block.Transactions() {
 			txs[i].Hash = tx.Hash()
@@ -698,10 +709,17 @@ func (s *Service) assembleBlockStats(header *types.Header) *blockStats {
 		if header == nil {
 			header = s.backend.CurrentHeader()
 		}
+		td = s.backend.GetTd(context.Background(), header.Hash())
 		txs = []txStats{}
 	}
 	// Assemble and return the block stats
 	author, _ := s.engine.Author(header)
+
+	// Handle nil TD gracefully (shouldn't happen but be safe)
+	tdStr := "0"
+	if td != nil {
+		tdStr = td.String()
+	}
 
 	return &blockStats{
 		Number:     header.Number,
@@ -712,7 +730,7 @@ func (s *Service) assembleBlockStats(header *types.Header) *blockStats {
 		GasUsed:    header.GasUsed,
 		GasLimit:   header.GasLimit,
 		Diff:       header.Difficulty.String(),
-		TotalDiff:  "0", // unknown post-merge with pruned chain tail
+		TotalDiff:  tdStr,
 		Txs:        txs,
 		TxHash:     header.TxHash,
 		Root:       header.Root,
@@ -797,21 +815,30 @@ func (s *Service) reportPending(conn *connWrapper) error {
 type nodeStats struct {
 	Active   bool `json:"active"`
 	Syncing  bool `json:"syncing"`
+	Mining   bool `json:"mining"`
+	Hashrate int  `json:"hashrate"`
 	Peers    int  `json:"peers"`
 	GasPrice int  `json:"gasPrice"`
 	Uptime   int  `json:"uptime"`
 }
 
-// reportStats retrieves various stats about the node at the networking layer
-// and reports it to the stats server.
+// reportStats retrieves various stats about the node at the networking and
+// mining layer and reports it to the stats server.
 func (s *Service) reportStats(conn *connWrapper) error {
-	// Gather the syncing infos from the local miner instance
+	// Gather the syncing and mining infos from the local miner instance
 	var (
+		mining   bool
+		hashrate int
 		syncing  bool
 		gasprice int
 	)
 	// check if backend is a full node
 	if fullBackend, ok := s.backend.(fullNodeBackend); ok {
+		if miningBackend, ok := s.backend.(miningNodeBackend); ok {
+			mining = miningBackend.Miner().Mining()
+			hashrate = int(miningBackend.Miner().Hashrate())
+		}
+
 		sync := fullBackend.SyncProgress(context.Background())
 		syncing = !sync.Done()
 
@@ -831,6 +858,8 @@ func (s *Service) reportStats(conn *connWrapper) error {
 		"id": s.node,
 		"stats": &nodeStats{
 			Active:   true,
+			Mining:   mining,
+			Hashrate: hashrate,
 			Peers:    s.server.PeerCount(),
 			GasPrice: gasprice,
 			Syncing:  syncing,

@@ -32,6 +32,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/event"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/params"
 )
@@ -66,6 +67,17 @@ type ForkChoice struct {
 	// warranted by TD should actually be applied.  Returns nil if allowed,
 	// non-nil error if the reorg must be rejected.
 	reorgFilter func(current, extern *types.Header) error
+
+	// sideBlockFeed delivers the headers of blocks that lost the fork choice
+	// (were not adopted as canonical) to subscribers — namely the PoW miner,
+	// which collects them as uncle candidates.
+	sideBlockFeed event.Feed
+}
+
+// SubscribeSideBlocks registers a subscription for side-block headers (uncle
+// candidates) surfaced by the fork choice.
+func (f *ForkChoice) SubscribeSideBlocks(ch chan<- ChainSideEvent) event.Subscription {
+	return f.sideBlockFeed.Subscribe(ch)
 }
 
 func NewForkChoice(chainReader ChainReader, preserve func(header *types.Header) bool) *ForkChoice {
@@ -86,7 +98,14 @@ func NewForkChoice(chainReader ChainReader, preserve func(header *types.Header) 
 // In the td mode, the new head is chosen if the corresponding
 // total difficulty is higher. In the extern mode, the trusted
 // header is always selected as the head.
-func (f *ForkChoice) ReorgNeeded(current *types.Header, extern *types.Header) (bool, error) {
+func (f *ForkChoice) ReorgNeeded(current *types.Header, extern *types.Header) (needed bool, err error) {
+	// When the external header is not adopted as the new canonical head it is a
+	// side block — an uncle candidate for the PoW miner. Notify subscribers.
+	defer func() {
+		if err == nil && !needed {
+			f.sideBlockFeed.Send(ChainSideEvent{Header: extern})
+		}
+	}()
 	var (
 		localTD  = f.chain.GetTd(current.Hash(), current.Number.Uint64())
 		externTd = f.chain.GetTd(extern.Hash(), extern.Number.Uint64())
