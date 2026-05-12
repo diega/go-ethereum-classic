@@ -502,6 +502,9 @@ type ChainConfig struct {
 	ECIP1017EraRounds  *big.Int `json:"ecip1017EraRounds,omitempty"`  // ECIP-1017 era length (5M mainnet, 2M Mordor)
 	ECIP1010Transition *big.Int `json:"ecip1010Transition,omitempty"` // ECIP-1010 DieHard bomb pause block
 	ECIP1010Length     *big.Int `json:"ecip1010Length,omitempty"`     // ECIP-1010 pause duration
+	// ECBP-1100 (MESS) artificial finality — "Transition" suffix excludes from Fork ID (matching core-geth)
+	ECBP1100Transition           *big.Int `json:"ecbp1100Transition,omitempty"`           // ECBP-1100 activation block (optional)
+	ECBP1100DeactivateTransition *big.Int `json:"ecbp1100DeactivateTransition,omitempty"` // ECBP-1100 deactivation block (optional)
 }
 
 // EthashConfig is the consensus engine configs for proof-of-work based sealing.

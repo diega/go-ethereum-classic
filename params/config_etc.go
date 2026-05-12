@@ -64,8 +64,10 @@ var (
 		ECIP1099Block:                big.NewInt(11_700_000), // Etchash (60k epochs)
 		SpiralBlock:                  big.NewInt(19_250_000), // Spiral (partial Shanghai)
 		ECIP1017EraRounds:            big.NewInt(5_000_000),  // Era length: 5M blocks
-		ECIP1010Transition: big.NewInt(3_000_000), // DieHard bomb pause
-		ECIP1010Length:     big.NewInt(2_000_000), // Pause duration
+		ECIP1010Transition:           big.NewInt(3_000_000),  // DieHard bomb pause
+		ECIP1010Length:               big.NewInt(2_000_000),  // Pause duration
+		ECBP1100Transition:           big.NewInt(11_380_000), // MESS activation
+		ECBP1100DeactivateTransition: big.NewInt(19_250_000), // MESS deactivation (same as Spiral)
 		// Consensus engine
 		Ethash: new(EthashConfig),
 	}
@@ -201,6 +203,19 @@ func (c *ChainConfig) IsEIP1559(num *big.Int) bool {
 		return false // no perpetual PoW chain has activated a fee market so far
 	}
 	return c.IsLondon(num)
+}
+
+// IsECBP1100 returns true if MESS (ECBP-1100) is configured to be active at the given block.
+// - If ECBP1100Transition == nil, returns false (not configured)
+// - If ECBP1100Transition <= num < ECBP1100DeactivateTransition, returns true
+func (c *ChainConfig) IsECBP1100(num *big.Int) bool {
+	// If no config for blocks, MESS is not activated by default
+	if c.ECBP1100Transition == nil {
+		return false
+	}
+	// If configured, verify the block has passed activation and not yet deactivated
+	return isBlockForked(c.ECBP1100Transition, num) &&
+		!isBlockForked(c.ECBP1100DeactivateTransition, num)
 }
 
 // IsECIP1017 returns whether num is either equal to the ECIP-1017 transition block or greater.

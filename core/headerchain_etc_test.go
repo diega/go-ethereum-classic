@@ -97,7 +97,7 @@ func TestHeaderInsertionStrictTd(t *testing.T) {
 
 	mustInsert := func(name string, chain []*types.Header) {
 		t.Helper()
-		if _, err := hc.InsertHeaderChain(chain, time.Now()); err != nil {
+		if _, err := hc.InsertHeaderChain(chain, time.Now(), nil); err != nil {
 			t.Fatalf("%s: insert: %v", name, err)
 		}
 	}
@@ -164,5 +164,51 @@ func TestWriteHeadersIsPowGateAllowsPosWithEthashConfig(t *testing.T) {
 	// IsPow() is false for this config.
 	if _, err := hc.WriteHeaders(chain); err != nil {
 		t.Fatalf("WriteHeaders should accept missing TD on non-PoW config, got %v", err)
+	}
+}
+
+type headerChainTDReader struct {
+	hc     *HeaderChain
+	config *params.ChainConfig
+}
+
+func (r *headerChainTDReader) Config() *params.ChainConfig            { return r.config }
+func (r *headerChainTDReader) GetTd(h common.Hash, n uint64) *big.Int { return r.hc.GetTd(h, n) }
+
+// TestHeaderInsertionForkChoiceTD checks that InsertHeaderChain applies the TD fork
+// choice at the header level: a lower-total-difficulty competing header chain is not
+// adopted as the head. Without threading the fork choicer into writeHeadersAndSetHead
+// the header head would blindly follow the last inserted chain.
+func TestHeaderInsertionForkChoiceTD(t *testing.T) {
+	var (
+		db    = rawdb.NewMemoryDatabase()
+		gspec = &Genesis{BaseFee: big.NewInt(params.InitialBaseFee), Config: params.AllEthashProtocolChanges}
+	)
+	if _, err := gspec.Commit(db, triedb.NewDatabase(db, nil), nil); err != nil {
+		t.Fatal(err)
+	}
+	hc, err := NewHeaderChain(db, gspec.Config, ethash.NewFaker(), func() bool { return false })
+	if err != nil {
+		t.Fatal(err)
+	}
+	genDb, chainA := makeHeaderChainWithGenesis(gspec, 64, ethash.NewFaker(), 10)
+	// chainB branches off chainA[0] and is shorter -> strictly lower total difficulty.
+	chainB := makeHeaderChain(gspec.Config, chainA[0], 16, ethash.NewFaker(), genDb, 11)
+
+	forker := NewForkChoice(&headerChainTDReader{hc: hc, config: gspec.Config}, nil)
+
+	if _, err := hc.InsertHeaderChain(chainA, time.Now(), forker); err != nil {
+		t.Fatalf("insert chainA: %v", err)
+	}
+	headA := chainA[len(chainA)-1].Hash()
+	if hc.CurrentHeader().Hash() != headA {
+		t.Fatal("chainA was not adopted as the head")
+	}
+
+	if _, err := hc.InsertHeaderChain(chainB, time.Now(), forker); err != nil {
+		t.Fatalf("insert chainB: %v", err)
+	}
+	if hc.CurrentHeader().Hash() != headA {
+		t.Fatal("lower-TD chainB was adopted; fork choice not applied at header level")
 	}
 }

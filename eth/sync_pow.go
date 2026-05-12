@@ -92,10 +92,15 @@ func (cs *chainSyncer) loop() {
 		select {
 		case <-cs.peerEventCh:
 			// Peer information changed, recheck.
-		case <-cs.doneCh:
+		case err := <-cs.doneCh:
 			cs.doneCh = nil
 			cs.force.Reset(forceSyncCycle)
 			cs.forced = false
+
+			// If sync completed successfully, check MESS activation
+			if err == nil {
+				cs.checkMESSActivation()
+			}
 
 		case <-cs.force.C:
 			cs.forced = true
@@ -137,6 +142,8 @@ func (cs *chainSyncer) nextSyncOp() *chainSyncOp {
 	mode, ourTD := cs.modeAndLocalHead()
 	op := peerToSyncOp(mode, peer)
 	if op.td.Cmp(ourTD) <= 0 {
+		// We're in sync, check MESS activation
+		cs.checkMESSActivation()
 		return nil // We're in sync
 	}
 	return op
