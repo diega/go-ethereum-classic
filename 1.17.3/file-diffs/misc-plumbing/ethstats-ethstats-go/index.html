@@ -706,7 +706,7 @@
 </tbody>
 </table>
 <blockquote>
-<p>Report PoW-specific stats (hashrate, difficulty)</p>
+<p>Add GetTd to the backend interface and report total difficulty (with nil-safe fallback)</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/ethstats/ethstats.go b/ethstats/ethstats.go</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index c17e22516..a73013865 100644</span>

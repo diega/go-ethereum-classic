@@ -706,7 +706,7 @@
 </tbody>
 </table>
 <blockquote>
-<p>Add ethash dependencies (hashicorp/golang-lru)</p>
+<p>Add github.com/edsrzf/mmap-go (Ethash DAG mmap) and promote gonum.org/v1/gonum to a direct dependency (used by consensus/ethash/sealer.go)</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/go.mod b/go.mod</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 17897a62c..3957f9295 100644</span>

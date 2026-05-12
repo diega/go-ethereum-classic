@@ -706,7 +706,7 @@
 </tbody>
 </table>
 <blockquote>
-<p>Pass chainConfig.ChainID to EVM context</p>
+<p>Treat London-without-EIP-1559 (Mystique) as zero base fee in NewEVMBlockContext</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/core/evm.go b/core/evm.go</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 73e4c01a9..fbd0d1233 100644</span>

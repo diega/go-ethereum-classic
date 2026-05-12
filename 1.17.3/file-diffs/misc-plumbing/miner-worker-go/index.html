@@ -706,7 +706,7 @@
 </tbody>
 </table>
 <blockquote>
-<p>Use ETC consensus engine for block sealing</p>
+<p>Rename IsLondon→IsEIP1559 in the worker so block sealing honours Mystique (London without EIP-1559)</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/miner/worker.go b/miner/worker.go</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 42e369502..eb9692b7c 100644</span>

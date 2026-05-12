@@ -701,46 +701,35 @@
 </tr>
 <tr>
 <td>Changed</td>
-<td><strong>+3 -4</strong></td>
+<td><strong>+2 -2</strong></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>Update console test for ETC network</p>
+<p>Match the rebranded clientIdentifier (getc) in the welcome banner assertion</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/cmd/geth/consolecmd_test.go b/cmd/geth/consolecmd_test.go</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 12ee7e7dd..9afe2992e 100644</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 12ee7e7dd..c3b198b5f 100644</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gd">--- a/cmd/geth/consolecmd_test.go</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gi">+++ b/cmd/geth/consolecmd_test.go</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -39,9 +39,8 @@ const (</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>// child g gets a temporary data directory.
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span>func runMinimalGeth(t *testing.T, args ...string) *testgeth {
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w"> </span>   // --holesky to make the &#39;writing genesis to disk&#39; faster (no accounts)
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gd">-   // --networkid=1337 to avoid cache bump</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w"> </span>   // --syncmode=full to avoid allocating fast sync bloom
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gd">-   allArgs := []string{&quot;--holesky&quot;, &quot;--networkid&quot;, &quot;1337&quot;, &quot;--authrpc.port&quot;, &quot;0&quot;, &quot;--syncmode=full&quot;, &quot;--port&quot;, &quot;0&quot;,</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gi">+   allArgs := []string{&quot;--holesky&quot;, &quot;--authrpc.port&quot;, &quot;0&quot;, &quot;--syncmode=full&quot;, &quot;--port&quot;, &quot;0&quot;,</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span>       &quot;--nat&quot;, &quot;none&quot;, &quot;--nodiscover&quot;, &quot;--maxpeers&quot;, &quot;0&quot;, &quot;--cache&quot;, &quot;64&quot;,
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w"> </span>       &quot;--datadir.minfreedisk&quot;, &quot;0&quot;}
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>   return runGeth(t, append(allArgs, args...)...)
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gu">@@ -70,7 +69,7 @@ func TestConsoleWelcome(t *testing.T) {</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w"> </span>   geth.Expect(`
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w"> </span>Welcome to the Geth JavaScript console!
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gd">-instance: Geth/v{{gethver}}/{{goos}}-{{goarch}}/{{gover}}</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="gi">+instance: Getc/v{{gethver}}/{{goos}}-{{goarch}}/{{gover}}</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w"> </span>at block: 0 ({{niltime}})
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w"> </span> datadir: {{.Datadir}}
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w"> </span> modules: {{apis}}
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="gu">@@ -141,7 +140,7 @@ func testAttachWelcome(t *testing.T, geth *testgeth, endpoint, apis string) {</span>
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w"> </span>   attach.Expect(`
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w"> </span>Welcome to the Geth JavaScript console!
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="gd">-instance: Geth/v{{gethver}}/{{goos}}-{{goarch}}/{{gover}}</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="gi">+instance: Getc/v{{gethver}}/{{goos}}-{{goarch}}/{{gover}}</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w"> </span>at block: 0 ({{niltime}}){{if ipc}}
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="w"> </span> datadir: {{datadir}}{{end}}
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w"> </span> modules: {{apis}}
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -70,7 +70,7 @@ func TestConsoleWelcome(t *testing.T) {</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>   geth.Expect(`
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span>Welcome to the Geth JavaScript console!
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gd">-instance: Geth/v{{gethver}}/{{goos}}-{{goarch}}/{{gover}}</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gi">+instance: getc/v{{gethver}}/{{goos}}-{{goarch}}/{{gover}}</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w"> </span>at block: 0 ({{niltime}})
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span> datadir: {{.Datadir}}
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span> modules: {{apis}}
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="gu">@@ -141,7 +141,7 @@ func testAttachWelcome(t *testing.T, geth *testgeth, endpoint, apis string) {</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>   attach.Expect(`
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w"> </span>Welcome to the Geth JavaScript console!
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gd">-instance: Geth/v{{gethver}}/{{goos}}-{{goarch}}/{{gover}}</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gi">+instance: getc/v{{gethver}}/{{goos}}-{{goarch}}/{{gover}}</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w"> </span>at block: 0 ({{niltime}}){{if ipc}}
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w"> </span> datadir: {{datadir}}{{end}}
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w"> </span> modules: {{apis}}
 </code></pre></div>
 <p><a href="../../../file-diffs-etc-configuration-and-cli/">← Back to ETC Configuration and CLI</a></p>
 

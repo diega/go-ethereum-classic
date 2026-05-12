@@ -706,7 +706,7 @@
 </tbody>
 </table>
 <blockquote>
-<p>Use ChainID from config instead of hardcoded</p>
+<p>Rename IsLondon→IsEIP1559 to honour the Mystique/ETC chain config (London without EIP-1559)</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/core/txpool/legacypool/legacypool.go b/core/txpool/legacypool/legacypool.go</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 3d66803fd..d4d3390ea 100644</span>

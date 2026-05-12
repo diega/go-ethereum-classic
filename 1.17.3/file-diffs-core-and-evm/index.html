@@ -721,21 +721,21 @@
 <td style="text-align: center;">MOD</td>
 <td style="text-align: right;">649</td>
 <td style="text-align: right;"><strong>+4 -4</strong></td>
-<td>ChainGen with consensus engine for uncle/reward support</td>
+<td>Rename IsLondon→IsEIP1559 to honour the Mystique/ETC chain config (London without EIP-1559)</td>
 </tr>
 <tr>
 <td><a href="../file-diffs/core-and-evm/core-evm-go/"><code>core/evm.go</code></a></td>
 <td style="text-align: center;">MOD</td>
 <td style="text-align: right;">148</td>
 <td style="text-align: right;"><strong>+3 -0</strong></td>
-<td>Pass chainConfig.ChainID to EVM context</td>
+<td>Treat London-without-EIP-1559 (Mystique) as zero base fee in NewEVMBlockContext</td>
 </tr>
 <tr>
 <td><a href="../file-diffs/core-and-evm/core-genesis-go/"><code>core/genesis.go</code></a></td>
 <td style="text-align: center;">MOD</td>
 <td style="text-align: right;">759</td>
 <td style="text-align: right;"><strong>+2 -1</strong></td>
-<td>Write genesis TD to database</td>
+<td>Rename IsLondon→IsEIP1559 in the BaseFee gate and write the genesis TD to the database</td>
 </tr>
 <tr>
 <td><a href="../file-diffs/core-and-evm/core-headerchain-go/"><code>core/headerchain.go</code></a></td>
@@ -749,7 +749,7 @@
 <td style="text-align: center;">MOD</td>
 <td style="text-align: right;">918</td>
 <td style="text-align: right;"><strong>+10 -1</strong></td>
-<td>Re-export ReadTdRLP for external access</td>
+<td>Append a TD placeholder in WriteAncientBlocks so the ChainFreezerDifficultyTable stays aligned with header/body tables</td>
 </tr>
 <tr>
 <td><a href="../file-diffs/core-and-evm/core-rawdb-ancient_scheme-go/"><code>core/rawdb/ancient_scheme.go</code></a></td>
@@ -770,14 +770,14 @@
 <td style="text-align: center;">MOD</td>
 <td style="text-align: right;">809</td>
 <td style="text-align: right;"><strong>+2 -2</strong></td>
-<td>ETC gas cost adjustments</td>
+<td>Honour IsSpiral as an EIP-3860 activator in IntrinsicGas; rename IsLondon→IsEIP1559 in the EIP-1559 path</td>
 </tr>
 <tr>
 <td><a href="../file-diffs/core-and-evm/core-txpool-legacypool-legacypool-go/"><code>core/txpool/legacypool/legacypool.go</code></a></td>
 <td style="text-align: center;">MOD</td>
 <td style="text-align: right;">1861</td>
 <td style="text-align: right;"><strong>+1 -1</strong></td>
-<td>Use ChainID from config instead of hardcoded</td>
+<td>Rename IsLondon→IsEIP1559 to honour the Mystique/ETC chain config (London without EIP-1559)</td>
 </tr>
 <tr>
 <td><a href="../file-diffs/core-and-evm/core-vm-eips-go/"><code>core/vm/eips.go</code></a></td>
@@ -791,7 +791,7 @@
 <td style="text-align: center;">MOD</td>
 <td style="text-align: right;">709</td>
 <td style="text-align: right;"><strong>+10 -1</strong></td>
-<td>Pass chain ID and ETC-specific opcode costs</td>
+<td>Select the Spiral and Mystique opcode tables and honour the IsEIP160 chain rule</td>
 </tr>
 <tr>
 <td><a href="../file-diffs/core-and-evm/core-vm-jump_table_etc-go/"><code>core/vm/jump_table_etc.go</code></a></td>
