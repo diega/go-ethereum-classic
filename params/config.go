@@ -491,6 +491,17 @@ type ChainConfig struct {
 	Ethash             *EthashConfig       `json:"ethash,omitempty"`
 	Clique             *CliqueConfig       `json:"clique,omitempty"`
 	BlobScheduleConfig *BlobScheduleConfig `json:"blobSchedule,omitempty"`
+
+	// ETC-specific fields
+	// Fork fields (WITH "Block" suffix - included in Fork ID calculation)
+	ECIP1017Block *big.Int `json:"ecip1017Block,omitempty"` // ECIP-1017 monetary policy (Gotham)
+	ECIP1041Block *big.Int `json:"ecip1041Block,omitempty"` // ECIP-1041 bomb disposal
+	ECIP1099Block *big.Int `json:"ecip1099Block,omitempty"` // ECIP-1099 Etchash (60k epochs)
+	SpiralBlock   *big.Int `json:"spiralBlock,omitempty"`   // ETC Spiral fork (partial Shanghai)
+	// Configuration fields (no "Block" suffix - excluded from Fork ID)
+	ECIP1017EraRounds  *big.Int `json:"ecip1017EraRounds,omitempty"`  // ECIP-1017 era length (5M mainnet, 2M Mordor)
+	ECIP1010Transition *big.Int `json:"ecip1010Transition,omitempty"` // ECIP-1010 DieHard bomb pause block
+	ECIP1010Length     *big.Int `json:"ecip1010Length,omitempty"`     // ECIP-1010 pause duration
 }
 
 // EthashConfig is the consensus engine configs for proof-of-work based sealing.
@@ -613,6 +624,8 @@ func (c *ChainConfig) Description() string {
 	}
 	banner += fmt.Sprintf("Chain ID:  %v (%s)\n", c.ChainID, network)
 	switch {
+	case c.IsPow():
+		banner += "Consensus: Ethash (proof-of-work)\n"
 	case c.Ethash != nil:
 		banner += "Consensus: Beacon (proof-of-stake), merged from Ethash (proof-of-work)\n"
 	case c.Clique != nil:
@@ -621,6 +634,13 @@ func (c *ChainConfig) Description() string {
 		banner += "Consensus: unknown\n"
 	}
 	banner += "\n"
+
+	// Perpetual PoW chains (ETC, Mordor) never merge and have their own fork
+	// schedule; emit the ETC-named fork list and stop.
+	if c.IsPow() {
+		banner += c.describePoWForks()
+		return banner
+	}
 
 	// Create a list of forks with a short description of them. Forks that only
 	// makes sense for mainnet should be optional at printing to avoid bloating
@@ -918,6 +938,10 @@ func (c *ChainConfig) CheckCompatible(newcfg *ChainConfig, height uint64, time u
 // CheckConfigForkOrder checks that we don't "skip" any forks, geth isn't pluggable enough
 // to guarantee that forks can be implemented in a different order than on official networks
 func (c *ChainConfig) CheckConfigForkOrder() error {
+	// ETC fork-order checks live in params/config_etc.go (single hook, like checkCompatibleETC).
+	if err := c.checkConfigForkOrderETC(); err != nil {
+		return err
+	}
 	type fork struct {
 		name      string
 		block     *big.Int // forks up to - and including the merge - were defined with block numbers
@@ -1124,6 +1148,11 @@ func (c *ChainConfig) checkCompatible(newcfg *ChainConfig, headNumber *big.Int, 
 	}
 	if isForkTimestampIncompatible(c.AmsterdamTime, newcfg.AmsterdamTime, headTimestamp) {
 		return newTimestampCompatError("Amsterdam fork timestamp", c.AmsterdamTime, newcfg.AmsterdamTime)
+	}
+	// ETC fork compatibility lives in params/config_etc.go — a single hook keeps the
+	// in-place change to this upstream function minimal across rebases.
+	if err := c.checkCompatibleETC(newcfg, headNumber); err != nil {
+		return err
 	}
 	return nil
 }
@@ -1375,12 +1404,14 @@ func (err *ConfigCompatError) Error() string {
 // Rules is a one time interface meaning that it shouldn't be used in between transition
 // phases.
 type Rules struct {
-	IsHomestead, IsEIP150, IsEIP155, IsEIP158               bool
+	IsHomestead, IsEIP150, IsEIP155, IsEIP158, IsEIP160     bool
 	IsEIP2929, IsEIP4762                                    bool
 	IsByzantium, IsConstantinople, IsPetersburg, IsIstanbul bool
 	IsBerlin, IsLondon                                      bool
 	IsMerge, IsShanghai, IsCancun, IsPrague, IsOsaka        bool
 	IsAmsterdam, IsUBT                                      bool
+	IsMystique                                              bool
+	IsSpiral                                                bool
 }
 
 // Rules ensures c's ChainID is not nil.
@@ -1388,11 +1419,13 @@ func (c *ChainConfig) Rules(num *big.Int, isMerge bool, timestamp uint64) Rules 
 	// disallow setting Merge out of order
 	isMerge = isMerge && c.IsLondon(num)
 	isUBT := isMerge && c.IsUBT(num, timestamp)
+	isSpiral := c.IsSpiral(num)
 	return Rules{
 		IsHomestead:      c.IsHomestead(num),
 		IsEIP150:         c.IsEIP150(num),
 		IsEIP155:         c.IsEIP155(num),
 		IsEIP158:         c.IsEIP158(num),
+		IsEIP160:         c.isEIP160(num),
 		IsByzantium:      c.IsByzantium(num),
 		IsConstantinople: c.IsConstantinople(num),
 		IsPetersburg:     c.IsPetersburg(num),
@@ -1408,5 +1441,7 @@ func (c *ChainConfig) Rules(num *big.Int, isMerge bool, timestamp uint64) Rules 
 		IsAmsterdam:      isMerge && c.IsAmsterdam(num, timestamp),
 		IsUBT:            isUBT,
 		IsEIP4762:        isUBT,
+		IsMystique:       c.IsLondon(num) && !c.IsEIP1559(num),
+		IsSpiral:         isSpiral,
 	}
 }
