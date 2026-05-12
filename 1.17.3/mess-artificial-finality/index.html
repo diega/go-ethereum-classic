@@ -1022,22 +1022,22 @@ chains that diverge far from the canonical head.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/core/forkchoice_pow.go"><code>core/forkchoice_pow.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/forkchoice_pow.go"><code>core/forkchoice_pow.go</code></a></td>
 <td>Fork choice with MESS reorg filter — ChainReader, ForkChoice, ReorgNeeded, reorgAllowed</td>
 <td style="text-align: right;"><strong>+133 -0</strong></td>
 </tr>
 <tr>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/core/blockchain_mess.go"><code>core/blockchain_mess.go</code></a> · <a href="../file-diffs/mess-artificial-finality/core-blockchain_mess-go/">diff</a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/blockchain_mess.go"><code>core/blockchain_mess.go</code></a> · <a href="../file-diffs/mess-artificial-finality/core-blockchain_mess-go/">diff</a></td>
 <td>MESS algorithm — ecbp1100 polynomial, findCommonAncestor, NewForkChoiceWithMESS</td>
 <td style="text-align: right;"><strong>+261 -0</strong></td>
 </tr>
 <tr>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/core/blockchain_mess_test.go"><code>core/blockchain_mess_test.go</code></a> · <a href="../file-diffs/mess-artificial-finality/core-blockchain_mess_test-go/">diff</a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/blockchain_mess_test.go"><code>core/blockchain_mess_test.go</code></a> · <a href="../file-diffs/mess-artificial-finality/core-blockchain_mess_test-go/">diff</a></td>
 <td>MESS unit tests</td>
 <td style="text-align: right;"><strong>+620 -0</strong></td>
 </tr>
 <tr>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/eth/sync_mess.go"><code>eth/sync_mess.go</code></a> · <a href="../file-diffs/mess-artificial-finality/eth-sync_mess-go/">diff</a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/sync_mess.go"><code>eth/sync_mess.go</code></a> · <a href="../file-diffs/mess-artificial-finality/eth-sync_mess-go/">diff</a></td>
 <td>MESS activation control — messSafetyLoop, checkMESSActivation, shouldEnableMESS</td>
 <td style="text-align: right;"><strong>+107 -0</strong></td>
 </tr>
@@ -1059,35 +1059,35 @@ chains that diverge far from the canonical head.</p>
 <tr>
 <td><code>ChainReader</code></td>
 <td><a href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/core/forkchoice.go">forkchoice</a></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/core/forkchoice_pow.go">forkchoice_pow</a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/forkchoice_pow.go">forkchoice_pow</a></td>
 <td>✅</td>
 <td><a href="../diffs/fork-choice/chainreader/">view</a></td>
 </tr>
 <tr>
 <td><code>ForkChoice</code> 📋</td>
 <td><a href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/core/forkchoice.go">forkchoice</a></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/core/forkchoice_pow.go">forkchoice_pow</a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/forkchoice_pow.go">forkchoice_pow</a></td>
 <td><strong>+5 -0</strong></td>
 <td><a href="../diffs/fork-choice/forkchoice/">view</a></td>
 </tr>
 <tr>
 <td><code>NewForkChoice</code></td>
 <td><a href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/core/forkchoice.go">forkchoice</a></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/core/forkchoice_pow.go">forkchoice_pow</a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/forkchoice_pow.go">forkchoice_pow</a></td>
 <td>✅</td>
 <td><a href="../diffs/fork-choice/newforkchoice/">view</a></td>
 </tr>
 <tr>
 <td><code>ForkChoice.ReorgNeeded</code> 📋</td>
 <td><a href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/core/forkchoice.go">forkchoice</a></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/core/forkchoice_pow.go">forkchoice_pow</a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/forkchoice_pow.go">forkchoice_pow</a></td>
 <td><strong>+5 -9</strong></td>
 <td><a href="../diffs/fork-choice/forkchoice-reorgneeded/">view</a></td>
 </tr>
 <tr>
 <td><code>ForkChoice.reorgAllowed</code></td>
 <td>—</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/core/forkchoice_pow.go">forkchoice_pow</a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/forkchoice_pow.go">forkchoice_pow</a></td>
 <td>🆕</td>
 <td><a href="../diffs/fork-choice/forkchoice-reorgallowed/">view</a></td>
 </tr>
@@ -1110,7 +1110,7 @@ chains that diverge far from the canonical head.</p>
 <tbody>
 <tr>
 <td style="text-align: right;">1</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/params/config.go#L497-L507"><code>params/config.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/params/config.go#L497-L507"><code>params/config.go</code></a></td>
 <td>ChainConfig ETC fields</td>
 <td>497-507</td>
 <td>ECIP fork blocks (1017/1041/1099/Spiral), era rounds, DieHard bomb pause, MESS (ECBP-1100) activation/deactivation</td>
@@ -1118,7 +1118,7 @@ chains that diverge far from the canonical head.</p>
 </tr>
 <tr>
 <td style="text-align: right;">2</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/eth/handler.go#L126-L127"><code>eth/handler.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/handler.go#L126-L127"><code>eth/handler.go</code></a></td>
 <td>handler.messForceEnable/Disable</td>
 <td>126-127</td>
 <td>MESS emergency override flags propagated from ethconfig</td>
@@ -1126,7 +1126,7 @@ chains that diverge far from the canonical head.</p>
 </tr>
 <tr>
 <td style="text-align: right;">3</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/eth/ethconfig/config.go#L214-L215"><code>eth/ethconfig/config.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/ethconfig/config.go#L214-L215"><code>eth/ethconfig/config.go</code></a></td>
 <td>Config.MESSForceEnable/Disable</td>
 <td>214-215</td>
 <td>Emergency MESS overrides — force enable or force disable regardless of chain config</td>
@@ -1149,7 +1149,7 @@ chains that diverge far from the canonical head.</p>
 <tbody>
 <tr>
 <td style="text-align: right;">4</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/eth/handler.go#L467-L477"><code>eth/handler.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/handler.go#L467-L477"><code>eth/handler.go</code></a></td>
 <td>isPow in Start (PoW syncer)</td>
 <td>467-477</td>
 <td>Starts chainSyncer, block fetcher, and MESS safety loop for PoW chains</td>
@@ -1157,7 +1157,7 @@ chains that diverge far from the canonical head.</p>
 </tr>
 <tr>
 <td style="text-align: right;">5</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/core/blockchain.go#L428-L429"><code>core/blockchain.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/blockchain.go#L428-L429"><code>core/blockchain.go</code></a></td>
 <td>IsPow in NewBlockChain</td>
 <td>428-429</td>
 <td>Initializes ForkChoice with MESS for PoW chains</td>
@@ -1180,7 +1180,7 @@ chains that diverge far from the canonical head.</p>
 <tbody>
 <tr>
 <td style="text-align: right;">6</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3/eth/backend.go#L343-L344"><code>eth/backend.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/backend.go#L343-L344"><code>eth/backend.go</code></a></td>
 <td>MESS flags passthrough</td>
 <td>343-344</td>
 <td>Passes MESSForceEnable/Disable from ethconfig to handler config</td>
