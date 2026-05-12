@@ -32,12 +32,8 @@ const (
 // Unexported devp2p protocol lengths from p2p package.
 const (
 	baseProtoLen = 16
-	ethProtoLen  = 18
-	// snapProtoLen accommodates snap/2 (EIP-8189) which extends snap/1 with two
-	// additional message codes (GetBlockAccessLists=0x08, BlockAccessLists=0x09).
-	// Using 10 is safe for snap/1 connections because the extra codes are simply
-	// never used on that protocol version.
-	snapProtoLen = 10
+	ethProtoLen  = 17 // ETH/68 has 17 messages (0x00-0x10)
+	snapProtoLen = 8
 )
 
 // Unexported handshake structure from p2p/peer.go.
