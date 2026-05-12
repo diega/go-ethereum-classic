@@ -117,7 +117,7 @@ func (ethash *Ethash) VerifyHeader(chain consensus.ChainHeaderReader, header *ty
 // a results channel to retrieve the async verifications.
 func (ethash *Ethash) VerifyHeaders(chain consensus.ChainHeaderReader, headers []*types.Header) (chan<- struct{}, <-chan error) {
 	// If we're running a full engine faking, accept any input as valid
-	if ethash.fakeFull || len(headers) == 0 {
+	if ethash.config.PowMode == ModeFullFake || len(headers) == 0 {
 		abort, results := make(chan struct{}), make(chan error, len(headers))
 		for i := 0; i < len(headers); i++ {
 			results <- nil
@@ -156,7 +156,7 @@ func (ethash *Ethash) VerifyHeaders(chain consensus.ChainHeaderReader, headers [
 // rules of the stock Ethereum ethash engine.
 func (ethash *Ethash) VerifyUncles(chain consensus.ChainReader, block *types.Block) error {
 	// If we're running a full engine faking, accept any input as valid
-	if ethash.fakeFull {
+	if ethash.config.PowMode == ModeFullFake {
 		return nil
 	}
 	// Verify that there are at most 2 uncles included in this block
@@ -247,7 +247,7 @@ func (ethash *Ethash) verifyHeader(chain consensus.ChainHeaderReader, header, pa
 		return fmt.Errorf("invalid gasUsed: have %d, gasLimit %d", header.GasUsed, header.GasLimit)
 	}
 	// Verify the block's gas usage and (if applicable) verify the base fee.
-	if !chain.Config().IsLondon(header.Number) {
+	if !chain.Config().IsEIP1559(header.Number) {
 		// Verify BaseFee not present before EIP-1559 fork.
 		if header.BaseFee != nil {
 			return fmt.Errorf("invalid baseFee before fork: have %d, expected 'nil'", header.BaseFee)
@@ -285,10 +285,8 @@ func (ethash *Ethash) verifyHeader(chain consensus.ChainHeaderReader, header, pa
 		return fmt.Errorf("invalid slotNumber, have %#x, expected nil", *header.SlotNumber)
 	}
 	// Add some fake checks for tests
-	if ethash.fakeDelay != nil {
-		time.Sleep(*ethash.fakeDelay)
-	}
-	if ethash.fakeFail != nil && *ethash.fakeFail == header.Number.Uint64() {
+	time.Sleep(ethash.fakeDelay)
+	if ethash.fakeFail == header.Number.Uint64() {
 		return errors.New("invalid tester pow")
 	}
 	// If all checks passed, validate any special fields for hard forks
@@ -551,11 +549,107 @@ func (ethash *Ethash) SealHash(header *types.Header) (hash common.Hash) {
 	return hash
 }
 
+// Some weird constants to avoid constant memory allocs for them.
+var (
+	big8  = uint256.NewInt(8)
+	big32 = uint256.NewInt(32)
+)
+
+// getBlockEra gets which "Era" a given block is within, given an era length
+// (ECIP-1017 has era=5,000,000 blocks). Returns a zero-indexed era number,
+// so "Era 1": 0, "Era 2": 1, "Era 3": 2 ...
+// Ported from core-geth params/mutations/rewards_classic.go.
+func getBlockEra(blockNum, eraLength *big.Int) *big.Int {
+	// If genesis block or impossible negative-numbered block, return zero-val.
+	if blockNum.Sign() < 1 {
+		return new(big.Int)
+	}
+
+	remainder := big.NewInt(0).Mod(big.NewInt(0).Sub(blockNum, big.NewInt(1)), eraLength)
+	base := big.NewInt(0).Sub(blockNum, remainder)
+
+	d := big.NewInt(0).Div(base, eraLength)
+	dremainder := big.NewInt(0).Mod(d, big.NewInt(1))
+
+	return new(big.Int).Sub(d, dremainder)
+}
+
+// getBlockWinnerRewardByEra gets a block reward at disinflation rate.
+// MaxBlockReward * (4/5)**era == MaxBlockReward * (4**era) / (5**era).
+// Ported from core-geth params/mutations/rewards.go.
+func getBlockWinnerRewardByEra(era *big.Int, blockReward *uint256.Int) *uint256.Int {
+	if era.Cmp(big.NewInt(0)) == 0 {
+		return new(uint256.Int).Set(blockReward)
+	}
+
+	var q, d, r *uint256.Int = new(uint256.Int), new(uint256.Int), new(uint256.Int)
+
+	q.Exp(params.DisinflationRateQuotient, uint256.MustFromBig(era))
+	d.Exp(params.DisinflationRateDivisor, uint256.MustFromBig(era))
+
+	r.Mul(blockReward, q)
+	r.Div(r, d)
+
+	return r
+}
+
+// getBlockUncleRewardByEra gets the uncle miner reward for a given era.
+// Era 1 (index 0): standard ETH-style sliding scale uncle reward.
+// Era 2+: uncle miners get 1/32 of the era-adjusted block reward.
+// Ported from core-geth params/mutations/rewards.go.
+func getBlockUncleRewardByEra(era *big.Int, header, uncle *types.Header, blockReward *uint256.Int) *uint256.Int {
+	// Era 1 (index 0): standard sliding-scale uncle reward
+	if era.Cmp(big.NewInt(0)) == 0 {
+		r := new(uint256.Int)
+		r.Add(uint256.MustFromBig(uncle.Number), big8)
+		r.Sub(r, uint256.MustFromBig(header.Number))
+		r.Mul(r, blockReward)
+		r.Div(r, big8)
+		return r
+	}
+	// Era 2+: flat 1/32 of era-adjusted winner reward
+	return new(uint256.Int).Div(getBlockWinnerRewardByEra(era, blockReward), big32)
+}
+
+// getBlockWinnerRewardForUnclesByEra gets the winner's inclusion reward
+// for each uncle included in the block. Always 1/32 of the era-adjusted
+// block reward per uncle, regardless of era.
+// Ported from core-geth params/mutations/rewards.go.
+func getBlockWinnerRewardForUnclesByEra(era *big.Int, uncles []*types.Header, blockReward *uint256.Int) *uint256.Int {
+	r := uint256.NewInt(0)
+	for range uncles {
+		r.Add(r, new(uint256.Int).Div(getBlockWinnerRewardByEra(era, blockReward), big32))
+	}
+	return r
+}
+
 // accumulateRewards credits the coinbase of the given block with the mining
 // reward. The total reward consists of the static block reward and rewards for
 // included uncles. The coinbase of each uncle block is also rewarded.
 func accumulateRewards(config *params.ChainConfig, stateDB vm.StateDB, header *types.Header, uncles []*types.Header) {
-	// Select the correct block reward based on chain progression
+	// ECIP-1017: ETC monetary policy with era-based disinflation.
+	// Base reward is always 5 ETC (FrontierBlockReward), reduced by 20% per era.
+	if config.ECIP1017EraRounds != nil && config.ECIP1017EraRounds.Sign() > 0 {
+		blockReward := FrontierBlockReward
+		era := getBlockEra(header.Number, config.ECIP1017EraRounds)
+
+		// Winner reward (era-adjusted)
+		reward := getBlockWinnerRewardByEra(era, blockReward)
+
+		// Winner uncle inclusion reward (1/32 of era-adjusted reward per uncle)
+		reward.Add(reward, getBlockWinnerRewardForUnclesByEra(era, uncles, blockReward))
+
+		// Uncle miner rewards
+		for _, uncle := range uncles {
+			ur := getBlockUncleRewardByEra(era, header, uncle, blockReward)
+			stateDB.AddBalance(uncle.Coinbase, ur, tracing.BalanceIncreaseRewardMineUncle)
+		}
+
+		stateDB.AddBalance(header.Coinbase, reward, tracing.BalanceIncreaseRewardMineBlock)
+		return
+	}
+
+	// Standard ETH reward schedule (Frontier -> Byzantium -> Constantinople)
 	blockReward := FrontierBlockReward
 	if config.IsByzantium(header.Number) {
 		blockReward = ByzantiumBlockReward

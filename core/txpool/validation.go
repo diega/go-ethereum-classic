@@ -77,8 +77,8 @@ func ValidateTransaction(tx *types.Transaction, head *types.Header, signer types
 	if !rules.IsBerlin && tx.Type() != types.LegacyTxType {
 		return fmt.Errorf("%w: type %d rejected, pool not yet in Berlin", core.ErrTxTypeNotSupported, tx.Type())
 	}
-	if !rules.IsLondon && tx.Type() == types.DynamicFeeTxType {
-		return fmt.Errorf("%w: type %d rejected, pool not yet in London", core.ErrTxTypeNotSupported, tx.Type())
+	if !rules.IsEIP1559 && tx.Type() == types.DynamicFeeTxType {
+		return fmt.Errorf("%w: type %d rejected, EIP-1559 not active", core.ErrTxTypeNotSupported, tx.Type())
 	}
 	if !rules.IsCancun && tx.Type() == types.BlobTxType {
 		return fmt.Errorf("%w: type %d rejected, pool not yet in Cancun", core.ErrTxTypeNotSupported, tx.Type())
@@ -125,7 +125,7 @@ func ValidateTransaction(tx *types.Transaction, head *types.Header, signer types
 	}
 	// Ensure the transaction has more gas than the bare minimum needed to cover
 	// the transaction metadata
-	intrGas, err := core.IntrinsicGas(tx.Data(), tx.AccessList(), tx.SetCodeAuthorizations(), tx.To() == nil, true, rules.IsIstanbul, rules.IsShanghai, rules.IsAmsterdam)
+	intrGas, err := core.IntrinsicGas(tx.Data(), tx.AccessList(), tx.SetCodeAuthorizations(), tx.To() == nil, true, rules.IsIstanbul, rules.IsShanghai || rules.IsSpiral, rules.IsAmsterdam)
 	if err != nil {
 		return err
 	}
