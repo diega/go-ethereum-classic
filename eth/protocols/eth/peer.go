@@ -82,6 +82,8 @@ type Peer struct {
 	receiptBufferLock sync.Mutex                 // Lock for protecting the receiptBuffer
 
 	term chan struct{} // Termination channel to stop the broadcasters
+
+	powExt *PoWPeerExtension // PoW-specific peer state (nil for PoS peers)
 }
 
 // NewPeer creates a wrapper for a network connection and negotiated  protocol

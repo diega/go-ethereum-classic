@@ -34,8 +34,19 @@ const (
 )
 
 // Handshake executes the eth protocol handshake, negotiating version number,
-// network IDs, difficulties, head and genesis blocks.
+// network IDs, difficulties, head and genesis blocks. ETH68 is handled by
+// Handshake68PoW directly from the PoW handler branch; it intentionally
+// has no case here so non-PoW callers never enter a TD-less ETH68 path.
 func (p *Peer) Handshake(networkID uint64, chain forkid.Blockchain, rangeMsg BlockRangeUpdatePacket) error {
+	switch p.version {
+	case ETH70, ETH69:
+		return p.handshake69(networkID, chain, rangeMsg)
+	default:
+		return errors.New("unsupported protocol version")
+	}
+}
+
+func (p *Peer) handshake69(networkID uint64, chain forkid.Blockchain, rangeMsg BlockRangeUpdatePacket) error {
 	var (
 		genesis    = chain.Genesis()
 		latest     = chain.CurrentHeader()
