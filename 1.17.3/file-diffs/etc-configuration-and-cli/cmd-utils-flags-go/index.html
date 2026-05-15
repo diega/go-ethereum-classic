@@ -701,7 +701,7 @@
 </tr>
 <tr>
 <td>Changed</td>
-<td><strong>+40 -4</strong></td>
+<td><strong>+41 -4</strong></td>
 </tr>
 </tbody>
 </table>
@@ -709,7 +709,7 @@
 <p>Register ETC flags and network selection</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/cmd/utils/flags.go b/cmd/utils/flags.go</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index ea0f6f5ee..0e8346e71 100644</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index ea0f6f5ee..5b87db4f2 100644</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gd">--- a/cmd/utils/flags.go</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gi">+++ b/cmd/utils/flags.go</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -1120,9 +1120,10 @@ var (</span>
@@ -771,50 +771,51 @@
 <a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="w"> </span>   // Override any default configs for hard coded networks.
 <a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="w"> </span>   switch {
 <a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="w"> </span>   case ctx.Bool(MainnetFlag.Name):
-<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="gu">@@ -1957,6 +1972,22 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="gu">@@ -1957,6 +1972,23 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {</span>
 <a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a><span class="w"> </span>       cfg.NetworkId = 560048
 <a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a><span class="w"> </span>       cfg.Genesis = core.DefaultHoodiGenesisBlock()
 <a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a><span class="w"> </span>       SetDNSDiscoveryDefaults(cfg, params.HoodiGenesisHash)
 <a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a><span class="gi">+   case ctx.Bool(ClassicFlag.Name):</span>
 <a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a><span class="gi">+       cfg.NetworkId = 1 // ETC uses NetworkID=1 (same as ETH), ChainID=61 is for tx signing</span>
 <a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="gi">+       cfg.Genesis = core.DefaultClassicGenesisBlock()</span>
-<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="gi">+       // ETC shares genesis hash with ETH mainnet, so we set DNS directly</span>
-<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="gi">+       if cfg.EthDiscoveryURLs == nil {</span>
-<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a><span class="gi">+           cfg.EthDiscoveryURLs = []string{&quot;enrtree://AJE62Q4DUX4QMMXEHCSSCSC65TDHZYSMONSD64P3WULVLSF6MRQ3K@all.classic.blockd.info&quot;}</span>
-<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a><span class="gi">+           cfg.SnapDiscoveryURLs = cfg.EthDiscoveryURLs</span>
-<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a><span class="gi">+       }</span>
-<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a><span class="gi">+   case ctx.Bool(MordorFlag.Name):</span>
-<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a><span class="gi">+       cfg.NetworkId = 7 // Mordor uses NetworkID=7, ChainID=63</span>
-<a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a><span class="gi">+       cfg.Genesis = core.DefaultMordorGenesisBlock()</span>
-<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a><span class="gi">+       // Mordor DNS discovery</span>
-<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a><span class="gi">+       if cfg.EthDiscoveryURLs == nil {</span>
-<a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a><span class="gi">+           cfg.EthDiscoveryURLs = []string{&quot;enrtree://AJE62Q4DUX4QMMXEHCSSCSC65TDHZYSMONSD64P3WULVLSF6MRQ3K@all.mordor.blockd.info&quot;}</span>
-<a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a><span class="gi">+           cfg.SnapDiscoveryURLs = cfg.EthDiscoveryURLs</span>
-<a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a><span class="gi">+       }</span>
-<a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a><span class="w"> </span>   case ctx.Bool(DeveloperFlag.Name):
-<a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a><span class="w"> </span>       cfg.NetworkId = 1337
-<a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a><span class="w"> </span>       cfg.SyncMode = ethconfig.FullSync
-<a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a><span class="gu">@@ -2052,7 +2083,8 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {</span>
-<a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a><span class="w"> </span>       }
-<a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a><span class="w"> </span>       cfg.Genesis = genesis
-<a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a><span class="w"> </span>   default:
-<a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a><span class="gd">-       if ctx.Uint64(NetworkIdFlag.Name) == 1 {</span>
-<a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a><span class="gi">+       // Only set mainnet DNS defaults if NetworkId==1 AND not using ETC (which also uses NetworkId=1)</span>
-<a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a><span class="gi">+       if cfg.NetworkId == 1 &amp;&amp; !ctx.Bool(ClassicFlag.Name) {</span>
-<a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a><span class="w"> </span>           SetDNSDiscoveryDefaults(cfg, params.MainnetGenesisHash)
-<a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a><span class="w"> </span>       }
-<a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a><span class="w"> </span>   }
-<a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a><span class="gu">@@ -2403,6 +2435,10 @@ func MakeGenesis(ctx *cli.Context) *core.Genesis {</span>
-<a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a><span class="w"> </span>       genesis = core.DefaultSepoliaGenesisBlock()
-<a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a><span class="w"> </span>   case ctx.Bool(HoodiFlag.Name):
-<a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a><span class="w"> </span>       genesis = core.DefaultHoodiGenesisBlock()
-<a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a><span class="gi">+   case ctx.Bool(ClassicFlag.Name):</span>
-<a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a><span class="gi">+       genesis = core.DefaultClassicGenesisBlock()</span>
-<a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a><span class="gi">+   case ctx.Bool(MordorFlag.Name):</span>
-<a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a><span class="gi">+       genesis = core.DefaultMordorGenesisBlock()</span>
-<a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a><span class="w"> </span>   case ctx.Bool(DeveloperFlag.Name):
-<a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a><span class="w"> </span>       Fatalf(&quot;Developer chains are ephemeral&quot;)
-<a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a><span class="w"> </span>   }
+<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="gi">+       // ETC shares genesis hash with ETH mainnet; KnownDNSNetwork can&#39;t</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="gi">+       // disambiguate by hash, so use the ETC-specific helper keyed off</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a><span class="gi">+       // the ETC chain ID instead.</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a><span class="gi">+       if cfg.EthDiscoveryURLs == nil {</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a><span class="gi">+           cfg.EthDiscoveryURLs = []string{params.ETCDNSNetwork(61, &quot;all&quot;)}</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a><span class="gi">+           cfg.SnapDiscoveryURLs = cfg.EthDiscoveryURLs</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a><span class="gi">+       }</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a><span class="gi">+   case ctx.Bool(MordorFlag.Name):</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a><span class="gi">+       cfg.NetworkId = 7 // Mordor uses NetworkID=7, ChainID=63</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a><span class="gi">+       cfg.Genesis = core.DefaultMordorGenesisBlock()</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a><span class="gi">+       if cfg.EthDiscoveryURLs == nil {</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a><span class="gi">+           cfg.EthDiscoveryURLs = []string{params.ETCDNSNetwork(63, &quot;all&quot;)}</span>
+<a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a><span class="gi">+           cfg.SnapDiscoveryURLs = cfg.EthDiscoveryURLs</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a><span class="gi">+       }</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a><span class="w"> </span>   case ctx.Bool(DeveloperFlag.Name):
+<a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a><span class="w"> </span>       cfg.NetworkId = 1337
+<a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a><span class="w"> </span>       cfg.SyncMode = ethconfig.FullSync
+<a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a><span class="gu">@@ -2052,7 +2084,8 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {</span>
+<a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a><span class="w"> </span>       }
+<a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a><span class="w"> </span>       cfg.Genesis = genesis
+<a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a><span class="w"> </span>   default:
+<a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a><span class="gd">-       if ctx.Uint64(NetworkIdFlag.Name) == 1 {</span>
+<a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a><span class="gi">+       // Only set mainnet DNS defaults if NetworkId==1 AND not using ETC (which also uses NetworkId=1)</span>
+<a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a><span class="gi">+       if cfg.NetworkId == 1 &amp;&amp; !ctx.Bool(ClassicFlag.Name) {</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a><span class="w"> </span>           SetDNSDiscoveryDefaults(cfg, params.MainnetGenesisHash)
+<a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a><span class="w"> </span>       }
+<a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a><span class="w"> </span>   }
+<a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a><span class="gu">@@ -2403,6 +2436,10 @@ func MakeGenesis(ctx *cli.Context) *core.Genesis {</span>
+<a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a><span class="w"> </span>       genesis = core.DefaultSepoliaGenesisBlock()
+<a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a><span class="w"> </span>   case ctx.Bool(HoodiFlag.Name):
+<a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a><span class="w"> </span>       genesis = core.DefaultHoodiGenesisBlock()
+<a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a><span class="gi">+   case ctx.Bool(ClassicFlag.Name):</span>
+<a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a><span class="gi">+       genesis = core.DefaultClassicGenesisBlock()</span>
+<a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a><span class="gi">+   case ctx.Bool(MordorFlag.Name):</span>
+<a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a><span class="gi">+       genesis = core.DefaultMordorGenesisBlock()</span>
+<a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a><span class="w"> </span>   case ctx.Bool(DeveloperFlag.Name):
+<a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a><span class="w"> </span>       Fatalf(&quot;Developer chains are ephemeral&quot;)
+<a id="__codelineno-0-108" name="__codelineno-0-108" href="#__codelineno-0-108"></a><span class="w"> </span>   }
 </code></pre></div>
 <p><a href="../../../file-diffs-etc-configuration-and-cli/">← Back to ETC Configuration and CLI</a></p>
 
