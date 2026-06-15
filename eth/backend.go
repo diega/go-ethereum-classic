@@ -181,6 +181,15 @@ func New(stack *node.Node, config *ethconfig.Config) (*Ethereum, error) {
 		}
 	}
 
+	// One-shot migration of a datadir created by core-geth: it stores the chain
+	// config under the same key but in a different JSON schema, which would otherwise
+	// trip CheckCompatible and rewind the chain. This rewrites it in place on the
+	// first start; afterwards it is a no-op. Safe to remove together with
+	// core/coregeth_migration.go once core-geth is deprecated.
+	if err := core.MigrateCoreGethChainConfig(chainDb); err != nil {
+		return nil, err
+	}
+
 	// Here we determine genesis hash and active ChainConfig.
 	// We need these to figure out the consensus parameters and to set up history pruning.
 	chainConfig, genesisHash, err := core.LoadChainConfig(chainDb, config.Genesis)

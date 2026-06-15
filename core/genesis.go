@@ -457,6 +457,11 @@ func (g *Genesis) chainConfigOrDefault(ghash common.Hash, stored *params.ChainCo
 	switch {
 	case g != nil:
 		return g.Config
+	// ETC shares ETH mainnet's genesis hash, so the hash-based cases below would
+	// misresolve a Classic datadir to mainnet. A stored Classic/Mordor config must win
+	// (IsClassic lives in params/config_etc.go).
+	case stored != nil && stored.IsClassic():
+		return stored
 	case ghash == params.MainnetGenesisHash:
 		return params.MainnetChainConfig
 	case ghash == params.HoleskyGenesisHash:
