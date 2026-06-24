@@ -1,0 +1,1913 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>block_fetcher_pow_test.go - Go Ethereum Classic — Fork Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/etc.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+<script>
+(function() {
+  var m = location.pathname.match(/\/(\d+\.\d+\.\d+)\//);
+  if (!m) return;
+  var tag = "v" + m[1] + "-etc.1";
+  var key = location.pathname + ".__source";
+  var cached = sessionStorage.getItem(key);
+  var data = cached ? JSON.parse(cached) : {stars: 0, forks: 0};
+  data.version = tag;
+  sessionStorage.setItem(key, JSON.stringify(data));
+})();
+</script>
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#block_fetcher_pow_testgo" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Go Ethereum Classic — Fork Documentation" class="md-header__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Go Ethereum Classic — Fork Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              block_fetcher_pow_test.go
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/diega/go-ethereum-classic" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Go Ethereum Classic — Fork Documentation" class="md-nav__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Go Ethereum Classic — Fork Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/diega/go-ethereum-classic" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Understanding the Fork
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Understanding the Fork
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fork-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fork Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../upstream-purges/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upstream Purges & Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Changes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Code Changes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../code-changes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-consensus-and-ethash/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consensus & Ethash
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-total-difficulty-td/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Total Difficulty (TD)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-core-and-evm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core & EVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-sync-and-downloader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sync & Downloader
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-eth-protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eth Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-eth-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eth Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-miner/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Miner
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-mess/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MESS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-rpc-and-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RPC & API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-cli-config-and-genesis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI, Config & Genesis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-build-and-meta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build & Meta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../coverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coverage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fork-only/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fork-only
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../extension-points/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extension Points
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../version-comparison.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Version Comparison
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ETC Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ETC Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ecip-1017-monetary-policy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ECIP-1017 Monetary Policy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mess-artificial-finality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MESS Artificial Finality
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../etc-forks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Forks & ECIPs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quality
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Quality
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../test-status/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#3-way-merge-purge-getc-upstream" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3-way merge — purge → getc ← upstream
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="block_fetcher_pow_testgo">block_fetcher_pow_test.go<a class="headerlink" href="#block_fetcher_pow_testgo" title="Permanent link">&para;</a></h1>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Source (upstream pre-purge)</th>
+<th>Current</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>File</td>
+<td><code>eth/fetcher/block_fetcher_test.go</code></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/fetcher/block_fetcher_pow_test.go"><code>block_fetcher_pow_test.go</code></a></td>
+</tr>
+<tr>
+<td>Symbol</td>
+<td><code>(entire file)</code></td>
+<td><code>(entire file)</code></td>
+</tr>
+<tr>
+<td>Ref</td>
+<td><a href="https://github.com/ethereum/go-ethereum/commit/f4d53133f6e4b13f0dbcfef3bc45e9650d863b73" title="consensus, cmd, core, eth: remove support for non-merge mode of operation (#29169)"><code>f4d53133f</code></a><code>~1</code></td>
+<td><code>etc/v1.17.3-full-node</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Revived from the pre-purge block_fetcher_test.go (upstream removed it when it purged the PoW block fetcher). Tests the announce/fetch paths of the revived block_fetcher_pow.go.</p>
+</blockquote>
+<h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
+<div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-adapted">≈ adapted (origin inferred by similarity)</span><span class="l-fork">fork-only</span></div>
+<div class="tw-code"><div class="tw-inner">
+<div class="fork"><span class="mk"></span>// Copyright 2024 The go-ethereum Authors</div>
+<div class="purge"><span class="mk"></span>// This file is part of the go-ethereum library.</div>
+<div class="purge"><span class="mk"></span>//</div>
+<div class="purge"><span class="mk"></span>// The go-ethereum library is free software: you can redistribute it and/or modify</div>
+<div class="purge"><span class="mk"></span>// it under the terms of the GNU Lesser General Public License as published by</div>
+<div class="purge"><span class="mk"></span>// the Free Software Foundation, either version 3 of the License, or</div>
+<div class="purge"><span class="mk"></span>// (at your option) any later version.</div>
+<div class="purge"><span class="mk"></span>//</div>
+<div class="purge"><span class="mk"></span>// The go-ethereum library is distributed in the hope that it will be useful,</div>
+<div class="purge"><span class="mk"></span>// but WITHOUT ANY WARRANTY; without even the implied warranty of</div>
+<div class="purge"><span class="mk"></span>// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the</div>
+<div class="purge"><span class="mk"></span>// GNU Lesser General Public License for more details.</div>
+<div class="purge"><span class="mk"></span>//</div>
+<div class="purge"><span class="mk"></span>// You should have received a copy of the GNU Lesser General Public License</div>
+<div class="purge"><span class="mk"></span>// along with the go-ethereum library. If not, see &lt;http://www.gnu.org/licenses/&gt;.</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>package fetcher</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>import (</div>
+<div class="purge"><span class="mk"></span>    "errors"</div>
+<div class="purge"><span class="mk"></span>    "math/big"</div>
+<div class="purge"><span class="mk"></span>    "sync"</div>
+<div class="purge"><span class="mk"></span>    "sync/atomic"</div>
+<div class="purge"><span class="mk"></span>    "testing"</div>
+<div class="purge"><span class="mk"></span>    "time"</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/common"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/consensus/ethash"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/core"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/core/rawdb"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/core/types"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/crypto"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/eth/protocols/eth"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/params"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/triedb"</div>
+<div class="purge"><span class="mk"></span>)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>var (</div>
+<div class="purge"><span class="mk"></span>    testdb      = rawdb.NewMemoryDatabase()</div>
+<div class="purge"><span class="mk"></span>    testKey, _  = crypto.HexToECDSA("b71c71a67e1177ad4e901695e1b4b9ee17ae16c6668d313eac2f96dbcda3f291")</div>
+<div class="purge"><span class="mk"></span>    testAddress = crypto.PubkeyToAddress(testKey.PublicKey)</div>
+<div class="purge"><span class="mk"></span>    gspec       = &amp;core.Genesis{</div>
+<div class="purge"><span class="mk"></span>        Config:  params.TestChainConfig,</div>
+<div class="purge"><span class="mk"></span>        Alloc:   types.GenesisAlloc{testAddress: {Balance: big.NewInt(1000000000000000)}},</div>
+<div class="purge"><span class="mk"></span>        BaseFee: big.NewInt(params.InitialBaseFee),</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    genesis      = gspec.MustCommit(testdb, triedb.NewDatabase(testdb, triedb.HashDefaults))</div>
+<div class="purge adapted"><span class="mk"></span>    unknownBlock = types.NewBlockWithHeader(&amp;types.Header{Root: types.EmptyRootHash, GasLimit: params.GenesisGasLimit, BaseFee: big.NewInt(params.InitialBaseFee)})</div>
+<div class="purge"><span class="mk"></span>)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// makeChain creates a chain of n blocks starting at and including parent.</div>
+<div class="purge"><span class="mk"></span>// the returned hash chain is ordered head-&gt;parent. In addition, every 3rd block</div>
+<div class="purge"><span class="mk"></span>// contains a transaction and every 5th an uncle to allow testing correct block</div>
+<div class="purge"><span class="mk"></span>// reassembly.</div>
+<div class="purge"><span class="mk"></span>func makeChain(n int, seed byte, parent *types.Block) ([]common.Hash, map[common.Hash]*types.Block) {</div>
+<div class="purge"><span class="mk"></span>    blocks, _ := core.GenerateChain(gspec.Config, parent, ethash.NewFaker(), testdb, n, func(i int, block *core.BlockGen) {</div>
+<div class="purge"><span class="mk"></span>        block.SetCoinbase(common.Address{seed})</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>        // If the block number is multiple of 3, send a bonus transaction to the miner</div>
+<div class="purge"><span class="mk"></span>        if parent == genesis &amp;&amp; i%3 == 0 {</div>
+<div class="purge"><span class="mk"></span>            signer := types.MakeSigner(params.TestChainConfig, block.Number(), block.Timestamp())</div>
+<div class="purge"><span class="mk"></span>            tx, err := types.SignTx(types.NewTransaction(block.TxNonce(testAddress), common.Address{seed}, big.NewInt(1000), params.TxGas, block.BaseFee(), nil), signer, testKey)</div>
+<div class="purge"><span class="mk"></span>            if err != nil {</div>
+<div class="purge"><span class="mk"></span>                panic(err)</div>
+<div class="purge"><span class="mk"></span>            }</div>
+<div class="purge"><span class="mk"></span>            block.AddTx(tx)</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        // If the block number is a multiple of 5, add a bonus uncle to the block</div>
+<div class="purge"><span class="mk"></span>        if i &gt; 0 &amp;&amp; i%5 == 0 {</div>
+<div class="purge"><span class="mk"></span>            block.AddUncle(&amp;types.Header{ParentHash: block.PrevBlock(i - 2).Hash(), Number: big.NewInt(int64(i - 1))})</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>    })</div>
+<div class="purge"><span class="mk"></span>    hashes := make([]common.Hash, n+1)</div>
+<div class="purge"><span class="mk"></span>    hashes[len(hashes)-1] = parent.Hash()</div>
+<div class="purge"><span class="mk"></span>    blockm := make(map[common.Hash]*types.Block, n+1)</div>
+<div class="purge"><span class="mk"></span>    blockm[parent.Hash()] = parent</div>
+<div class="purge"><span class="mk"></span>    for i, b := range blocks {</div>
+<div class="purge"><span class="mk"></span>        hashes[len(hashes)-i-2] = b.Hash()</div>
+<div class="purge"><span class="mk"></span>        blockm[b.Hash()] = b</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    return hashes, blockm</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="fork"><span class="mk"></span>// fetcherTesterPoW is a test simulator for mocking out local block chain.</div>
+<div class="fork"><span class="mk"></span>type fetcherTesterPoW struct {</div>
+<div class="purge"><span class="mk"></span>    fetcher *BlockFetcher</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    hashes  []common.Hash                 // Hash chain belonging to the tester</div>
+<div class="purge"><span class="mk"></span>    headers map[common.Hash]*types.Header // Headers belonging to the tester</div>
+<div class="purge"><span class="mk"></span>    blocks  map[common.Hash]*types.Block  // Blocks belonging to the tester</div>
+<div class="purge"><span class="mk"></span>    drops   map[string]bool               // Map of peers dropped by the fetcher</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    lock sync.RWMutex</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="fork"><span class="mk"></span>// newTesterPoW creates a new fetcher test mocker.</div>
+<div class="fork"><span class="mk"></span>func newTesterPoW() *fetcherTesterPoW {</div>
+<div class="fork"><span class="mk"></span>    tester := &amp;fetcherTesterPoW{</div>
+<div class="purge"><span class="mk"></span>        hashes:  []common.Hash{genesis.Hash()},</div>
+<div class="purge"><span class="mk"></span>        headers: map[common.Hash]*types.Header{genesis.Hash(): genesis.Header()},</div>
+<div class="purge"><span class="mk"></span>        blocks:  map[common.Hash]*types.Block{genesis.Hash(): genesis},</div>
+<div class="purge"><span class="mk"></span>        drops:   make(map[string]bool),</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge adapted"><span class="mk"></span>    tester.fetcher = NewBlockFetcher(false, tester.getHeader, tester.getBlock, tester.verifyHeader, tester.broadcastBlock, tester.chainHeight, tester.insertHeaders, tester.insertChain, tester.dropPeer)</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.Start()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    return tester</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// getHeader retrieves a header from the tester's block chain.</div>
+<div class="fork"><span class="mk"></span>func (f *fetcherTesterPoW) getHeader(hash common.Hash) *types.Header {</div>
+<div class="purge"><span class="mk"></span>    f.lock.RLock()</div>
+<div class="purge"><span class="mk"></span>    defer f.lock.RUnlock()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    return f.headers[hash]</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// getBlock retrieves a block from the tester's block chain.</div>
+<div class="fork"><span class="mk"></span>func (f *fetcherTesterPoW) getBlock(hash common.Hash) *types.Block {</div>
+<div class="purge"><span class="mk"></span>    f.lock.RLock()</div>
+<div class="purge"><span class="mk"></span>    defer f.lock.RUnlock()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    return f.blocks[hash]</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// verifyHeader is a nop placeholder for the block header verification.</div>
+<div class="fork"><span class="mk"></span>func (f *fetcherTesterPoW) verifyHeader(header *types.Header) error {</div>
+<div class="purge"><span class="mk"></span>    return nil</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// broadcastBlock is a nop placeholder for the block broadcasting.</div>
+<div class="fork"><span class="mk"></span>func (f *fetcherTesterPoW) broadcastBlock(block *types.Block, propagate bool) {</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// chainHeight retrieves the current height (block number) of the chain.</div>
+<div class="fork"><span class="mk"></span>func (f *fetcherTesterPoW) chainHeight() uint64 {</div>
+<div class="purge"><span class="mk"></span>    f.lock.RLock()</div>
+<div class="purge"><span class="mk"></span>    defer f.lock.RUnlock()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    return f.blocks[f.hashes[len(f.hashes)-1]].NumberU64()</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="fork"><span class="mk"></span>// insertHeaders injects new headers into the simulated chain.</div>
+<div class="fork"><span class="mk"></span>func (f *fetcherTesterPoW) insertHeaders(headers []*types.Header) (int, error) {</div>
+<div class="purge"><span class="mk"></span>    f.lock.Lock()</div>
+<div class="purge"><span class="mk"></span>    defer f.lock.Unlock()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    for i, header := range headers {</div>
+<div class="purge"><span class="mk"></span>        // Make sure the parent in known</div>
+<div class="purge"><span class="mk"></span>        if _, ok := f.headers[header.ParentHash]; !ok {</div>
+<div class="purge"><span class="mk"></span>            return i, errors.New("unknown parent")</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        // Discard any new blocks if the same height already exists</div>
+<div class="purge"><span class="mk"></span>        if header.Number.Uint64() &lt;= f.headers[f.hashes[len(f.hashes)-1]].Number.Uint64() {</div>
+<div class="purge"><span class="mk"></span>            return i, nil</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        // Otherwise build our current chain</div>
+<div class="purge"><span class="mk"></span>        f.hashes = append(f.hashes, header.Hash())</div>
+<div class="purge"><span class="mk"></span>        f.headers[header.Hash()] = header</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    return 0, nil</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// insertChain injects a new blocks into the simulated chain.</div>
+<div class="fork"><span class="mk"></span>func (f *fetcherTesterPoW) insertChain(blocks types.Blocks) (int, error) {</div>
+<div class="purge"><span class="mk"></span>    f.lock.Lock()</div>
+<div class="purge"><span class="mk"></span>    defer f.lock.Unlock()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    for i, block := range blocks {</div>
+<div class="purge"><span class="mk"></span>        // Make sure the parent in known</div>
+<div class="purge"><span class="mk"></span>        if _, ok := f.blocks[block.ParentHash()]; !ok {</div>
+<div class="purge"><span class="mk"></span>            return i, errors.New("unknown parent")</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        // Discard any new blocks if the same height already exists</div>
+<div class="purge"><span class="mk"></span>        if block.NumberU64() &lt;= f.blocks[f.hashes[len(f.hashes)-1]].NumberU64() {</div>
+<div class="purge"><span class="mk"></span>            return i, nil</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        // Otherwise build our current chain</div>
+<div class="purge"><span class="mk"></span>        f.hashes = append(f.hashes, block.Hash())</div>
+<div class="purge"><span class="mk"></span>        f.blocks[block.Hash()] = block</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    return 0, nil</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// dropPeer is an emulator for the peer removal, simply accumulating the various</div>
+<div class="purge"><span class="mk"></span>// peers dropped by the fetcher.</div>
+<div class="fork"><span class="mk"></span>func (f *fetcherTesterPoW) dropPeer(peer string) {</div>
+<div class="purge"><span class="mk"></span>    f.lock.Lock()</div>
+<div class="purge"><span class="mk"></span>    defer f.lock.Unlock()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    f.drops[peer] = true</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// makeHeaderFetcher retrieves a block header fetcher associated with a simulated peer.</div>
+<div class="fork"><span class="mk"></span>func (f *fetcherTesterPoW) makeHeaderFetcher(peer string, blocks map[common.Hash]*types.Block, drift time.Duration) headerRequesterFn {</div>
+<div class="purge"><span class="mk"></span>    closure := make(map[common.Hash]*types.Block)</div>
+<div class="purge"><span class="mk"></span>    for hash, block := range blocks {</div>
+<div class="purge"><span class="mk"></span>        closure[hash] = block</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Create a function that return a header from the closure</div>
+<div class="purge"><span class="mk"></span>    return func(hash common.Hash, sink chan *eth.Response) (*eth.Request, error) {</div>
+<div class="purge"><span class="mk"></span>        // Gather the blocks to return</div>
+<div class="purge"><span class="mk"></span>        headers := make([]*types.Header, 0, 1)</div>
+<div class="purge"><span class="mk"></span>        if block, ok := closure[hash]; ok {</div>
+<div class="purge"><span class="mk"></span>            headers = append(headers, block.Header())</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        // Return on a new thread</div>
+<div class="purge"><span class="mk"></span>        req := &amp;eth.Request{</div>
+<div class="purge"><span class="mk"></span>            Peer: peer,</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        res := &amp;eth.Response{</div>
+<div class="purge"><span class="mk"></span>            Req:  req,</div>
+<div class="purge"><span class="mk"></span>            Res:  (*eth.BlockHeadersRequest)(&amp;headers),</div>
+<div class="purge"><span class="mk"></span>            Time: drift,</div>
+<div class="purge"><span class="mk"></span>            Done: make(chan error, 1), // Ignore the returned status</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        go func() {</div>
+<div class="purge"><span class="mk"></span>            sink &lt;- res</div>
+<div class="purge"><span class="mk"></span>        }()</div>
+<div class="purge"><span class="mk"></span>        return req, nil</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// makeBodyFetcher retrieves a block body fetcher associated with a simulated peer.</div>
+<div class="fork"><span class="mk"></span>func (f *fetcherTesterPoW) makeBodyFetcher(peer string, blocks map[common.Hash]*types.Block, drift time.Duration) bodyRequesterFn {</div>
+<div class="purge"><span class="mk"></span>    closure := make(map[common.Hash]*types.Block)</div>
+<div class="purge"><span class="mk"></span>    for hash, block := range blocks {</div>
+<div class="purge"><span class="mk"></span>        closure[hash] = block</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Create a function that returns blocks from the closure</div>
+<div class="purge"><span class="mk"></span>    return func(hashes []common.Hash, sink chan *eth.Response) (*eth.Request, error) {</div>
+<div class="purge"><span class="mk"></span>        // Gather the block bodies to return</div>
+<div class="purge"><span class="mk"></span>        transactions := make([][]*types.Transaction, 0, len(hashes))</div>
+<div class="purge"><span class="mk"></span>        uncles := make([][]*types.Header, 0, len(hashes))</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>        for _, hash := range hashes {</div>
+<div class="purge"><span class="mk"></span>            if block, ok := closure[hash]; ok {</div>
+<div class="purge"><span class="mk"></span>                transactions = append(transactions, block.Transactions())</div>
+<div class="purge"><span class="mk"></span>                uncles = append(uncles, block.Uncles())</div>
+<div class="purge"><span class="mk"></span>            }</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        // Return on a new thread</div>
+<div class="purge adapted"><span class="mk"></span>        bodies := make([]eth.BlockBody, len(transactions))</div>
+<div class="purge"><span class="mk"></span>        for i, txs := range transactions {</div>
+<div class="purge adapted"><span class="mk"></span>            for _, tx := range txs {</div>
+<div class="fork"><span class="mk"></span>                bodies[i].Transactions.Append(tx)</div>
+<div class="purge"><span class="mk"></span>            }</div>
+<div class="fork"><span class="mk"></span>            for _, uncle := range uncles[i] {</div>
+<div class="fork"><span class="mk"></span>                bodies[i].Uncles.Append(uncle)</div>
+<div class="fork"><span class="mk"></span>            }</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        req := &amp;eth.Request{</div>
+<div class="purge"><span class="mk"></span>            Peer: peer,</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge adapted"><span class="mk"></span>        resp := eth.BlockBodiesResponse(bodies)</div>
+<div class="purge"><span class="mk"></span>        res := &amp;eth.Response{</div>
+<div class="purge"><span class="mk"></span>            Req:  req,</div>
+<div class="fork"><span class="mk"></span>            Res:  &amp;resp,</div>
+<div class="purge"><span class="mk"></span>            Time: drift,</div>
+<div class="purge"><span class="mk"></span>            Done: make(chan error, 1), // Ignore the returned status</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        go func() {</div>
+<div class="purge"><span class="mk"></span>            sink &lt;- res</div>
+<div class="purge"><span class="mk"></span>        }()</div>
+<div class="purge"><span class="mk"></span>        return req, nil</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// verifyImportEvent verifies that one single event arrive on an import channel.</div>
+<div class="fork"><span class="mk"></span>func verifyImportEventPoW(t *testing.T, imported chan interface{}, arrive bool) {</div>
+<div class="purge"><span class="mk"></span>    t.Helper()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    if arrive {</div>
+<div class="purge"><span class="mk"></span>        select {</div>
+<div class="purge"><span class="mk"></span>        case &lt;-imported:</div>
+<div class="purge"><span class="mk"></span>        case &lt;-time.After(time.Second):</div>
+<div class="purge"><span class="mk"></span>            t.Fatalf("import timeout")</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>    } else {</div>
+<div class="purge"><span class="mk"></span>        select {</div>
+<div class="purge"><span class="mk"></span>        case &lt;-imported:</div>
+<div class="purge"><span class="mk"></span>            t.Fatalf("import invoked")</div>
+<div class="purge"><span class="mk"></span>        case &lt;-time.After(20 * time.Millisecond):</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// verifyImportCount verifies that exactly count number of events arrive on an</div>
+<div class="purge"><span class="mk"></span>// import hook channel.</div>
+<div class="fork"><span class="mk"></span>func verifyImportCountPoW(t *testing.T, imported chan interface{}, count int) {</div>
+<div class="purge"><span class="mk"></span>    t.Helper()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    for i := 0; i &lt; count; i++ {</div>
+<div class="purge"><span class="mk"></span>        select {</div>
+<div class="purge"><span class="mk"></span>        case &lt;-imported:</div>
+<div class="purge"><span class="mk"></span>        case &lt;-time.After(time.Second):</div>
+<div class="purge"><span class="mk"></span>            t.Fatalf("block %d: import timeout", i+1)</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge adapted"><span class="mk"></span>    verifyImportDonePoW(t, imported)</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// verifyImportDone verifies that no more events are arriving on an import channel.</div>
+<div class="fork"><span class="mk"></span>func verifyImportDonePoW(t *testing.T, imported chan interface{}) {</div>
+<div class="purge"><span class="mk"></span>    t.Helper()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    select {</div>
+<div class="purge"><span class="mk"></span>    case &lt;-imported:</div>
+<div class="purge"><span class="mk"></span>        t.Fatalf("extra block imported")</div>
+<div class="purge"><span class="mk"></span>    case &lt;-time.After(50 * time.Millisecond):</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// verifyChainHeight verifies the chain height is as expected.</div>
+<div class="fork"><span class="mk"></span>func verifyChainHeightPoW(t *testing.T, fetcher *fetcherTesterPoW, height uint64) {</div>
+<div class="purge"><span class="mk"></span>    t.Helper()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    if fetcher.chainHeight() != height {</div>
+<div class="purge"><span class="mk"></span>        t.Fatalf("chain height mismatch, got %d, want %d", fetcher.chainHeight(), height)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="fork"><span class="mk"></span>// Tests that a fetcher accepts block announcements and initiates retrievals</div>
+<div class="purge"><span class="mk"></span>// for them, successfully importing into the local chain.</div>
+<div class="fork"><span class="mk"></span>func TestPoWSequentialAnnouncements(t *testing.T) {</div>
+<div class="purge"><span class="mk"></span>    // Create a chain of blocks to import</div>
+<div class="purge"><span class="mk"></span>    targetBlocks := 4 * hashLimit</div>
+<div class="purge"><span class="mk"></span>    hashes, blocks := makeChain(targetBlocks, 0, genesis)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="fork"><span class="mk"></span>    tester := newTesterPoW()</div>
+<div class="purge"><span class="mk"></span>    defer tester.fetcher.Stop()</div>
+<div class="purge"><span class="mk"></span>    headerFetcher := tester.makeHeaderFetcher("valid", blocks, -gatherSlack)</div>
+<div class="purge"><span class="mk"></span>    bodyFetcher := tester.makeBodyFetcher("valid", blocks, 0)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Iteratively announce blocks until all are imported</div>
+<div class="purge"><span class="mk"></span>    imported := make(chan interface{})</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.importedHook = func(header *types.Header, block *types.Block) {</div>
+<div class="purge adapted"><span class="mk"></span>        if block == nil {</div>
+<div class="purge adapted"><span class="mk"></span>            t.Fatalf("Fetcher try to import empty block")</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge adapted"><span class="mk"></span>        imported &lt;- block</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    for i := len(hashes) - 2; i &gt;= 0; i-- {</div>
+<div class="purge"><span class="mk"></span>        tester.fetcher.Notify("valid", hashes[i], uint64(len(hashes)-i-1), time.Now().Add(-arriveTimeout), headerFetcher, bodyFetcher)</div>
+<div class="purge adapted"><span class="mk"></span>        verifyImportEventPoW(t, imported, true)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge adapted"><span class="mk"></span>    verifyImportDonePoW(t, imported)</div>
+<div class="purge adapted"><span class="mk"></span>    verifyChainHeightPoW(t, tester, uint64(len(hashes)-1))</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// Tests that if blocks are announced by multiple peers (or even the same buggy</div>
+<div class="purge"><span class="mk"></span>// peer), they will only get downloaded at most once.</div>
+<div class="fork"><span class="mk"></span>func TestPoWConcurrentAnnouncements(t *testing.T) {</div>
+<div class="purge"><span class="mk"></span>    // Create a chain of blocks to import</div>
+<div class="purge"><span class="mk"></span>    targetBlocks := 4 * hashLimit</div>
+<div class="purge"><span class="mk"></span>    hashes, blocks := makeChain(targetBlocks, 0, genesis)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Assemble a tester with a built in counter for the requests</div>
+<div class="fork"><span class="mk"></span>    tester := newTesterPoW()</div>
+<div class="purge adapted"><span class="mk"></span>    defer tester.fetcher.Stop()</div>
+<div class="purge"><span class="mk"></span>    firstHeaderFetcher := tester.makeHeaderFetcher("first", blocks, -gatherSlack)</div>
+<div class="purge"><span class="mk"></span>    firstBodyFetcher := tester.makeBodyFetcher("first", blocks, 0)</div>
+<div class="purge"><span class="mk"></span>    secondHeaderFetcher := tester.makeHeaderFetcher("second", blocks, -gatherSlack)</div>
+<div class="purge"><span class="mk"></span>    secondBodyFetcher := tester.makeBodyFetcher("second", blocks, 0)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    var counter atomic.Uint32</div>
+<div class="purge"><span class="mk"></span>    firstHeaderWrapper := func(hash common.Hash, sink chan *eth.Response) (*eth.Request, error) {</div>
+<div class="purge"><span class="mk"></span>        counter.Add(1)</div>
+<div class="purge"><span class="mk"></span>        return firstHeaderFetcher(hash, sink)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    secondHeaderWrapper := func(hash common.Hash, sink chan *eth.Response) (*eth.Request, error) {</div>
+<div class="purge"><span class="mk"></span>        counter.Add(1)</div>
+<div class="purge"><span class="mk"></span>        return secondHeaderFetcher(hash, sink)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Iteratively announce blocks until all are imported</div>
+<div class="purge"><span class="mk"></span>    imported := make(chan interface{})</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.importedHook = func(header *types.Header, block *types.Block) {</div>
+<div class="purge adapted"><span class="mk"></span>        if block == nil {</div>
+<div class="purge adapted"><span class="mk"></span>            t.Fatalf("Fetcher try to import empty block")</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge adapted"><span class="mk"></span>        imported &lt;- block</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    for i := len(hashes) - 2; i &gt;= 0; i-- {</div>
+<div class="purge"><span class="mk"></span>        tester.fetcher.Notify("first", hashes[i], uint64(len(hashes)-i-1), time.Now().Add(-arriveTimeout), firstHeaderWrapper, firstBodyFetcher)</div>
+<div class="purge"><span class="mk"></span>        tester.fetcher.Notify("second", hashes[i], uint64(len(hashes)-i-1), time.Now().Add(-arriveTimeout+time.Millisecond), secondHeaderWrapper, secondBodyFetcher)</div>
+<div class="purge"><span class="mk"></span>        tester.fetcher.Notify("second", hashes[i], uint64(len(hashes)-i-1), time.Now().Add(-arriveTimeout-time.Millisecond), secondHeaderWrapper, secondBodyFetcher)</div>
+<div class="purge adapted"><span class="mk"></span>        verifyImportEventPoW(t, imported, true)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge adapted"><span class="mk"></span>    verifyImportDonePoW(t, imported)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Make sure no blocks were retrieved twice</div>
+<div class="purge"><span class="mk"></span>    if c := int(counter.Load()); c != targetBlocks {</div>
+<div class="purge"><span class="mk"></span>        t.Fatalf("retrieval count mismatch: have %v, want %v", c, targetBlocks)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge adapted"><span class="mk"></span>    verifyChainHeightPoW(t, tester, uint64(len(hashes)-1))</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// Tests that blocks arriving from various sources (multiple propagations, hash</div>
+<div class="purge"><span class="mk"></span>// announces, etc) do not get scheduled for import multiple times.</div>
+<div class="fork"><span class="mk"></span>func TestPoWImportDeduplication(t *testing.T) {</div>
+<div class="purge"><span class="mk"></span>    // Create two blocks to import (one for duplication, the other for stalling)</div>
+<div class="purge"><span class="mk"></span>    hashes, blocks := makeChain(2, 0, genesis)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Create the tester and wrap the importer with a counter</div>
+<div class="fork"><span class="mk"></span>    tester := newTesterPoW()</div>
+<div class="purge adapted"><span class="mk"></span>    defer tester.fetcher.Stop()</div>
+<div class="purge"><span class="mk"></span>    headerFetcher := tester.makeHeaderFetcher("valid", blocks, -gatherSlack)</div>
+<div class="purge"><span class="mk"></span>    bodyFetcher := tester.makeBodyFetcher("valid", blocks, 0)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    var counter atomic.Uint32</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.insertChain = func(blocks types.Blocks) (int, error) {</div>
+<div class="purge"><span class="mk"></span>        counter.Add(uint32(len(blocks)))</div>
+<div class="purge"><span class="mk"></span>        return tester.insertChain(blocks)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Instrument the fetching and imported events</div>
+<div class="purge"><span class="mk"></span>    fetching := make(chan []common.Hash)</div>
+<div class="purge"><span class="mk"></span>    imported := make(chan interface{}, len(hashes)-1)</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.fetchingHook = func(hashes []common.Hash) { fetching &lt;- hashes }</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.importedHook = func(header *types.Header, block *types.Block) { imported &lt;- block }</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Announce the duplicating block, wait for retrieval, and also propagate directly</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.Notify("valid", hashes[0], 1, time.Now().Add(-arriveTimeout), headerFetcher, bodyFetcher)</div>
+<div class="purge"><span class="mk"></span>    &lt;-fetching</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.Enqueue("valid", blocks[hashes[0]])</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.Enqueue("valid", blocks[hashes[0]])</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.Enqueue("valid", blocks[hashes[0]])</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Fill the missing block directly as if propagated, and check import uniqueness</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.Enqueue("valid", blocks[hashes[1]])</div>
+<div class="purge adapted"><span class="mk"></span>    verifyImportCountPoW(t, imported, 2)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    if c := counter.Load(); c != 2 {</div>
+<div class="purge"><span class="mk"></span>        t.Fatalf("import invocation count mismatch: have %v, want %v", c, 2)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// Tests that blocks with numbers much lower or higher than out current head get</div>
+<div class="purge"><span class="mk"></span>// discarded to prevent wasting resources on useless blocks from faulty peers.</div>
+<div class="fork"><span class="mk"></span>func TestPoWDistantPropagationDiscarding(t *testing.T) {</div>
+<div class="purge"><span class="mk"></span>    // Create a long chain to import and define the discard boundaries</div>
+<div class="purge"><span class="mk"></span>    hashes, blocks := makeChain(3*maxQueueDist, 0, genesis)</div>
+<div class="purge"><span class="mk"></span>    head := hashes[len(hashes)/2]</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    low, high := len(hashes)/2+maxUncleDist+1, len(hashes)/2-maxQueueDist-1</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Create a tester and simulate a head block being the middle of the above chain</div>
+<div class="fork"><span class="mk"></span>    tester := newTesterPoW()</div>
+<div class="purge adapted"><span class="mk"></span>    defer tester.fetcher.Stop()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    tester.lock.Lock()</div>
+<div class="purge"><span class="mk"></span>    tester.hashes = []common.Hash{head}</div>
+<div class="purge"><span class="mk"></span>    tester.blocks = map[common.Hash]*types.Block{head: blocks[head]}</div>
+<div class="purge"><span class="mk"></span>    tester.lock.Unlock()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Ensure that a block with a lower number than the threshold is discarded</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.Enqueue("lower", blocks[hashes[low]])</div>
+<div class="purge"><span class="mk"></span>    time.Sleep(10 * time.Millisecond)</div>
+<div class="purge"><span class="mk"></span>    if !tester.fetcher.queue.Empty() {</div>
+<div class="purge"><span class="mk"></span>        t.Fatalf("fetcher queued stale block")</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Ensure that a block with a higher number than the threshold is discarded</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.Enqueue("higher", blocks[hashes[high]])</div>
+<div class="purge"><span class="mk"></span>    time.Sleep(10 * time.Millisecond)</div>
+<div class="purge"><span class="mk"></span>    if !tester.fetcher.queue.Empty() {</div>
+<div class="purge"><span class="mk"></span>        t.Fatalf("fetcher queued future block")</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// Tests that a peer is unable to use unbounded memory with sending infinite</div>
+<div class="purge"><span class="mk"></span>// block announcements to a node, but that even in the face of such an attack,</div>
+<div class="purge"><span class="mk"></span>// the fetcher remains operational.</div>
+<div class="fork"><span class="mk"></span>func TestPoWHashMemoryExhaustionAttack(t *testing.T) {</div>
+<div class="purge"><span class="mk"></span>    // Create a tester with instrumented import hooks</div>
+<div class="fork"><span class="mk"></span>    tester := newTesterPoW()</div>
+<div class="purge adapted"><span class="mk"></span>    defer tester.fetcher.Stop()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    imported, announces := make(chan interface{}), atomic.Int32{}</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.importedHook = func(header *types.Header, block *types.Block) { imported &lt;- block }</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.announceChangeHook = func(hash common.Hash, added bool) {</div>
+<div class="purge"><span class="mk"></span>        if added {</div>
+<div class="purge"><span class="mk"></span>            announces.Add(1)</div>
+<div class="purge"><span class="mk"></span>        } else {</div>
+<div class="purge"><span class="mk"></span>            announces.Add(-1)</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Create a valid chain and an infinite junk chain</div>
+<div class="purge"><span class="mk"></span>    targetBlocks := hashLimit + 2*maxQueueDist</div>
+<div class="purge"><span class="mk"></span>    hashes, blocks := makeChain(targetBlocks, 0, genesis)</div>
+<div class="purge"><span class="mk"></span>    validHeaderFetcher := tester.makeHeaderFetcher("valid", blocks, -gatherSlack)</div>
+<div class="purge"><span class="mk"></span>    validBodyFetcher := tester.makeBodyFetcher("valid", blocks, 0)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    attack, _ := makeChain(targetBlocks, 0, unknownBlock)</div>
+<div class="purge"><span class="mk"></span>    attackerHeaderFetcher := tester.makeHeaderFetcher("attacker", nil, -gatherSlack)</div>
+<div class="purge"><span class="mk"></span>    attackerBodyFetcher := tester.makeBodyFetcher("attacker", nil, 0)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Feed the tester a huge hashset from the attacker, and a limited from the valid peer</div>
+<div class="purge"><span class="mk"></span>    for i := 0; i &lt; len(attack); i++ {</div>
+<div class="purge"><span class="mk"></span>        if i &lt; maxQueueDist {</div>
+<div class="purge"><span class="mk"></span>            tester.fetcher.Notify("valid", hashes[len(hashes)-2-i], uint64(i+1), time.Now(), validHeaderFetcher, validBodyFetcher)</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        tester.fetcher.Notify("attacker", attack[i], 1 /* don't distance drop */, time.Now(), attackerHeaderFetcher, attackerBodyFetcher)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    if count := announces.Load(); count != hashLimit+maxQueueDist {</div>
+<div class="purge"><span class="mk"></span>        t.Fatalf("queued announce count mismatch: have %d, want %d", count, hashLimit+maxQueueDist)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Wait for fetches to complete</div>
+<div class="purge adapted"><span class="mk"></span>    verifyImportCountPoW(t, imported, maxQueueDist)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Feed the remaining valid hashes to ensure DOS protection state remains clean</div>
+<div class="purge"><span class="mk"></span>    for i := len(hashes) - maxQueueDist - 2; i &gt;= 0; i-- {</div>
+<div class="purge"><span class="mk"></span>        tester.fetcher.Notify("valid", hashes[i], uint64(len(hashes)-i-1), time.Now().Add(-arriveTimeout), validHeaderFetcher, validBodyFetcher)</div>
+<div class="purge adapted"><span class="mk"></span>        verifyImportEventPoW(t, imported, true)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge adapted"><span class="mk"></span>    verifyImportDonePoW(t, imported)</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// Tests that blocks sent to the fetcher (either through propagation or via hash</div>
+<div class="purge"><span class="mk"></span>// announces and retrievals) don't pile up indefinitely, exhausting available</div>
+<div class="purge"><span class="mk"></span>// system memory.</div>
+<div class="fork"><span class="mk"></span>func TestPoWBlockMemoryExhaustionAttack(t *testing.T) {</div>
+<div class="purge"><span class="mk"></span>    // Create a tester with instrumented import hooks</div>
+<div class="fork"><span class="mk"></span>    tester := newTesterPoW()</div>
+<div class="purge adapted"><span class="mk"></span>    defer tester.fetcher.Stop()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    imported, enqueued := make(chan interface{}), atomic.Int32{}</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.importedHook = func(header *types.Header, block *types.Block) { imported &lt;- block }</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.queueChangeHook = func(hash common.Hash, added bool) {</div>
+<div class="purge"><span class="mk"></span>        if added {</div>
+<div class="purge"><span class="mk"></span>            enqueued.Add(1)</div>
+<div class="purge"><span class="mk"></span>        } else {</div>
+<div class="purge"><span class="mk"></span>            enqueued.Add(-1)</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Create a valid chain and a batch of dangling (but in range) blocks</div>
+<div class="purge"><span class="mk"></span>    targetBlocks := hashLimit + 2*maxQueueDist</div>
+<div class="purge"><span class="mk"></span>    hashes, blocks := makeChain(targetBlocks, 0, genesis)</div>
+<div class="purge"><span class="mk"></span>    attack := make(map[common.Hash]*types.Block)</div>
+<div class="purge"><span class="mk"></span>    for i := byte(0); len(attack) &lt; blockLimit+2*maxQueueDist; i++ {</div>
+<div class="purge"><span class="mk"></span>        hashes, blocks := makeChain(maxQueueDist-1, i, unknownBlock)</div>
+<div class="purge"><span class="mk"></span>        for _, hash := range hashes[:maxQueueDist-2] {</div>
+<div class="purge"><span class="mk"></span>            attack[hash] = blocks[hash]</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Try to feed all the attacker blocks make sure only a limited batch is accepted</div>
+<div class="purge"><span class="mk"></span>    for _, block := range attack {</div>
+<div class="purge"><span class="mk"></span>        tester.fetcher.Enqueue("attacker", block)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    time.Sleep(200 * time.Millisecond)</div>
+<div class="purge"><span class="mk"></span>    if queued := enqueued.Load(); queued != blockLimit {</div>
+<div class="purge"><span class="mk"></span>        t.Fatalf("queued block count mismatch: have %d, want %d", queued, blockLimit)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Queue up a batch of valid blocks, and check that a new peer is allowed to do so</div>
+<div class="purge"><span class="mk"></span>    for i := 0; i &lt; maxQueueDist-1; i++ {</div>
+<div class="purge"><span class="mk"></span>        tester.fetcher.Enqueue("valid", blocks[hashes[len(hashes)-3-i]])</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    time.Sleep(100 * time.Millisecond)</div>
+<div class="purge"><span class="mk"></span>    if queued := enqueued.Load(); queued != blockLimit+maxQueueDist-1 {</div>
+<div class="purge"><span class="mk"></span>        t.Fatalf("queued block count mismatch: have %d, want %d", queued, blockLimit+maxQueueDist-1)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Insert the missing piece (and sanity check the import)</div>
+<div class="purge"><span class="mk"></span>    tester.fetcher.Enqueue("valid", blocks[hashes[len(hashes)-2]])</div>
+<div class="purge adapted"><span class="mk"></span>    verifyImportCountPoW(t, imported, maxQueueDist)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Insert the remaining blocks in chunks to ensure clean DOS protection</div>
+<div class="purge"><span class="mk"></span>    for i := maxQueueDist; i &lt; len(hashes)-1; i++ {</div>
+<div class="purge"><span class="mk"></span>        tester.fetcher.Enqueue("valid", blocks[hashes[len(hashes)-2-i]])</div>
+<div class="purge adapted"><span class="mk"></span>        verifyImportEventPoW(t, imported, true)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge adapted"><span class="mk"></span>    verifyImportDonePoW(t, imported)</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="fork"><span class="mk"></span>// Tests that direct block enqueues (due to block propagation vs. hash announce)</div>
+<div class="fork"><span class="mk"></span>// are correctly scheduled, filling and import queue gaps.</div>
+<div class="fork"><span class="mk"></span>func TestPoWQueueGapFill(t *testing.T) {</div>
+<div class="fork"><span class="mk"></span>    // Create a chain of blocks to import, and choose one to not announce at all</div>
+<div class="purge adapted"><span class="mk"></span>    targetBlocks := maxQueueDist</div>
+<div class="purge adapted"><span class="mk"></span>    hashes, blocks := makeChain(targetBlocks, 0, genesis)</div>
+<div class="purge adapted"><span class="mk"></span>    skip := targetBlocks / 2</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="fork"><span class="mk"></span>    tester := newTesterPoW()</div>
+<div class="purge adapted"><span class="mk"></span>    defer tester.fetcher.Stop()</div>
+<div class="purge adapted"><span class="mk"></span>    headerFetcher := tester.makeHeaderFetcher("valid", blocks, -gatherSlack)</div>
+<div class="purge adapted"><span class="mk"></span>    bodyFetcher := tester.makeBodyFetcher("valid", blocks, 0)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="fork"><span class="mk"></span>    // Iteratively announce blocks, skipping one entry</div>
+<div class="purge adapted"><span class="mk"></span>    imported := make(chan interface{}, len(hashes)-1)</div>
+<div class="purge adapted"><span class="mk"></span>    tester.fetcher.importedHook = func(header *types.Header, block *types.Block) { imported &lt;- block }</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge adapted"><span class="mk"></span>    for i := len(hashes) - 1; i &gt;= 0; i-- {</div>
+<div class="purge adapted"><span class="mk"></span>        if i != skip {</div>
+<div class="purge adapted"><span class="mk"></span>            tester.fetcher.Notify("valid", hashes[i], uint64(len(hashes)-i-1), time.Now().Add(-arriveTimeout), headerFetcher, bodyFetcher)</div>
+<div class="purge adapted"><span class="mk"></span>            time.Sleep(time.Millisecond)</div>
+<div class="fork"><span class="mk"></span>        }</div>
+<div class="fork"><span class="mk"></span>    }</div>
+<div class="fork"><span class="mk"></span>    // Fill the missing block directly as if propagated</div>
+<div class="purge adapted"><span class="mk"></span>    tester.fetcher.Enqueue("valid", blocks[hashes[skip]])</div>
+<div class="purge adapted"><span class="mk"></span>    verifyImportCountPoW(t, imported, len(hashes)-1)</div>
+<div class="purge adapted"><span class="mk"></span>    verifyChainHeightPoW(t, tester, uint64(len(hashes)-1))</div>
+<div class="fork"><span class="mk"></span>}</div>
+</div></div>
+
+<p><a href="../../../subsystem-sync-and-downloader/">← Sync &amp; Downloader</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../javascripts/version-tag.js"></script>
+      
+    
+  </body>
+</html>

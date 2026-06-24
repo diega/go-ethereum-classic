@@ -10,7 +10,7 @@
       
       
       
-        <link rel="next" href="pow-code-mapping/">
+        <link rel="next" href="fork-architecture/">
       
       
         
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#go-ethereum-classic-fork-changelog" class="md-skip">
+        <a href="#go-ethereum-classic" class="md-skip">
           Skip to content
         </a>
       
@@ -335,6 +335,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#where-to-look" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to look
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-the-changes-are-organized" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the changes are organized
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#summary" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -357,10 +379,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sections" class="md-nav__link">
+  <a href="#changes-by-subsystem" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sections
+        Changes by subsystem
       
     </span>
   </a>
@@ -381,15 +403,69 @@
   
   
   
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Understanding the Fork
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Understanding the Fork
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="pow-code-mapping/" class="md-nav__link">
+      <a href="fork-architecture/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    PoW Code Mapping
+    Fork Architecture
   
 
     
@@ -401,22 +477,23 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-chain-configuration/" class="md-nav__link">
+      <a href="upstream-purges/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Chain Configuration
+    Upstream Purges & Sources
   
 
     
@@ -428,6 +505,14 @@
     </li>
   
 
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
     
       
       
@@ -435,15 +520,69 @@
   
   
   
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Changes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Code Changes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="file-diffs-etc-consensus/" class="md-nav__link">
+      <a href="code-changes/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    ETC Consensus
+    Overview
   
 
     
@@ -455,22 +594,23 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-core-and-evm/" class="md-nav__link">
+      <a href="subsystem-consensus-and-ethash/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Core and EVM
+    Consensus & Ethash
   
 
     
@@ -482,22 +622,23 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-protocol-layer/" class="md-nav__link">
+      <a href="subsystem-total-difficulty-td/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Protocol Layer
+    Total Difficulty (TD)
   
 
     
@@ -509,22 +650,23 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-eth-service-and-downloader/" class="md-nav__link">
+      <a href="subsystem-core-and-evm/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Eth Service and Downloader
+    Core & EVM
   
 
     
@@ -536,22 +678,23 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-etc-configuration-and-cli/" class="md-nav__link">
+      <a href="subsystem-sync-and-downloader/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    ETC Configuration and CLI
+    Sync & Downloader
   
 
     
@@ -563,22 +706,23 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-misc-plumbing/" class="md-nav__link">
+      <a href="subsystem-eth-protocol/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Misc Plumbing
+    eth Protocol
   
 
     
@@ -590,22 +734,23 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
   
     <li class="md-nav__item">
-      <a href="file-diffs-ci-cd-and-build/" class="md-nav__link">
+      <a href="subsystem-eth-service/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    CI-CD and Build
+    Eth Service
   
 
     
@@ -617,9 +762,206 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="subsystem-miner/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
     
-      
-      
+  
+    Miner
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="subsystem-mess/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MESS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="subsystem-rpc-and-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RPC & API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="subsystem-cli-config-and-genesis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI, Config & Genesis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="subsystem-build-and-meta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build & Meta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="coverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coverage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="fork-only/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fork-only
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
   
   
   
@@ -644,9 +986,127 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="version-comparison.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Version Comparison
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
     
       
       
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ETC Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ETC Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ecip-1017-monetary-policy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ECIP-1017 Monetary Policy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
   
   
   
@@ -659,7 +1119,7 @@
   <span class="md-ellipsis">
     
   
-    MESS
+    MESS Artificial Finality
   
 
     
@@ -671,9 +1131,99 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="etc-forks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Forks & ECIPs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
     
       
       
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quality
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Quality
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
   
   
   
@@ -698,30 +1248,11 @@
     </li>
   
 
-    
+              
+            
+          </ul>
+        </nav>
       
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="version-comparison.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Version Comparison
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -753,6 +1284,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#where-to-look" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to look
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-the-changes-are-organized" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the changes are organized
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#summary" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -775,10 +1328,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sections" class="md-nav__link">
+  <a href="#changes-by-subsystem" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sections
+        Changes by subsystem
       
     </span>
   </a>
@@ -805,10 +1358,64 @@
   
 
 
-<h1 id="go-ethereum-classic-fork-changelog">Go Ethereum Classic — Fork Changelog<a class="headerlink" href="#go-ethereum-classic-fork-changelog" title="Permanent link">&para;</a></h1>
+<h1 id="go-ethereum-classic">Go Ethereum Classic<a class="headerlink" href="#go-ethereum-classic" title="Permanent link">&para;</a></h1>
+<p><strong>go-ethereum-classic (getc)</strong> is a full Proof-of-Work node for Ethereum Classic,
+built as a thin fork of <a href="https://github.com/ethereum/go-ethereum">go-ethereum</a>.
+Upstream removed PoW during the transition to Proof-of-Stake; getc revives it by
+transplanting the deleted code from just before each
+<a href="upstream-purges/">upstream purge</a>, kept in sibling <code>_pow.go</code> / <code>_etc.go</code> files so the
+fork tracks upstream with minimal rebase friction (see <a href="fork-architecture/">Fork Architecture</a>).</p>
 <p>Branch <a href="https://github.com/diega/go-ethereum-classic/tree/etc/v1.17.3-full-node"><code>etc/v1.17.3-full-node</code></a>
-· Commit <a href="https://github.com/diega/go-ethereum-classic/commit/e489ea7ba6d0ae4e2af4d92a3708fd93a75fc4ec"><code>e489ea7ba</code></a>
+· Commit <a href="https://github.com/diega/go-ethereum-classic/commit/3dabe30c59a365d040223a0eb671ea9da4077cb6"><code>3dabe30c5</code></a>
 · Base <a href="https://github.com/ethereum/go-ethereum/releases/tag/v1.17.3"><code>go-ethereum/v1.17.3</code></a></p>
+<h2 id="where-to-look">Where to look<a class="headerlink" href="#where-to-look" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>If you want to…</th>
+<th>Go to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Understand how the fork is structured</td>
+<td><a href="fork-architecture/">Fork Architecture</a></td>
+</tr>
+<tr>
+<td>See which upstream PRs removed PoW, and what <code>purgeN</code> means</td>
+<td><a href="upstream-purges/">Upstream Purges &amp; Sources</a></td>
+</tr>
+<tr>
+<td>Browse every change by subsystem</td>
+<td><a href="code-changes/">Code Changes</a></td>
+</tr>
+<tr>
+<td>Check what's covered vs upstream (and what isn't)</td>
+<td><a href="coverage/">Coverage</a></td>
+</tr>
+<tr>
+<td>Read about ETC-specific behavior</td>
+<td><a href="ecip-1017-monetary-policy/">ECIP-1017</a> · <a href="mess-artificial-finality/">MESS</a> · <a href="etc-forks/">Forks &amp; ECIPs</a></td>
+</tr>
+<tr>
+<td>See where the fork hooks into upstream files</td>
+<td><a href="extension-points/">Extension Points</a></td>
+</tr>
+<tr>
+<td>Check test status</td>
+<td><a href="test-status/">Test Status</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-the-changes-are-organized">How the changes are organized<a class="headerlink" href="#how-the-changes-are-organized" title="Permanent link">&para;</a></h2>
+<p>Every change is filed under one <strong>subsystem</strong> and tagged by <strong>nature</strong>:</p>
+<ul>
+<li>🔄 <strong>revived</strong> — code upstream deleted, transplanted back from just before the <a href="upstream-purges/">purge</a>; the diff is against that pre-purge origin, so you can verify the transplant is faithful.</li>
+<li>✏️ <strong>in-place</strong> — an upstream file the fork edits directly; the diff is against the current upstream base.</li>
+<li>🆕 <strong>new</strong> — fork-only files with no upstream pedigree; the highest-scrutiny changes.</li>
+</ul>
+<p>Start at <strong><a href="code-changes/">Code Changes</a></strong> for the per-subsystem index, or <strong><a href="coverage/">Coverage</a></strong> to see every file touched vs upstream and whether it's documented.
+<a href="version-comparison.md">Version Comparison</a> shows how the ETC patches <em>evolved</em> from the previous release (v1.16.8 → v1.17.3).</p>
 <h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -820,23 +1427,23 @@
 <tbody>
 <tr>
 <td>Commits</td>
-<td style="text-align: right;">10</td>
+<td style="text-align: right;">11</td>
 </tr>
 <tr>
 <td>Files changed</td>
-<td style="text-align: right;">160 (65 new, 95 modified)</td>
+<td style="text-align: right;">165 (68 new, 97 modified)</td>
 </tr>
 <tr>
 <td>Lines added</td>
-<td style="text-align: right;"><strong>+16242</strong></td>
+<td style="text-align: right;"><strong>+16769</strong></td>
 </tr>
 <tr>
 <td>Lines removed</td>
-<td style="text-align: right;"><strong>-25715</strong></td>
+<td style="text-align: right;"><strong>-25721</strong></td>
 </tr>
 <tr>
 <td>Modified upstream files</td>
-<td style="text-align: right;"><strong>+3004 -25715</strong></td>
+<td style="text-align: right;"><strong>+3018 -25721</strong></td>
 </tr>
 </tbody>
 </table>
@@ -861,151 +1468,156 @@
 </tr>
 <tr>
 <td style="text-align: right;">2</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/ca590c591"><code>ca590c591</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/a01af9d8c"><code>a01af9d8c</code></a></td>
 <td>consensus,core,params: add ETC consensus engine</td>
 <td style="text-align: right;">42</td>
-<td style="text-align: right;"><strong>+6242 -43</strong></td>
+<td style="text-align: right;"><strong>+6258 -43</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">3</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/d6df631b1"><code>d6df631b1</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/017a1a902"><code>017a1a902</code></a></td>
 <td>core: restore total difficulty for the PoW chain</td>
 <td style="text-align: right;">14</td>
 <td style="text-align: right;"><strong>+811 -11</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">4</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/81e3d6bc6"><code>81e3d6bc6</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/37997af3b"><code>37997af3b</code></a></td>
 <td>eth/protocols/eth: add PoW eth/68 protocol stack</td>
 <td style="text-align: right;">11</td>
 <td style="text-align: right;"><strong>+645 -7</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">5</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/e12606eee"><code>e12606eee</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/37cbd0d1a"><code>37cbd0d1a</code></a></td>
 <td>eth/downloader: add PoW initial sync</td>
 <td style="text-align: right;">10</td>
 <td style="text-align: right;"><strong>+1412 -5</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">6</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/4e835451b"><code>4e835451b</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/fae25dbc3"><code>fae25dbc3</code></a></td>
 <td>eth,miner,core: PoW handler/miner stack and live broadcast</td>
-<td style="text-align: right;">46</td>
-<td style="text-align: right;"><strong>+3469 -30</strong></td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;"><strong>+3866 -31</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">7</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/5e4f96262"><code>5e4f96262</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/04ef597a7"><code>04ef597a7</code></a></td>
 <td>core,eth,params: add MESS (ECBP-1100) artificial finality</td>
 <td style="text-align: right;">10</td>
 <td style="text-align: right;"><strong>+1056 -25</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">8</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/5e8313959"><code>5e8313959</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/63a9d38c7"><code>63a9d38c7</code></a></td>
 <td>cmd: ETC CLI wiring and Mordor/Classic presets</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;"><strong>+470 -14</strong></td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;"><strong>+472 -21</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">9</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/c62d94f3d"><code>c62d94f3d</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/5968e67fc"><code>5968e67fc</code></a></td>
 <td>cmd/devp2p/internal/ethtest: regenerate testdata so eth/snap integration suites pass against PoW</td>
 <td style="text-align: right;">15</td>
-<td style="text-align: right;"><strong>+1391 -25413</strong></td>
+<td style="text-align: right;"><strong>+1389 -25409</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">10</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/e489ea7ba"><code>e489ea7ba</code></a></td>
-<td>all: prepare for publication as Go Ethereum Classic</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/4b0d30c99"><code>4b0d30c99</code></a></td>
+<td>core,eth: migrate core-geth chain config on first start</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><strong>+110 -0</strong></td>
+</tr>
+<tr>
 <td style="text-align: right;">11</td>
-<td style="text-align: right;"><strong>+353 -174</strong></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/3dabe30c5"><code>3dabe30c5</code></a></td>
+<td>all: prepare for publication as Go Ethereum Classic</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;"><strong>+358 -177</strong></td>
 </tr>
 </tbody>
 </table>
-<h2 id="sections">Sections<a class="headerlink" href="#sections" title="Permanent link">&para;</a></h2>
+<h2 id="changes-by-subsystem">Changes by subsystem<a class="headerlink" href="#changes-by-subsystem" title="Permanent link">&para;</a></h2>
+<p>Each subsystem page lists its revived / in-place / new changes, with the coverage gap at the foot.</p>
 <table>
 <thead>
 <tr>
-<th>Section</th>
-<th style="text-align: right;">Files</th>
-<th style="text-align: right;">New</th>
-<th style="text-align: right;">Modified</th>
-<th style="text-align: right;">+/-</th>
+<th>Subsystem</th>
+<th style="text-align: right;">🔄 Revived</th>
+<th style="text-align: right;">✏️ In-place</th>
+<th style="text-align: right;">🆕 New</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="pow-code-mapping/">PoW Code Mapping</a></td>
-<td style="text-align: right;">47</td>
-<td style="text-align: right;">37</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;"><strong>+8927 -128</strong></td>
+<td><a href="subsystem-consensus-and-ethash/">Consensus &amp; Ethash</a></td>
+<td style="text-align: right;">99</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">9</td>
 </tr>
 <tr>
-<td><a href="file-diffs-chain-configuration/">Chain Configuration</a></td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;"><strong>+328 -1</strong></td>
-</tr>
-<tr>
-<td><a href="file-diffs-etc-consensus/">ETC Consensus</a></td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;"><strong>+1111 -8</strong></td>
-</tr>
-<tr>
-<td><a href="file-diffs-core-and-evm/">Core and EVM</a></td>
-<td style="text-align: right;">15</td>
-<td style="text-align: right;">1</td>
+<td><a href="subsystem-total-difficulty-td/">Total Difficulty (TD)</a></td>
+<td style="text-align: right;">13</td>
 <td style="text-align: right;">14</td>
-<td style="text-align: right;"><strong>+219 -20</strong></td>
-</tr>
-<tr>
-<td><a href="file-diffs-protocol-layer/">Protocol Layer</a></td>
 <td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;"><strong>+225 -4</strong></td>
 </tr>
 <tr>
-<td><a href="file-diffs-eth-service-and-downloader/">Eth Service and Downloader</a></td>
+<td><a href="subsystem-core-and-evm/">Core &amp; EVM</a></td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">12</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;"><strong>+875 -48</strong></td>
+<td style="text-align: right;">3</td>
 </tr>
 <tr>
-<td><a href="file-diffs-etc-configuration-and-cli/">ETC Configuration and CLI</a></td>
+<td><a href="subsystem-sync-and-downloader/">Sync &amp; Downloader</a></td>
+<td style="text-align: right;">79</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td><a href="subsystem-eth-protocol/">eth Protocol</a></td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">9</td>
 <td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td><a href="subsystem-eth-service/">Eth Service</a></td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td><a href="subsystem-miner/">Miner</a></td>
+<td style="text-align: right;">19</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">3</td>
-<td style="text-align: right;"><strong>+355 -10</strong></td>
 </tr>
 <tr>
-<td><a href="file-diffs-misc-plumbing/">Misc Plumbing</a></td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;"><strong>+17 -7</strong></td>
-</tr>
-<tr>
-<td><a href="file-diffs-ci-cd-and-build/">CI-CD and Build</a></td>
+<td><a href="subsystem-mess/">MESS</a></td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">4</td>
-<td style="text-align: right;"><strong>+65 -29</strong></td>
+</tr>
+<tr>
+<td><a href="subsystem-rpc-and-api/">RPC &amp; API</a></td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td><a href="subsystem-cli-config-and-genesis/">CLI, Config &amp; Genesis</a></td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td><a href="subsystem-build-and-meta/">Build &amp; Meta</a></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
 </tr>
 </tbody>
 </table>
-<blockquote>
-<p><strong><a href="extension-points/">Extension Points</a></strong> — 87 modifications across 36 upstream files | <strong><a href="mess-artificial-finality/">MESS</a></strong></p>
-<p><strong><a href="version-comparison.md">Version Comparison</a></strong> — patch evolution from v1.16.8 to v1.17.3</p>
-<p><strong><a href="test-status/">Test Status</a></strong> — 4889 passing, 10 skipped</p>
-</blockquote>
 
 
 
