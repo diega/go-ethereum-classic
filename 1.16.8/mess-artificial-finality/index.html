@@ -1044,6 +1044,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#network-activation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network activation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1314,6 +1325,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#network-activation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network activation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1449,6 +1471,37 @@
 artificial finality mechanism for Ethereum Classic.  It penalizes deep
 reorganizations by applying an exponential scoring penalty to alternative
 chains that diverge far from the canonical head.</p>
+<h2 id="network-activation">Network activation<a class="headerlink" href="#network-activation" title="Permanent link">&para;</a></h2>
+<p>MESS shipped as a temporary safety measure, not a permanent consensus rule, so it is
+<strong>not part of the <a href="../etc-forks/">fork ID</a></strong> — core-geth classifies ECBP-1100 as a
+cross-compatible transition rather than a hard fork, so it never enters the forkid
+block list. It activated at a fixed height and was later deactivated by default:</p>
+<table>
+<thead>
+<tr>
+<th>Network</th>
+<th style="text-align: right;">Activated</th>
+<th style="text-align: right;">Deactivated (default)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Classic (mainnet)</td>
+<td style="text-align: right;">11,380,000 (09 Oct 2020)</td>
+<td style="text-align: right;">19,250,000 (31 Jan 2023, with the Spiral hard fork)</td>
+</tr>
+<tr>
+<td>Mordor (testnet)</td>
+<td style="text-align: right;">2,380,000 (29 Sep 2020)</td>
+<td style="text-align: right;">10,400,000 (13 Jan 2024)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Note: MESS activated at <strong>11,380,000</strong> — distinct from <strong>Etchash (ECIP-1099)</strong> at
+<strong>11,700,000</strong>. Etchash <em>is</em> a consensus fork (it changes the PoW DAG) and counts
+toward the fork ID, which is why it appears in the <a href="../etc-forks/">fork list</a> and MESS does not.</p>
+</blockquote>
 <table>
 <thead>
 <tr>
