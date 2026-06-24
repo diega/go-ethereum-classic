@@ -1,0 +1,1641 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>miner/stress/ethash - Go Ethereum Classic — Fork Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/etc.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+<script>
+(function() {
+  var m = location.pathname.match(/\/(\d+\.\d+\.\d+)\//);
+  if (!m) return;
+  var tag = "v" + m[1] + "-etc.1";
+  var key = location.pathname + ".__source";
+  var cached = sessionStorage.getItem(key);
+  var data = cached ? JSON.parse(cached) : {stars: 0, forks: 0};
+  data.version = tag;
+  sessionStorage.setItem(key, JSON.stringify(data));
+})();
+</script>
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#minerstressethash" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Go Ethereum Classic — Fork Documentation" class="md-header__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Go Ethereum Classic — Fork Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              miner/stress/ethash
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/diega/go-ethereum-classic" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Go Ethereum Classic — Fork Documentation" class="md-nav__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Go Ethereum Classic — Fork Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/diega/go-ethereum-classic" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Understanding the Fork
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Understanding the Fork
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fork-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fork Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../upstream-purges/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upstream Purges & Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Changes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Code Changes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../code-changes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-consensus-and-ethash/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consensus & Ethash
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-total-difficulty-td/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Total Difficulty (TD)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-core-and-evm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core & EVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-sync-and-downloader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sync & Downloader
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-eth-protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eth Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-eth-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eth Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-miner/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Miner
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-mess/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MESS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-rpc-and-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RPC & API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-cli-config-and-genesis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI, Config & Genesis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../subsystem-build-and-meta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build & Meta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../coverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coverage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fork-only/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fork-only
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../extension-points/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extension Points
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ETC Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ETC Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ecip-1017-monetary-policy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ECIP-1017 Monetary Policy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mess-artificial-finality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MESS Artificial Finality
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../etc-forks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Forks & ECIPs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quality
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Quality
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../test-status/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#3-way-merge-purge-getc-upstream" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3-way merge — purge → getc ← upstream
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="minerstressethash">miner/stress/ethash<a class="headerlink" href="#minerstressethash" title="Permanent link">&para;</a></h1>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Source (upstream pre-purge)</th>
+<th>Current</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>File</td>
+<td><code>miner/stress/ethash/main.go</code></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.16.8-full-node/miner/stress/ethash/main.go"><code>main.go</code></a></td>
+</tr>
+<tr>
+<td>Symbol</td>
+<td><code>(entire file)</code></td>
+<td><code>(entire file)</code></td>
+</tr>
+<tr>
+<td>Ref</td>
+<td><a href="https://github.com/ethereum/go-ethereum/commit/dde2da0efb8e9a1812f470bc43254134cd1f8cc0" title="all: remove ethash pow, only retain shims needed for consensus and tests (#27178)"><code>dde2da0ef</code></a><code>~1</code></td>
+<td><code>etc/v1.16.8-full-node</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Standalone stress test: spins up 4 PoW nodes with ModeFake, interconnects them, starts mining, and bombards with transactions. Adapted from pre-purge3 with updated log API, TxPool.Add, legacypool.DefaultConfig, and minimal PoW genesis.</p>
+</blockquote>
+<h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
+<div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-cg">core-geth</span><span class="l-adapted">≈ adapted (origin inferred by similarity)</span><span class="l-fork">fork-only</span></div>
+<div class="tw-code"><div class="tw-inner">
+<div class="purge"><span class="mk"></span>// Copyright 2018 The go-ethereum Authors</div>
+<div class="purge"><span class="mk"></span>// This file is part of the go-ethereum library.</div>
+<div class="purge"><span class="mk"></span>//</div>
+<div class="purge"><span class="mk"></span>// The go-ethereum library is free software: you can redistribute it and/or modify</div>
+<div class="purge"><span class="mk"></span>// it under the terms of the GNU Lesser General Public License as published by</div>
+<div class="purge"><span class="mk"></span>// the Free Software Foundation, either version 3 of the License, or</div>
+<div class="purge"><span class="mk"></span>// (at your option) any later version.</div>
+<div class="purge"><span class="mk"></span>//</div>
+<div class="purge"><span class="mk"></span>// The go-ethereum library is distributed in the hope that it will be useful,</div>
+<div class="purge"><span class="mk"></span>// but WITHOUT ANY WARRANTY; without even the implied warranty of</div>
+<div class="purge"><span class="mk"></span>// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the</div>
+<div class="purge"><span class="mk"></span>// GNU Lesser General Public License for more details.</div>
+<div class="purge"><span class="mk"></span>//</div>
+<div class="purge"><span class="mk"></span>// You should have received a copy of the GNU Lesser General Public License</div>
+<div class="purge"><span class="mk"></span>// along with the go-ethereum library. If not, see &lt;http://www.gnu.org/licenses/&gt;.</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// This file contains a miner stress test based on the Ethash consensus engine.</div>
+<div class="purge"><span class="mk"></span>package main</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>import (</div>
+<div class="purge"><span class="mk"></span>    "crypto/ecdsa"</div>
+<div class="purge"><span class="mk"></span>    "math/big"</div>
+<div class="purge"><span class="mk"></span>    "math/rand"</div>
+<div class="purge"><span class="mk"></span>    "os"</div>
+<div class="purge"><span class="mk"></span>    "os/signal"</div>
+<div class="purge"><span class="mk"></span>    "time"</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/common"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/common/fdlimit"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/consensus/ethash"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/core"</div>
+<div class="coregeth"><span class="mk"></span>    "github.com/ethereum/go-ethereum/core/txpool/legacypool"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/core/types"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/crypto"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/eth"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/eth/ethconfig"</div>
+<div class="purge adapted"><span class="mk"></span>    "github.com/ethereum/go-ethereum/internal/version"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/log"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/miner"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/node"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/p2p"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/p2p/enode"</div>
+<div class="purge"><span class="mk"></span>    "github.com/ethereum/go-ethereum/params"</div>
+<div class="purge"><span class="mk"></span>)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>func main() {</div>
+<div class="fork"><span class="mk"></span>    glogger := log.NewGlogHandler(log.NewTerminalHandler(os.Stderr, true))</div>
+<div class="fork"><span class="mk"></span>    glogger.Verbosity(log.LevelInfo)</div>
+<div class="fork"><span class="mk"></span>    log.SetDefault(log.NewLogger(glogger))</div>
+<div class="purge"><span class="mk"></span>    fdlimit.Raise(2048)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Generate a batch of accounts to seal and fund with</div>
+<div class="purge"><span class="mk"></span>    faucets := make([]*ecdsa.PrivateKey, 128)</div>
+<div class="purge"><span class="mk"></span>    for i := 0; i &lt; len(faucets); i++ {</div>
+<div class="purge"><span class="mk"></span>        faucets[i], _ = crypto.GenerateKey()</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Create an Ethash network</div>
+<div class="purge"><span class="mk"></span>    genesis := makeGenesis(faucets)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Handle interrupts.</div>
+<div class="purge"><span class="mk"></span>    interruptCh := make(chan os.Signal, 5)</div>
+<div class="purge"><span class="mk"></span>    signal.Notify(interruptCh, os.Interrupt)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    var (</div>
+<div class="purge"><span class="mk"></span>        stacks []*node.Node</div>
+<div class="purge"><span class="mk"></span>        nodes  []*eth.Ethereum</div>
+<div class="purge"><span class="mk"></span>        enodes []*enode.Node</div>
+<div class="purge"><span class="mk"></span>    )</div>
+<div class="purge"><span class="mk"></span>    for i := 0; i &lt; 4; i++ {</div>
+<div class="purge"><span class="mk"></span>        // Start the node and wait until it's up</div>
+<div class="purge"><span class="mk"></span>        stack, ethBackend, err := makeMiner(genesis)</div>
+<div class="purge"><span class="mk"></span>        if err != nil {</div>
+<div class="purge"><span class="mk"></span>            panic(err)</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        defer stack.Close()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>        for stack.Server().NodeInfo().Ports.Listener == 0 {</div>
+<div class="purge"><span class="mk"></span>            time.Sleep(250 * time.Millisecond)</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        // Connect the node to all the previous ones</div>
+<div class="purge"><span class="mk"></span>        for _, n := range enodes {</div>
+<div class="purge"><span class="mk"></span>            stack.Server().AddPeer(n)</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        // Start tracking the node and its enode</div>
+<div class="purge"><span class="mk"></span>        stacks = append(stacks, stack)</div>
+<div class="purge"><span class="mk"></span>        nodes = append(nodes, ethBackend)</div>
+<div class="purge"><span class="mk"></span>        enodes = append(enodes, stack.Server().Self())</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Iterate over all the nodes and start mining</div>
+<div class="purge"><span class="mk"></span>    time.Sleep(3 * time.Second)</div>
+<div class="purge"><span class="mk"></span>    for _, node := range nodes {</div>
+<div class="purge adapted"><span class="mk"></span>        node.SetEtherbase(common.Address{1})</div>
+<div class="purge"><span class="mk"></span>        if err := node.StartMining(1); err != nil {</div>
+<div class="purge"><span class="mk"></span>            panic(err)</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    time.Sleep(3 * time.Second)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Start injecting transactions from the faucets like crazy</div>
+<div class="purge"><span class="mk"></span>    nonces := make([]uint64, len(faucets))</div>
+<div class="purge"><span class="mk"></span>    for {</div>
+<div class="purge"><span class="mk"></span>        // Stop when interrupted.</div>
+<div class="purge"><span class="mk"></span>        select {</div>
+<div class="purge"><span class="mk"></span>        case &lt;-interruptCh:</div>
+<div class="purge"><span class="mk"></span>            for _, node := range stacks {</div>
+<div class="purge"><span class="mk"></span>                node.Close()</div>
+<div class="purge"><span class="mk"></span>            }</div>
+<div class="purge"><span class="mk"></span>            return</div>
+<div class="purge"><span class="mk"></span>        default:</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>        // Pick a random mining node</div>
+<div class="purge"><span class="mk"></span>        index := rand.Intn(len(faucets))</div>
+<div class="purge"><span class="mk"></span>        backend := nodes[index%len(nodes)]</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>        // Create a self transaction and inject into the pool</div>
+<div class="purge"><span class="mk"></span>        tx, err := types.SignTx(types.NewTransaction(nonces[index], crypto.PubkeyToAddress(faucets[index].PublicKey), new(big.Int), 21000, big.NewInt(100000000000+rand.Int63n(65536)), nil), types.HomesteadSigner{}, faucets[index])</div>
+<div class="purge"><span class="mk"></span>        if err != nil {</div>
+<div class="purge"><span class="mk"></span>            panic(err)</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="coregeth adapted"><span class="mk"></span>        if errs := backend.TxPool().Add([]*types.Transaction{tx}, true); errs[0] != nil {</div>
+<div class="fork"><span class="mk"></span>            panic(errs[0])</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        nonces[index]++</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>        // Wait if we're too saturated</div>
+<div class="purge"><span class="mk"></span>        if pend, _ := backend.TxPool().Stats(); pend &gt; 2048 {</div>
+<div class="purge"><span class="mk"></span>            time.Sleep(100 * time.Millisecond)</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>// makeGenesis creates a custom Ethash genesis block based on some pre-defined</div>
+<div class="purge"><span class="mk"></span>// faucet accounts.</div>
+<div class="purge"><span class="mk"></span>func makeGenesis(faucets []*ecdsa.PrivateKey) *core.Genesis {</div>
+<div class="purge adapted"><span class="mk"></span>    genesis := &amp;core.Genesis{</div>
+<div class="fork"><span class="mk"></span>        Config: &amp;params.ChainConfig{</div>
+<div class="purge adapted"><span class="mk"></span>            ChainID:             big.NewInt(18),</div>
+<div class="fork"><span class="mk"></span>            HomesteadBlock:      big.NewInt(0),</div>
+<div class="fork"><span class="mk"></span>            EIP150Block:         big.NewInt(0),</div>
+<div class="fork"><span class="mk"></span>            EIP155Block:         big.NewInt(0),</div>
+<div class="fork"><span class="mk"></span>            EIP158Block:         big.NewInt(0),</div>
+<div class="fork"><span class="mk"></span>            ByzantiumBlock:      big.NewInt(0),</div>
+<div class="fork"><span class="mk"></span>            ConstantinopleBlock: big.NewInt(0),</div>
+<div class="fork"><span class="mk"></span>            PetersburgBlock:     big.NewInt(0),</div>
+<div class="fork"><span class="mk"></span>            IstanbulBlock:       big.NewInt(0),</div>
+<div class="fork"><span class="mk"></span>            Ethash:              new(params.EthashConfig),</div>
+<div class="fork"><span class="mk"></span>        },</div>
+<div class="purge adapted"><span class="mk"></span>        Difficulty: params.MinimumDifficulty,</div>
+<div class="purge adapted"><span class="mk"></span>        GasLimit:   25000000,</div>
+<div class="purge adapted"><span class="mk"></span>        Alloc:      core.GenesisAlloc{},</div>
+<div class="fork"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    for _, faucet := range faucets {</div>
+<div class="purge"><span class="mk"></span>        genesis.Alloc[crypto.PubkeyToAddress(faucet.PublicKey)] = core.GenesisAccount{</div>
+<div class="purge"><span class="mk"></span>            Balance: new(big.Int).Exp(big.NewInt(2), big.NewInt(128), nil),</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    return genesis</div>
+<div class="purge"><span class="mk"></span>}</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>func makeMiner(genesis *core.Genesis) (*node.Node, *eth.Ethereum, error) {</div>
+<div class="purge"><span class="mk"></span>    // Define the basic configurations for the Ethereum node</div>
+<div class="purge"><span class="mk"></span>    datadir, _ := os.MkdirTemp("", "")</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    config := &amp;node.Config{</div>
+<div class="purge"><span class="mk"></span>        Name:    "geth",</div>
+<div class="fork"><span class="mk"></span>        Version: version.WithMeta,</div>
+<div class="purge"><span class="mk"></span>        DataDir: datadir,</div>
+<div class="purge"><span class="mk"></span>        P2P: p2p.Config{</div>
+<div class="purge"><span class="mk"></span>            ListenAddr:  "0.0.0.0:0",</div>
+<div class="purge"><span class="mk"></span>            NoDiscovery: true,</div>
+<div class="purge"><span class="mk"></span>            MaxPeers:    25,</div>
+<div class="purge"><span class="mk"></span>        },</div>
+<div class="purge"><span class="mk"></span>        UseLightweightKDF: true,</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Create the node and configure a full Ethereum node on it</div>
+<div class="purge"><span class="mk"></span>    stack, err := node.New(config)</div>
+<div class="purge"><span class="mk"></span>    if err != nil {</div>
+<div class="purge"><span class="mk"></span>        return nil, nil, err</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    ethBackend, err := eth.New(stack, &amp;ethconfig.Config{</div>
+<div class="purge"><span class="mk"></span>        Genesis:         genesis,</div>
+<div class="purge"><span class="mk"></span>        NetworkId:       genesis.Config.ChainID.Uint64(),</div>
+<div class="purge adapted"><span class="mk"></span>        SyncMode:        ethconfig.FullSync,</div>
+<div class="purge"><span class="mk"></span>        DatabaseCache:   256,</div>
+<div class="purge"><span class="mk"></span>        DatabaseHandles: 256,</div>
+<div class="coregeth"><span class="mk"></span>        TxPool:          legacypool.DefaultConfig,</div>
+<div class="purge"><span class="mk"></span>        GPO:             ethconfig.Defaults.GPO,</div>
+<div class="fork"><span class="mk"></span>        Ethash: ethash.Config{</div>
+<div class="fork"><span class="mk"></span>            PowMode: ethash.ModeFake,</div>
+<div class="fork"><span class="mk"></span>        },</div>
+<div class="purge"><span class="mk"></span>        Miner: miner.Config{</div>
+<div class="purge"><span class="mk"></span>            Etherbase: common.Address{1},</div>
+<div class="purge"><span class="mk"></span>            GasCeil:   genesis.GasLimit * 11 / 10,</div>
+<div class="purge"><span class="mk"></span>            GasPrice:  big.NewInt(1),</div>
+<div class="purge"><span class="mk"></span>            Recommit:  time.Second,</div>
+<div class="purge"><span class="mk"></span>        },</div>
+<div class="purge"><span class="mk"></span>    })</div>
+<div class="purge"><span class="mk"></span>    if err != nil {</div>
+<div class="purge"><span class="mk"></span>        return nil, nil, err</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    err = stack.Start()</div>
+<div class="purge"><span class="mk"></span>    return stack, ethBackend, err</div>
+<div class="purge"><span class="mk"></span>}</div>
+</div></div>
+
+<details>
+<summary>core-geth validation — +35 -26</summary>
+
+| | |
+|---|---|
+| File | [`main.go`](https://github.com/etclabscore/core-geth/blob/v1.12.20/miner/stress/ethash/main.go) |
+| Symbol | `` |
+| Ref | `v1.12.20` |
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/core-geth/miner/stress/ethash/main.go</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gi">+++ b/etc/miner/stress/ethash/main.go</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -25,28 +25,28 @@</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w"> </span>   &quot;os/signal&quot;
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w"> </span>   &quot;time&quot;
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gd">-   &quot;golang.org/x/exp/slog&quot;</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gd">-</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/common&quot;
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/common/fdlimit&quot;
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/consensus/ethash&quot;
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gi">+   &quot;github.com/ethereum/go-ethereum/core&quot;</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/core/txpool/legacypool&quot;
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/core/types&quot;
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/crypto&quot;
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/eth&quot;
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gd">-   &quot;github.com/ethereum/go-ethereum/eth/downloader&quot;</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/eth/ethconfig&quot;
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gi">+   &quot;github.com/ethereum/go-ethereum/internal/version&quot;</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gi">+   &quot;github.com/ethereum/go-ethereum/log&quot;</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/miner&quot;
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/node&quot;
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/p2p&quot;
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/p2p/enode&quot;
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w"> </span>   &quot;github.com/ethereum/go-ethereum/params&quot;
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="gd">-   &quot;github.com/ethereum/go-ethereum/params/types/genesisT&quot;</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="gd">-   &quot;github.com/ethereum/go-ethereum/params/vars&quot;</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w"> </span>)
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w"> </span>func main() {
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="gd">-   slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &amp;slog.HandlerOptions{Level: slog.LevelInfo})))</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="gi">+   glogger := log.NewGlogHandler(log.NewTerminalHandler(os.Stderr, true))</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="gi">+   glogger.Verbosity(log.LevelInfo)</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="gi">+   log.SetDefault(log.NewLogger(glogger))</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="w"> </span>   fdlimit.Raise(2048)
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="w"> </span>   // Generate a batch of accounts to seal and fund with
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="gu">@@ -54,9 +54,6 @@</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w"> </span>   for i := 0; i &lt; len(faucets); i++ {
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="w"> </span>       faucets[i], _ = crypto.GenerateKey()
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w"> </span>   }
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="gd">-   // Pre-generate the ethash mining DAG so we don&#39;t race</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="gd">-   ethash.MakeDataset(1, ethash.CalcEpochLength(0, nil), ethconfig.Defaults.Ethash.DatasetDir)</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="gd">-</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="w"> </span>   // Create an Ethash network
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="w"> </span>   genesis := makeGenesis(faucets)
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="gu">@@ -93,6 +90,7 @@</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="w"> </span>   // Iterate over all the nodes and start mining
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="w"> </span>   time.Sleep(3 * time.Second)
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="w"> </span>   for _, node := range nodes {
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="gi">+       node.SetEtherbase(common.Address{1})</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="w"> </span>       if err := node.StartMining(1); err != nil {
+<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="w"> </span>           panic(err)
+<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="w"> </span>       }
+<a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="gu">@@ -121,8 +119,8 @@</span>
+<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="w"> </span>       if err != nil {
+<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="w"> </span>           panic(err)
+<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="w"> </span>       }
+<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="gd">-       if err := backend.TxPool().Add([]*types.Transaction{tx}, true, false); err != nil {</span>
+<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="gd">-           panic(err)</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="gi">+       if errs := backend.TxPool().Add([]*types.Transaction{tx}, true); errs[0] != nil {</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="gi">+           panic(errs[0])</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="w"> </span>       }
+<a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a><span class="w"> </span>       nonces[index]++
+<a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>
+<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a><span class="gu">@@ -135,30 +133,39 @@</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>
+<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a><span class="w"> </span>// makeGenesis creates a custom Ethash genesis block based on some pre-defined
+<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="w"> </span>// faucet accounts.
+<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="gd">-func makeGenesis(faucets []*ecdsa.PrivateKey) *genesisT.Genesis {</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="gd">-   genesis := params.DefaultGenesisBlock()</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a><span class="gd">-   genesis.Difficulty = vars.MinimumDifficulty</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a><span class="gd">-   genesis.GasLimit = 25000000</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a><span class="gd">-</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a><span class="gd">-   genesis.SetChainID(big.NewInt(18))</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a><span class="gd">-   // genesis.Config.EIP150Hash = common.Hash{}</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a><span class="gd">-</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a><span class="gd">-   genesis.Alloc = genesisT.GenesisAlloc{}</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a><span class="gi">+func makeGenesis(faucets []*ecdsa.PrivateKey) *core.Genesis {</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a><span class="gi">+   genesis := &amp;core.Genesis{</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a><span class="gi">+       Config: &amp;params.ChainConfig{</span>
+<a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a><span class="gi">+           ChainID:             big.NewInt(18),</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a><span class="gi">+           HomesteadBlock:      big.NewInt(0),</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a><span class="gi">+           EIP150Block:         big.NewInt(0),</span>
+<a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a><span class="gi">+           EIP155Block:         big.NewInt(0),</span>
+<a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a><span class="gi">+           EIP158Block:         big.NewInt(0),</span>
+<a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a><span class="gi">+           ByzantiumBlock:      big.NewInt(0),</span>
+<a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a><span class="gi">+           ConstantinopleBlock: big.NewInt(0),</span>
+<a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a><span class="gi">+           PetersburgBlock:     big.NewInt(0),</span>
+<a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a><span class="gi">+           IstanbulBlock:       big.NewInt(0),</span>
+<a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a><span class="gi">+           Ethash:              new(params.EthashConfig),</span>
+<a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a><span class="gi">+       },</span>
+<a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a><span class="gi">+       Difficulty: params.MinimumDifficulty,</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a><span class="gi">+       GasLimit:   25000000,</span>
+<a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a><span class="gi">+       Alloc:      core.GenesisAlloc{},</span>
+<a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a><span class="gi">+   }</span>
+<a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a><span class="w"> </span>   for _, faucet := range faucets {
+<a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a><span class="gd">-       genesis.Alloc[crypto.PubkeyToAddress(faucet.PublicKey)] = genesisT.GenesisAccount{</span>
+<a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a><span class="gi">+       genesis.Alloc[crypto.PubkeyToAddress(faucet.PublicKey)] = core.GenesisAccount{</span>
+<a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a><span class="w"> </span>           Balance: new(big.Int).Exp(big.NewInt(2), big.NewInt(128), nil),
+<a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a><span class="w"> </span>       }
+<a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a><span class="w"> </span>   }
+<a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a><span class="w"> </span>   return genesis
+<a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a><span class="w"> </span>}
+<a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a>
+<a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a><span class="gd">-func makeMiner(genesis *genesisT.Genesis) (*node.Node, *eth.Ethereum, error) {</span>
+<a id="__codelineno-0-108" name="__codelineno-0-108" href="#__codelineno-0-108"></a><span class="gi">+func makeMiner(genesis *core.Genesis) (*node.Node, *eth.Ethereum, error) {</span>
+<a id="__codelineno-0-109" name="__codelineno-0-109" href="#__codelineno-0-109"></a><span class="w"> </span>   // Define the basic configurations for the Ethereum node
+<a id="__codelineno-0-110" name="__codelineno-0-110" href="#__codelineno-0-110"></a><span class="w"> </span>   datadir, _ := os.MkdirTemp(&quot;&quot;, &quot;&quot;)
+<a id="__codelineno-0-111" name="__codelineno-0-111" href="#__codelineno-0-111"></a>
+<a id="__codelineno-0-112" name="__codelineno-0-112" href="#__codelineno-0-112"></a><span class="w"> </span>   config := &amp;node.Config{
+<a id="__codelineno-0-113" name="__codelineno-0-113" href="#__codelineno-0-113"></a><span class="w"> </span>       Name:    &quot;geth&quot;,
+<a id="__codelineno-0-114" name="__codelineno-0-114" href="#__codelineno-0-114"></a><span class="gd">-       Version: params.Version,</span>
+<a id="__codelineno-0-115" name="__codelineno-0-115" href="#__codelineno-0-115"></a><span class="gi">+       Version: version.WithMeta,</span>
+<a id="__codelineno-0-116" name="__codelineno-0-116" href="#__codelineno-0-116"></a><span class="w"> </span>       DataDir: datadir,
+<a id="__codelineno-0-117" name="__codelineno-0-117" href="#__codelineno-0-117"></a><span class="w"> </span>       P2P: p2p.Config{
+<a id="__codelineno-0-118" name="__codelineno-0-118" href="#__codelineno-0-118"></a><span class="w"> </span>           ListenAddr:  &quot;0.0.0.0:0&quot;,
+<a id="__codelineno-0-119" name="__codelineno-0-119" href="#__codelineno-0-119"></a><span class="gu">@@ -174,13 +181,15 @@</span>
+<a id="__codelineno-0-120" name="__codelineno-0-120" href="#__codelineno-0-120"></a><span class="w"> </span>   }
+<a id="__codelineno-0-121" name="__codelineno-0-121" href="#__codelineno-0-121"></a><span class="w"> </span>   ethBackend, err := eth.New(stack, &amp;ethconfig.Config{
+<a id="__codelineno-0-122" name="__codelineno-0-122" href="#__codelineno-0-122"></a><span class="w"> </span>       Genesis:         genesis,
+<a id="__codelineno-0-123" name="__codelineno-0-123" href="#__codelineno-0-123"></a><span class="gd">-       NetworkId:       genesis.Config.GetChainID().Uint64(),</span>
+<a id="__codelineno-0-124" name="__codelineno-0-124" href="#__codelineno-0-124"></a><span class="gd">-       SyncMode:        downloader.FullSync,</span>
+<a id="__codelineno-0-125" name="__codelineno-0-125" href="#__codelineno-0-125"></a><span class="gi">+       NetworkId:       genesis.Config.ChainID.Uint64(),</span>
+<a id="__codelineno-0-126" name="__codelineno-0-126" href="#__codelineno-0-126"></a><span class="gi">+       SyncMode:        ethconfig.FullSync,</span>
+<a id="__codelineno-0-127" name="__codelineno-0-127" href="#__codelineno-0-127"></a><span class="w"> </span>       DatabaseCache:   256,
+<a id="__codelineno-0-128" name="__codelineno-0-128" href="#__codelineno-0-128"></a><span class="w"> </span>       DatabaseHandles: 256,
+<a id="__codelineno-0-129" name="__codelineno-0-129" href="#__codelineno-0-129"></a><span class="w"> </span>       TxPool:          legacypool.DefaultConfig,
+<a id="__codelineno-0-130" name="__codelineno-0-130" href="#__codelineno-0-130"></a><span class="w"> </span>       GPO:             ethconfig.Defaults.GPO,
+<a id="__codelineno-0-131" name="__codelineno-0-131" href="#__codelineno-0-131"></a><span class="gd">-       Ethash:          ethconfig.Defaults.Ethash,</span>
+<a id="__codelineno-0-132" name="__codelineno-0-132" href="#__codelineno-0-132"></a><span class="gi">+       Ethash: ethash.Config{</span>
+<a id="__codelineno-0-133" name="__codelineno-0-133" href="#__codelineno-0-133"></a><span class="gi">+           PowMode: ethash.ModeFake,</span>
+<a id="__codelineno-0-134" name="__codelineno-0-134" href="#__codelineno-0-134"></a><span class="gi">+       },</span>
+<a id="__codelineno-0-135" name="__codelineno-0-135" href="#__codelineno-0-135"></a><span class="w"> </span>       Miner: miner.Config{
+<a id="__codelineno-0-136" name="__codelineno-0-136" href="#__codelineno-0-136"></a><span class="w"> </span>           Etherbase: common.Address{1},
+<a id="__codelineno-0-137" name="__codelineno-0-137" href="#__codelineno-0-137"></a><span class="w"> </span>           GasCeil:   genesis.GasLimit * 11 / 10,
+</code></pre></div>
+
+</details>
+
+<p><a href="../../../subsystem-miner/">← Miner</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../javascripts/version-tag.js"></script>
+      
+    
+  </body>
+</html>
