@@ -1209,7 +1209,7 @@
 <tr>
 <td>Delta</td>
 <td>+75 -5</td>
-<td>+84 -5</td>
+<td>+87 -7</td>
 </tr>
 </tbody>
 </table>
@@ -1391,187 +1391,192 @@
 </details>
 
 <details>
-<summary>ETC delta on v1.17.3 (+84 -5)</summary>
+<summary>ETC delta on v1.17.3 (+87 -7)</summary>
 
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gh">diff --git a/core/blockchain.go b/core/blockchain.go</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="gh">index 2b4911112..4515aadeb 100644</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="gh">index 2b4911112..1eccdc074 100644</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="gd">--- a/core/blockchain.go</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="gi">+++ b/core/blockchain.go</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="gu">@@ -359,6 +359,7 @@ type BlockChain struct {</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w"> </span>   stopping      atomic.Bool // false if chain is running, true when stopped
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w"> </span>   procInterrupt atomic.Bool // interrupt signaler for block processing
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="gi">+   forker        *ForkChoice // ETC: PoW fork choice (nil for non-PoW chains)</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w"> </span>   engine     consensus.Engine
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w"> </span>   validator  Validator // Block and state validator interface
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="gu">@@ -427,6 +428,9 @@ func NewBlockChain(db ethdb.Database, genesis *Genesis, engine consensus.Engine,</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w"> </span>   bc.validator = NewBlockValidator(chainConfig, bc)
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w"> </span>   bc.prefetcher = newStatePrefetcher(chainConfig, bc.hc)
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w"> </span>   bc.processor = NewStateProcessor(bc.hc)
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="gi">+   if chainConfig.IsPow() {</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="gi">+       bc.forker = NewForkChoiceWithMESS(bc, nil)</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="gi">+   }</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w"> </span>   genesisHeader := bc.GetHeaderByNumber(0)
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w"> </span>   if genesisHeader == nil {
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="gu">@@ -1212,6 +1216,7 @@ func (bc *BlockChain) ResetWithGenesisBlock(genesis *types.Block) error {</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w"> </span>   // Prepare the genesis block and reinitialise the chain
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w"> </span>   batch := bc.db.NewBatch()
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="gi">+   rawdb.WriteTd(batch, genesis.Hash(), genesis.NumberU64(), genesis.Difficulty()) // ETC: write genesis TD</span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w"> </span>   rawdb.WriteBlock(batch, genesis)
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w"> </span>   if err := batch.Write(); err != nil {
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w"> </span>       log.Crit(&quot;Failed to write genesis block&quot;, &quot;err&quot;, err)
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="gu">@@ -1478,7 +1483,9 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [</span>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w"> </span>       // Ensure genesis is in the ancient store
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w"> </span>       if blockChain[0].NumberU64() == 1 {
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w"> </span>           if frozen, _ := bc.db.Ancients(); frozen == 0 {
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="gd">-               writeSize, err := rawdb.WriteAncientBlocks(bc.db, []*types.Block{bc.genesisBlock}, []rlp.RawValue{rlp.EmptyList})</span>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="gi">+               // ETC: use PoW version to write real TD</span>
-<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="gi">+               td := bc.genesisBlock.Difficulty()</span>
-<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="gi">+               writeSize, err := rawdb.WriteAncientBlocksPoW(bc.db, []*types.Block{bc.genesisBlock}, []rlp.RawValue{rlp.EmptyList}, td)</span>
-<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="w"> </span>               if err != nil {
-<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="w"> </span>                   log.Error(&quot;Error writing genesis to ancients&quot;, &quot;err&quot;, err)
-<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="w"> </span>                   return 0, err
-<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="gu">@@ -1487,8 +1494,22 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [</span>
-<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="w"> </span>               log.Info(&quot;Wrote genesis to ancients&quot;)
-<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="w"> </span>           }
-<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="w"> </span>       }
-<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="gd">-       // Write all chain data to ancients.</span>
-<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="gd">-       writeSize, err := rawdb.WriteAncientBlocks(bc.db, blockChain, receiptChain)</span>
-<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="gi">+       // ETC: use PoW version to write real TD if parent TD is available.</span>
-<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="gi">+       // On PoW chains a missing parent TD means the ancestor is unknown</span>
-<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="gi">+       // (or the TD store is corrupt); falling back to the no-TD writer</span>
-<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a><span class="gi">+       // would leave the ancients without difficulty and break sync. Treat</span>
-<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a><span class="gi">+       // it as an unknown-ancestor error instead.</span>
-<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="gi">+       var writeSize int64</span>
-<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="gi">+       var err error</span>
-<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a><span class="gi">+       parentTd := bc.GetTd(blockChain[0].ParentHash(), blockChain[0].NumberU64()-1)</span>
-<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a><span class="gi">+       if parentTd != nil {</span>
-<a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a><span class="gi">+           td := new(big.Int).Add(parentTd, blockChain[0].Header().Difficulty)</span>
-<a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a><span class="gi">+           writeSize, err = rawdb.WriteAncientBlocksPoW(bc.db, blockChain, receiptChain, td)</span>
-<a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a><span class="gi">+       } else if bc.chainConfig.IsPow() {</span>
-<a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a><span class="gi">+           return 0, consensus.ErrUnknownAncestor</span>
-<a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a><span class="gi">+       } else {</span>
-<a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a><span class="gi">+           writeSize, err = rawdb.WriteAncientBlocks(bc.db, blockChain, receiptChain)</span>
-<a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a><span class="gi">+       }</span>
-<a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a><span class="w"> </span>       if err != nil {
-<a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a><span class="w"> </span>           log.Error(&quot;Error importing chain data to ancients&quot;, &quot;err&quot;, err)
-<a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a><span class="w"> </span>           return 0, err
-<a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a><span class="gu">@@ -1548,6 +1569,13 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [</span>
-<a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a><span class="w"> </span>           rawdb.WriteBlock(batch, block)
-<a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a><span class="w"> </span>           rawdb.WriteRawReceipts(batch, block.Hash(), block.NumberU64(), receiptChain[i])
-<a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a>
-<a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a><span class="gi">+           // ETC: Write TD for PoW chains - writeLive doesn&#39;t go through</span>
-<a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a><span class="gi">+           // InsertHeaderChain, so TD must be written here</span>
-<a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a><span class="gi">+           if ptd := bc.GetTd(block.ParentHash(), block.NumberU64()-1); ptd != nil {</span>
-<a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a><span class="gi">+               externTd := new(big.Int).Add(block.Difficulty(), ptd)</span>
-<a id="__codelineno-1-75" name="__codelineno-1-75" href="#__codelineno-1-75"></a><span class="gi">+               rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), externTd)</span>
-<a id="__codelineno-1-76" name="__codelineno-1-76" href="#__codelineno-1-76"></a><span class="gi">+           }</span>
-<a id="__codelineno-1-77" name="__codelineno-1-77" href="#__codelineno-1-77"></a><span class="gi">+</span>
-<a id="__codelineno-1-78" name="__codelineno-1-78" href="#__codelineno-1-78"></a><span class="w"> </span>           // Write everything belongs to the blocks into the database. So that
-<a id="__codelineno-1-79" name="__codelineno-1-79" href="#__codelineno-1-79"></a><span class="w"> </span>           // we can ensure all components of body is completed(body, receipts)
-<a id="__codelineno-1-80" name="__codelineno-1-80" href="#__codelineno-1-80"></a><span class="w"> </span>           // except transaction indexes(will be created once sync is finished).
-<a id="__codelineno-1-81" name="__codelineno-1-81" href="#__codelineno-1-81"></a><span class="gu">@@ -1619,6 +1647,13 @@ func (bc *BlockChain) writeBlockWithoutState(block *types.Block) (err error) {</span>
-<a id="__codelineno-1-82" name="__codelineno-1-82" href="#__codelineno-1-82"></a><span class="w"> </span>       return errInsertionInterrupted
-<a id="__codelineno-1-83" name="__codelineno-1-83" href="#__codelineno-1-83"></a><span class="w"> </span>   }
-<a id="__codelineno-1-84" name="__codelineno-1-84" href="#__codelineno-1-84"></a><span class="w"> </span>   batch := bc.db.NewBatch()
-<a id="__codelineno-1-85" name="__codelineno-1-85" href="#__codelineno-1-85"></a><span class="gi">+</span>
-<a id="__codelineno-1-86" name="__codelineno-1-86" href="#__codelineno-1-86"></a><span class="gi">+   // Write TD for sidechain blocks</span>
-<a id="__codelineno-1-87" name="__codelineno-1-87" href="#__codelineno-1-87"></a><span class="gi">+   if ptd := bc.GetTd(block.ParentHash(), block.NumberU64()-1); ptd != nil {</span>
-<a id="__codelineno-1-88" name="__codelineno-1-88" href="#__codelineno-1-88"></a><span class="gi">+       externTd := new(big.Int).Add(block.Difficulty(), ptd)</span>
-<a id="__codelineno-1-89" name="__codelineno-1-89" href="#__codelineno-1-89"></a><span class="gi">+       rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), externTd)</span>
-<a id="__codelineno-1-90" name="__codelineno-1-90" href="#__codelineno-1-90"></a><span class="gi">+   }</span>
-<a id="__codelineno-1-91" name="__codelineno-1-91" href="#__codelineno-1-91"></a><span class="gi">+</span>
-<a id="__codelineno-1-92" name="__codelineno-1-92" href="#__codelineno-1-92"></a><span class="w"> </span>   rawdb.WriteBlock(batch, block)
-<a id="__codelineno-1-93" name="__codelineno-1-93" href="#__codelineno-1-93"></a><span class="w"> </span>   if err := batch.Write(); err != nil {
-<a id="__codelineno-1-94" name="__codelineno-1-94" href="#__codelineno-1-94"></a><span class="w"> </span>       log.Crit(&quot;Failed to write block into disk&quot;, &quot;err&quot;, err)
-<a id="__codelineno-1-95" name="__codelineno-1-95" href="#__codelineno-1-95"></a><span class="gu">@@ -1631,6 +1666,15 @@ func (bc *BlockChain) writeBlockWithoutState(block *types.Block) (err error) {</span>
-<a id="__codelineno-1-96" name="__codelineno-1-96" href="#__codelineno-1-96"></a><span class="w"> </span>func (bc *BlockChain) writeKnownBlock(block *types.Block) error {
-<a id="__codelineno-1-97" name="__codelineno-1-97" href="#__codelineno-1-97"></a><span class="w"> </span>   current := bc.CurrentBlock()
-<a id="__codelineno-1-98" name="__codelineno-1-98" href="#__codelineno-1-98"></a><span class="w"> </span>   if block.ParentHash() != current.Hash() {
-<a id="__codelineno-1-99" name="__codelineno-1-99" href="#__codelineno-1-99"></a><span class="gi">+       if bc.forker != nil {</span>
-<a id="__codelineno-1-100" name="__codelineno-1-100" href="#__codelineno-1-100"></a><span class="gi">+           reorg, err := bc.forker.ReorgNeeded(current, block.Header())</span>
-<a id="__codelineno-1-101" name="__codelineno-1-101" href="#__codelineno-1-101"></a><span class="gi">+           if err != nil {</span>
-<a id="__codelineno-1-102" name="__codelineno-1-102" href="#__codelineno-1-102"></a><span class="gi">+               return err</span>
-<a id="__codelineno-1-103" name="__codelineno-1-103" href="#__codelineno-1-103"></a><span class="gi">+           }</span>
-<a id="__codelineno-1-104" name="__codelineno-1-104" href="#__codelineno-1-104"></a><span class="gi">+           if !reorg {</span>
-<a id="__codelineno-1-105" name="__codelineno-1-105" href="#__codelineno-1-105"></a><span class="gi">+               return nil</span>
-<a id="__codelineno-1-106" name="__codelineno-1-106" href="#__codelineno-1-106"></a><span class="gi">+           }</span>
-<a id="__codelineno-1-107" name="__codelineno-1-107" href="#__codelineno-1-107"></a><span class="gi">+       }</span>
-<a id="__codelineno-1-108" name="__codelineno-1-108" href="#__codelineno-1-108"></a><span class="w"> </span>       if err := bc.reorg(current, block.Header()); err != nil {
-<a id="__codelineno-1-109" name="__codelineno-1-109" href="#__codelineno-1-109"></a><span class="w"> </span>           return err
-<a id="__codelineno-1-110" name="__codelineno-1-110" href="#__codelineno-1-110"></a><span class="w"> </span>       }
-<a id="__codelineno-1-111" name="__codelineno-1-111" href="#__codelineno-1-111"></a><span class="gu">@@ -1655,6 +1699,11 @@ func (bc *BlockChain) writeBlockWithState(block *types.Block, receipts []*types.</span>
-<a id="__codelineno-1-112" name="__codelineno-1-112" href="#__codelineno-1-112"></a><span class="w"> </span>   )
-<a id="__codelineno-1-113" name="__codelineno-1-113" href="#__codelineno-1-113"></a><span class="w"> </span>   defer batch.Close()
-<a id="__codelineno-1-114" name="__codelineno-1-114" href="#__codelineno-1-114"></a>
-<a id="__codelineno-1-115" name="__codelineno-1-115" href="#__codelineno-1-115"></a><span class="gi">+   // Calculate and write TD for chain sync (if parent TD exists)</span>
-<a id="__codelineno-1-116" name="__codelineno-1-116" href="#__codelineno-1-116"></a><span class="gi">+   if ptd := bc.GetTd(block.ParentHash(), block.NumberU64()-1); ptd != nil {</span>
-<a id="__codelineno-1-117" name="__codelineno-1-117" href="#__codelineno-1-117"></a><span class="gi">+       externTd := new(big.Int).Add(block.Difficulty(), ptd)</span>
-<a id="__codelineno-1-118" name="__codelineno-1-118" href="#__codelineno-1-118"></a><span class="gi">+       rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), externTd)</span>
-<a id="__codelineno-1-119" name="__codelineno-1-119" href="#__codelineno-1-119"></a><span class="gi">+   }</span>
-<a id="__codelineno-1-120" name="__codelineno-1-120" href="#__codelineno-1-120"></a><span class="w"> </span>   rawdb.WriteBlock(batch, block)
-<a id="__codelineno-1-121" name="__codelineno-1-121" href="#__codelineno-1-121"></a><span class="w"> </span>   rawdb.WriteReceipts(batch, block.Hash(), block.NumberU64(), receipts)
-<a id="__codelineno-1-122" name="__codelineno-1-122" href="#__codelineno-1-122"></a><span class="w"> </span>   rawdb.WritePreimages(batch, statedb.Preimages())
-<a id="__codelineno-1-123" name="__codelineno-1-123" href="#__codelineno-1-123"></a><span class="gu">@@ -1763,6 +1812,15 @@ func (bc *BlockChain) writeBlockAndSetHead(block *types.Block, receipts []*types</span>
-<a id="__codelineno-1-124" name="__codelineno-1-124" href="#__codelineno-1-124"></a>
-<a id="__codelineno-1-125" name="__codelineno-1-125" href="#__codelineno-1-125"></a><span class="w"> </span>   // Reorganise the chain if the parent is not the head block
-<a id="__codelineno-1-126" name="__codelineno-1-126" href="#__codelineno-1-126"></a><span class="w"> </span>   if block.ParentHash() != currentBlock.Hash() {
-<a id="__codelineno-1-127" name="__codelineno-1-127" href="#__codelineno-1-127"></a><span class="gi">+       if bc.forker != nil {</span>
-<a id="__codelineno-1-128" name="__codelineno-1-128" href="#__codelineno-1-128"></a><span class="gi">+           reorg, err := bc.forker.ReorgNeeded(currentBlock, block.Header())</span>
-<a id="__codelineno-1-129" name="__codelineno-1-129" href="#__codelineno-1-129"></a><span class="gi">+           if err != nil {</span>
-<a id="__codelineno-1-130" name="__codelineno-1-130" href="#__codelineno-1-130"></a><span class="gi">+               return NonStatTy, err</span>
-<a id="__codelineno-1-131" name="__codelineno-1-131" href="#__codelineno-1-131"></a><span class="gi">+           }</span>
-<a id="__codelineno-1-132" name="__codelineno-1-132" href="#__codelineno-1-132"></a><span class="gi">+           if !reorg {</span>
-<a id="__codelineno-1-133" name="__codelineno-1-133" href="#__codelineno-1-133"></a><span class="gi">+               return SideStatTy, nil</span>
-<a id="__codelineno-1-134" name="__codelineno-1-134" href="#__codelineno-1-134"></a><span class="gi">+           }</span>
-<a id="__codelineno-1-135" name="__codelineno-1-135" href="#__codelineno-1-135"></a><span class="gi">+       }</span>
-<a id="__codelineno-1-136" name="__codelineno-1-136" href="#__codelineno-1-136"></a><span class="w"> </span>       if err := bc.reorg(currentBlock, block.Header()); err != nil {
-<a id="__codelineno-1-137" name="__codelineno-1-137" href="#__codelineno-1-137"></a><span class="w"> </span>           return NonStatTy, err
-<a id="__codelineno-1-138" name="__codelineno-1-138" href="#__codelineno-1-138"></a><span class="w"> </span>       }
-<a id="__codelineno-1-139" name="__codelineno-1-139" href="#__codelineno-1-139"></a><span class="gu">@@ -2926,7 +2984,9 @@ func (bc *BlockChain) InsertHeadersBeforeCutoff(headers []*types.Header) (int, e</span>
-<a id="__codelineno-1-140" name="__codelineno-1-140" href="#__codelineno-1-140"></a><span class="w"> </span>       first     = headers[0].Number.Uint64()
-<a id="__codelineno-1-141" name="__codelineno-1-141" href="#__codelineno-1-141"></a><span class="w"> </span>   )
-<a id="__codelineno-1-142" name="__codelineno-1-142" href="#__codelineno-1-142"></a><span class="w"> </span>   if first == 1 &amp;&amp; frozen == 0 {
-<a id="__codelineno-1-143" name="__codelineno-1-143" href="#__codelineno-1-143"></a><span class="gd">-       _, err := rawdb.WriteAncientBlocks(bc.db, []*types.Block{bc.genesisBlock}, []rlp.RawValue{rlp.EmptyList})</span>
-<a id="__codelineno-1-144" name="__codelineno-1-144" href="#__codelineno-1-144"></a><span class="gi">+       // ETC: use PoW version to write real TD</span>
-<a id="__codelineno-1-145" name="__codelineno-1-145" href="#__codelineno-1-145"></a><span class="gi">+       td := bc.genesisBlock.Difficulty()</span>
-<a id="__codelineno-1-146" name="__codelineno-1-146" href="#__codelineno-1-146"></a><span class="gi">+       _, err := rawdb.WriteAncientBlocksPoW(bc.db, []*types.Block{bc.genesisBlock}, []rlp.RawValue{rlp.EmptyList}, td)</span>
-<a id="__codelineno-1-147" name="__codelineno-1-147" href="#__codelineno-1-147"></a><span class="w"> </span>       if err != nil {
-<a id="__codelineno-1-148" name="__codelineno-1-148" href="#__codelineno-1-148"></a><span class="w"> </span>           log.Error(&quot;Error writing genesis to ancients&quot;, &quot;err&quot;, err)
-<a id="__codelineno-1-149" name="__codelineno-1-149" href="#__codelineno-1-149"></a><span class="w"> </span>           return 0, err
-<a id="__codelineno-1-150" name="__codelineno-1-150" href="#__codelineno-1-150"></a><span class="gu">@@ -2936,9 +2996,28 @@ func (bc *BlockChain) InsertHeadersBeforeCutoff(headers []*types.Header) (int, e</span>
-<a id="__codelineno-1-151" name="__codelineno-1-151" href="#__codelineno-1-151"></a><span class="w"> </span>       return 0, fmt.Errorf(&quot;headers are gapped with the ancient store, first: %d, ancient: %d&quot;, first, frozen)
-<a id="__codelineno-1-152" name="__codelineno-1-152" href="#__codelineno-1-152"></a><span class="w"> </span>   }
-<a id="__codelineno-1-153" name="__codelineno-1-153" href="#__codelineno-1-153"></a>
-<a id="__codelineno-1-154" name="__codelineno-1-154" href="#__codelineno-1-154"></a><span class="gi">+   // ETC: compute parent TD for the header chain and use PoW version if</span>
-<a id="__codelineno-1-155" name="__codelineno-1-155" href="#__codelineno-1-155"></a><span class="gi">+   // available. On PoW chains a missing parent TD is corruption / unknown</span>
-<a id="__codelineno-1-156" name="__codelineno-1-156" href="#__codelineno-1-156"></a><span class="gi">+   // ancestor; the no-TD writer would leave the freezer inconsistent.</span>
-<a id="__codelineno-1-157" name="__codelineno-1-157" href="#__codelineno-1-157"></a><span class="gi">+   var td *big.Int</span>
-<a id="__codelineno-1-158" name="__codelineno-1-158" href="#__codelineno-1-158"></a><span class="gi">+   if first == 1 {</span>
-<a id="__codelineno-1-159" name="__codelineno-1-159" href="#__codelineno-1-159"></a><span class="gi">+       td = new(big.Int).Add(bc.genesisBlock.Difficulty(), headers[0].Difficulty)</span>
-<a id="__codelineno-1-160" name="__codelineno-1-160" href="#__codelineno-1-160"></a><span class="gi">+   } else {</span>
-<a id="__codelineno-1-161" name="__codelineno-1-161" href="#__codelineno-1-161"></a><span class="gi">+       parentTd := bc.GetTd(headers[0].ParentHash, first-1)</span>
-<a id="__codelineno-1-162" name="__codelineno-1-162" href="#__codelineno-1-162"></a><span class="gi">+       if parentTd != nil {</span>
-<a id="__codelineno-1-163" name="__codelineno-1-163" href="#__codelineno-1-163"></a><span class="gi">+           td = new(big.Int).Add(parentTd, headers[0].Difficulty)</span>
-<a id="__codelineno-1-164" name="__codelineno-1-164" href="#__codelineno-1-164"></a><span class="gi">+       }</span>
-<a id="__codelineno-1-165" name="__codelineno-1-165" href="#__codelineno-1-165"></a><span class="gi">+   }</span>
-<a id="__codelineno-1-166" name="__codelineno-1-166" href="#__codelineno-1-166"></a><span class="w"> </span>   // Write headers to the ancient store, with block bodies and receipts set to nil
-<a id="__codelineno-1-167" name="__codelineno-1-167" href="#__codelineno-1-167"></a><span class="w"> </span>   // to ensure consistency across tables in the freezer.
-<a id="__codelineno-1-168" name="__codelineno-1-168" href="#__codelineno-1-168"></a><span class="gd">-   _, err := rawdb.WriteAncientHeaderChain(bc.db, headers)</span>
-<a id="__codelineno-1-169" name="__codelineno-1-169" href="#__codelineno-1-169"></a><span class="gi">+   var err error</span>
-<a id="__codelineno-1-170" name="__codelineno-1-170" href="#__codelineno-1-170"></a><span class="gi">+   if td != nil {</span>
-<a id="__codelineno-1-171" name="__codelineno-1-171" href="#__codelineno-1-171"></a><span class="gi">+       _, err = rawdb.WriteAncientHeaderChainPoW(bc.db, headers, td)</span>
-<a id="__codelineno-1-172" name="__codelineno-1-172" href="#__codelineno-1-172"></a><span class="gi">+   } else if bc.chainConfig.IsPow() {</span>
-<a id="__codelineno-1-173" name="__codelineno-1-173" href="#__codelineno-1-173"></a><span class="gi">+       return 0, consensus.ErrUnknownAncestor</span>
-<a id="__codelineno-1-174" name="__codelineno-1-174" href="#__codelineno-1-174"></a><span class="gi">+   } else {</span>
-<a id="__codelineno-1-175" name="__codelineno-1-175" href="#__codelineno-1-175"></a><span class="gi">+       _, err = rawdb.WriteAncientHeaderChain(bc.db, headers)</span>
-<a id="__codelineno-1-176" name="__codelineno-1-176" href="#__codelineno-1-176"></a><span class="gi">+   }</span>
-<a id="__codelineno-1-177" name="__codelineno-1-177" href="#__codelineno-1-177"></a><span class="w"> </span>   if err != nil {
-<a id="__codelineno-1-178" name="__codelineno-1-178" href="#__codelineno-1-178"></a><span class="w"> </span>       return 0, err
-<a id="__codelineno-1-179" name="__codelineno-1-179" href="#__codelineno-1-179"></a><span class="w"> </span>   }
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="gu">@@ -357,8 +357,10 @@ type BlockChain struct {</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w"> </span>   txLookupLock  sync.RWMutex
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w"> </span>   txLookupCache *lru.Cache[common.Hash, txLookup]
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="gd">-   stopping      atomic.Bool // false if chain is running, true when stopped</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="gd">-   procInterrupt atomic.Bool // interrupt signaler for block processing</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="gi">+   stopping      atomic.Bool  // false if chain is running, true when stopped</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="gi">+   procInterrupt atomic.Bool  // interrupt signaler for block processing</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="gi">+   forker        *ForkChoice  // ETC: PoW fork choice (nil for non-PoW chains)</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="gi">+   messEnabled   atomic.Int32 // ETC: MESS runtime activation state (per-chain, not global)</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w"> </span>   engine     consensus.Engine
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w"> </span>   validator  Validator // Block and state validator interface
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="gu">@@ -427,6 +429,9 @@ func NewBlockChain(db ethdb.Database, genesis *Genesis, engine consensus.Engine,</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w"> </span>   bc.validator = NewBlockValidator(chainConfig, bc)
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w"> </span>   bc.prefetcher = newStatePrefetcher(chainConfig, bc.hc)
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w"> </span>   bc.processor = NewStateProcessor(bc.hc)
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="gi">+   if chainConfig.IsPow() {</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="gi">+       bc.forker = NewForkChoiceWithMESS(bc, nil)</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="gi">+   }</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w"> </span>   genesisHeader := bc.GetHeaderByNumber(0)
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w"> </span>   if genesisHeader == nil {
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="gu">@@ -1212,6 +1217,7 @@ func (bc *BlockChain) ResetWithGenesisBlock(genesis *types.Block) error {</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w"> </span>   // Prepare the genesis block and reinitialise the chain
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w"> </span>   batch := bc.db.NewBatch()
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="gi">+   rawdb.WriteTd(batch, genesis.Hash(), genesis.NumberU64(), genesis.Difficulty()) // ETC: write genesis TD</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w"> </span>   rawdb.WriteBlock(batch, genesis)
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w"> </span>   if err := batch.Write(); err != nil {
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w"> </span>       log.Crit(&quot;Failed to write genesis block&quot;, &quot;err&quot;, err)
+<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="gu">@@ -1478,7 +1484,9 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [</span>
+<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w"> </span>       // Ensure genesis is in the ancient store
+<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w"> </span>       if blockChain[0].NumberU64() == 1 {
+<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="w"> </span>           if frozen, _ := bc.db.Ancients(); frozen == 0 {
+<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="gd">-               writeSize, err := rawdb.WriteAncientBlocks(bc.db, []*types.Block{bc.genesisBlock}, []rlp.RawValue{rlp.EmptyList})</span>
+<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="gi">+               // ETC: use PoW version to write real TD</span>
+<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="gi">+               td := bc.genesisBlock.Difficulty()</span>
+<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="gi">+               writeSize, err := rawdb.WriteAncientBlocksPoW(bc.db, []*types.Block{bc.genesisBlock}, []rlp.RawValue{rlp.EmptyList}, td)</span>
+<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="w"> </span>               if err != nil {
+<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="w"> </span>                   log.Error(&quot;Error writing genesis to ancients&quot;, &quot;err&quot;, err)
+<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="w"> </span>                   return 0, err
+<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="gu">@@ -1487,8 +1495,22 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [</span>
+<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="w"> </span>               log.Info(&quot;Wrote genesis to ancients&quot;)
+<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="w"> </span>           }
+<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="w"> </span>       }
+<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a><span class="gd">-       // Write all chain data to ancients.</span>
+<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a><span class="gd">-       writeSize, err := rawdb.WriteAncientBlocks(bc.db, blockChain, receiptChain)</span>
+<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="gi">+       // ETC: use PoW version to write real TD if parent TD is available.</span>
+<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="gi">+       // On PoW chains a missing parent TD means the ancestor is unknown</span>
+<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a><span class="gi">+       // (or the TD store is corrupt); falling back to the no-TD writer</span>
+<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a><span class="gi">+       // would leave the ancients without difficulty and break sync. Treat</span>
+<a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a><span class="gi">+       // it as an unknown-ancestor error instead.</span>
+<a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a><span class="gi">+       var writeSize int64</span>
+<a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a><span class="gi">+       var err error</span>
+<a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a><span class="gi">+       parentTd := bc.GetTd(blockChain[0].ParentHash(), blockChain[0].NumberU64()-1)</span>
+<a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a><span class="gi">+       if parentTd != nil {</span>
+<a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a><span class="gi">+           td := new(big.Int).Add(parentTd, blockChain[0].Header().Difficulty)</span>
+<a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a><span class="gi">+           writeSize, err = rawdb.WriteAncientBlocksPoW(bc.db, blockChain, receiptChain, td)</span>
+<a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a><span class="gi">+       } else if bc.chainConfig.IsPow() {</span>
+<a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a><span class="gi">+           return 0, consensus.ErrUnknownAncestor</span>
+<a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a><span class="gi">+       } else {</span>
+<a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a><span class="gi">+           writeSize, err = rawdb.WriteAncientBlocks(bc.db, blockChain, receiptChain)</span>
+<a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a><span class="gi">+       }</span>
+<a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a><span class="w"> </span>       if err != nil {
+<a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a><span class="w"> </span>           log.Error(&quot;Error importing chain data to ancients&quot;, &quot;err&quot;, err)
+<a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a><span class="w"> </span>           return 0, err
+<a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a><span class="gu">@@ -1548,6 +1570,13 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [</span>
+<a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a><span class="w"> </span>           rawdb.WriteBlock(batch, block)
+<a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a><span class="w"> </span>           rawdb.WriteRawReceipts(batch, block.Hash(), block.NumberU64(), receiptChain[i])
+<a id="__codelineno-1-75" name="__codelineno-1-75" href="#__codelineno-1-75"></a>
+<a id="__codelineno-1-76" name="__codelineno-1-76" href="#__codelineno-1-76"></a><span class="gi">+           // ETC: Write TD for PoW chains - writeLive doesn&#39;t go through</span>
+<a id="__codelineno-1-77" name="__codelineno-1-77" href="#__codelineno-1-77"></a><span class="gi">+           // InsertHeaderChain, so TD must be written here</span>
+<a id="__codelineno-1-78" name="__codelineno-1-78" href="#__codelineno-1-78"></a><span class="gi">+           if ptd := bc.GetTd(block.ParentHash(), block.NumberU64()-1); ptd != nil {</span>
+<a id="__codelineno-1-79" name="__codelineno-1-79" href="#__codelineno-1-79"></a><span class="gi">+               externTd := new(big.Int).Add(block.Difficulty(), ptd)</span>
+<a id="__codelineno-1-80" name="__codelineno-1-80" href="#__codelineno-1-80"></a><span class="gi">+               rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), externTd)</span>
+<a id="__codelineno-1-81" name="__codelineno-1-81" href="#__codelineno-1-81"></a><span class="gi">+           }</span>
+<a id="__codelineno-1-82" name="__codelineno-1-82" href="#__codelineno-1-82"></a><span class="gi">+</span>
+<a id="__codelineno-1-83" name="__codelineno-1-83" href="#__codelineno-1-83"></a><span class="w"> </span>           // Write everything belongs to the blocks into the database. So that
+<a id="__codelineno-1-84" name="__codelineno-1-84" href="#__codelineno-1-84"></a><span class="w"> </span>           // we can ensure all components of body is completed(body, receipts)
+<a id="__codelineno-1-85" name="__codelineno-1-85" href="#__codelineno-1-85"></a><span class="w"> </span>           // except transaction indexes(will be created once sync is finished).
+<a id="__codelineno-1-86" name="__codelineno-1-86" href="#__codelineno-1-86"></a><span class="gu">@@ -1619,6 +1648,13 @@ func (bc *BlockChain) writeBlockWithoutState(block *types.Block) (err error) {</span>
+<a id="__codelineno-1-87" name="__codelineno-1-87" href="#__codelineno-1-87"></a><span class="w"> </span>       return errInsertionInterrupted
+<a id="__codelineno-1-88" name="__codelineno-1-88" href="#__codelineno-1-88"></a><span class="w"> </span>   }
+<a id="__codelineno-1-89" name="__codelineno-1-89" href="#__codelineno-1-89"></a><span class="w"> </span>   batch := bc.db.NewBatch()
+<a id="__codelineno-1-90" name="__codelineno-1-90" href="#__codelineno-1-90"></a><span class="gi">+</span>
+<a id="__codelineno-1-91" name="__codelineno-1-91" href="#__codelineno-1-91"></a><span class="gi">+   // Write TD for sidechain blocks</span>
+<a id="__codelineno-1-92" name="__codelineno-1-92" href="#__codelineno-1-92"></a><span class="gi">+   if ptd := bc.GetTd(block.ParentHash(), block.NumberU64()-1); ptd != nil {</span>
+<a id="__codelineno-1-93" name="__codelineno-1-93" href="#__codelineno-1-93"></a><span class="gi">+       externTd := new(big.Int).Add(block.Difficulty(), ptd)</span>
+<a id="__codelineno-1-94" name="__codelineno-1-94" href="#__codelineno-1-94"></a><span class="gi">+       rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), externTd)</span>
+<a id="__codelineno-1-95" name="__codelineno-1-95" href="#__codelineno-1-95"></a><span class="gi">+   }</span>
+<a id="__codelineno-1-96" name="__codelineno-1-96" href="#__codelineno-1-96"></a><span class="gi">+</span>
+<a id="__codelineno-1-97" name="__codelineno-1-97" href="#__codelineno-1-97"></a><span class="w"> </span>   rawdb.WriteBlock(batch, block)
+<a id="__codelineno-1-98" name="__codelineno-1-98" href="#__codelineno-1-98"></a><span class="w"> </span>   if err := batch.Write(); err != nil {
+<a id="__codelineno-1-99" name="__codelineno-1-99" href="#__codelineno-1-99"></a><span class="w"> </span>       log.Crit(&quot;Failed to write block into disk&quot;, &quot;err&quot;, err)
+<a id="__codelineno-1-100" name="__codelineno-1-100" href="#__codelineno-1-100"></a><span class="gu">@@ -1631,6 +1667,15 @@ func (bc *BlockChain) writeBlockWithoutState(block *types.Block) (err error) {</span>
+<a id="__codelineno-1-101" name="__codelineno-1-101" href="#__codelineno-1-101"></a><span class="w"> </span>func (bc *BlockChain) writeKnownBlock(block *types.Block) error {
+<a id="__codelineno-1-102" name="__codelineno-1-102" href="#__codelineno-1-102"></a><span class="w"> </span>   current := bc.CurrentBlock()
+<a id="__codelineno-1-103" name="__codelineno-1-103" href="#__codelineno-1-103"></a><span class="w"> </span>   if block.ParentHash() != current.Hash() {
+<a id="__codelineno-1-104" name="__codelineno-1-104" href="#__codelineno-1-104"></a><span class="gi">+       if bc.forker != nil {</span>
+<a id="__codelineno-1-105" name="__codelineno-1-105" href="#__codelineno-1-105"></a><span class="gi">+           reorg, err := bc.forker.ReorgNeeded(current, block.Header())</span>
+<a id="__codelineno-1-106" name="__codelineno-1-106" href="#__codelineno-1-106"></a><span class="gi">+           if err != nil {</span>
+<a id="__codelineno-1-107" name="__codelineno-1-107" href="#__codelineno-1-107"></a><span class="gi">+               return err</span>
+<a id="__codelineno-1-108" name="__codelineno-1-108" href="#__codelineno-1-108"></a><span class="gi">+           }</span>
+<a id="__codelineno-1-109" name="__codelineno-1-109" href="#__codelineno-1-109"></a><span class="gi">+           if !reorg {</span>
+<a id="__codelineno-1-110" name="__codelineno-1-110" href="#__codelineno-1-110"></a><span class="gi">+               return nil</span>
+<a id="__codelineno-1-111" name="__codelineno-1-111" href="#__codelineno-1-111"></a><span class="gi">+           }</span>
+<a id="__codelineno-1-112" name="__codelineno-1-112" href="#__codelineno-1-112"></a><span class="gi">+       }</span>
+<a id="__codelineno-1-113" name="__codelineno-1-113" href="#__codelineno-1-113"></a><span class="w"> </span>       if err := bc.reorg(current, block.Header()); err != nil {
+<a id="__codelineno-1-114" name="__codelineno-1-114" href="#__codelineno-1-114"></a><span class="w"> </span>           return err
+<a id="__codelineno-1-115" name="__codelineno-1-115" href="#__codelineno-1-115"></a><span class="w"> </span>       }
+<a id="__codelineno-1-116" name="__codelineno-1-116" href="#__codelineno-1-116"></a><span class="gu">@@ -1655,6 +1700,11 @@ func (bc *BlockChain) writeBlockWithState(block *types.Block, receipts []*types.</span>
+<a id="__codelineno-1-117" name="__codelineno-1-117" href="#__codelineno-1-117"></a><span class="w"> </span>   )
+<a id="__codelineno-1-118" name="__codelineno-1-118" href="#__codelineno-1-118"></a><span class="w"> </span>   defer batch.Close()
+<a id="__codelineno-1-119" name="__codelineno-1-119" href="#__codelineno-1-119"></a>
+<a id="__codelineno-1-120" name="__codelineno-1-120" href="#__codelineno-1-120"></a><span class="gi">+   // Calculate and write TD for chain sync (if parent TD exists)</span>
+<a id="__codelineno-1-121" name="__codelineno-1-121" href="#__codelineno-1-121"></a><span class="gi">+   if ptd := bc.GetTd(block.ParentHash(), block.NumberU64()-1); ptd != nil {</span>
+<a id="__codelineno-1-122" name="__codelineno-1-122" href="#__codelineno-1-122"></a><span class="gi">+       externTd := new(big.Int).Add(block.Difficulty(), ptd)</span>
+<a id="__codelineno-1-123" name="__codelineno-1-123" href="#__codelineno-1-123"></a><span class="gi">+       rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), externTd)</span>
+<a id="__codelineno-1-124" name="__codelineno-1-124" href="#__codelineno-1-124"></a><span class="gi">+   }</span>
+<a id="__codelineno-1-125" name="__codelineno-1-125" href="#__codelineno-1-125"></a><span class="w"> </span>   rawdb.WriteBlock(batch, block)
+<a id="__codelineno-1-126" name="__codelineno-1-126" href="#__codelineno-1-126"></a><span class="w"> </span>   rawdb.WriteReceipts(batch, block.Hash(), block.NumberU64(), receipts)
+<a id="__codelineno-1-127" name="__codelineno-1-127" href="#__codelineno-1-127"></a><span class="w"> </span>   rawdb.WritePreimages(batch, statedb.Preimages())
+<a id="__codelineno-1-128" name="__codelineno-1-128" href="#__codelineno-1-128"></a><span class="gu">@@ -1763,6 +1813,15 @@ func (bc *BlockChain) writeBlockAndSetHead(block *types.Block, receipts []*types</span>
+<a id="__codelineno-1-129" name="__codelineno-1-129" href="#__codelineno-1-129"></a>
+<a id="__codelineno-1-130" name="__codelineno-1-130" href="#__codelineno-1-130"></a><span class="w"> </span>   // Reorganise the chain if the parent is not the head block
+<a id="__codelineno-1-131" name="__codelineno-1-131" href="#__codelineno-1-131"></a><span class="w"> </span>   if block.ParentHash() != currentBlock.Hash() {
+<a id="__codelineno-1-132" name="__codelineno-1-132" href="#__codelineno-1-132"></a><span class="gi">+       if bc.forker != nil {</span>
+<a id="__codelineno-1-133" name="__codelineno-1-133" href="#__codelineno-1-133"></a><span class="gi">+           reorg, err := bc.forker.ReorgNeeded(currentBlock, block.Header())</span>
+<a id="__codelineno-1-134" name="__codelineno-1-134" href="#__codelineno-1-134"></a><span class="gi">+           if err != nil {</span>
+<a id="__codelineno-1-135" name="__codelineno-1-135" href="#__codelineno-1-135"></a><span class="gi">+               return NonStatTy, err</span>
+<a id="__codelineno-1-136" name="__codelineno-1-136" href="#__codelineno-1-136"></a><span class="gi">+           }</span>
+<a id="__codelineno-1-137" name="__codelineno-1-137" href="#__codelineno-1-137"></a><span class="gi">+           if !reorg {</span>
+<a id="__codelineno-1-138" name="__codelineno-1-138" href="#__codelineno-1-138"></a><span class="gi">+               return SideStatTy, nil</span>
+<a id="__codelineno-1-139" name="__codelineno-1-139" href="#__codelineno-1-139"></a><span class="gi">+           }</span>
+<a id="__codelineno-1-140" name="__codelineno-1-140" href="#__codelineno-1-140"></a><span class="gi">+       }</span>
+<a id="__codelineno-1-141" name="__codelineno-1-141" href="#__codelineno-1-141"></a><span class="w"> </span>       if err := bc.reorg(currentBlock, block.Header()); err != nil {
+<a id="__codelineno-1-142" name="__codelineno-1-142" href="#__codelineno-1-142"></a><span class="w"> </span>           return NonStatTy, err
+<a id="__codelineno-1-143" name="__codelineno-1-143" href="#__codelineno-1-143"></a><span class="w"> </span>       }
+<a id="__codelineno-1-144" name="__codelineno-1-144" href="#__codelineno-1-144"></a><span class="gu">@@ -2926,7 +2985,9 @@ func (bc *BlockChain) InsertHeadersBeforeCutoff(headers []*types.Header) (int, e</span>
+<a id="__codelineno-1-145" name="__codelineno-1-145" href="#__codelineno-1-145"></a><span class="w"> </span>       first     = headers[0].Number.Uint64()
+<a id="__codelineno-1-146" name="__codelineno-1-146" href="#__codelineno-1-146"></a><span class="w"> </span>   )
+<a id="__codelineno-1-147" name="__codelineno-1-147" href="#__codelineno-1-147"></a><span class="w"> </span>   if first == 1 &amp;&amp; frozen == 0 {
+<a id="__codelineno-1-148" name="__codelineno-1-148" href="#__codelineno-1-148"></a><span class="gd">-       _, err := rawdb.WriteAncientBlocks(bc.db, []*types.Block{bc.genesisBlock}, []rlp.RawValue{rlp.EmptyList})</span>
+<a id="__codelineno-1-149" name="__codelineno-1-149" href="#__codelineno-1-149"></a><span class="gi">+       // ETC: use PoW version to write real TD</span>
+<a id="__codelineno-1-150" name="__codelineno-1-150" href="#__codelineno-1-150"></a><span class="gi">+       td := bc.genesisBlock.Difficulty()</span>
+<a id="__codelineno-1-151" name="__codelineno-1-151" href="#__codelineno-1-151"></a><span class="gi">+       _, err := rawdb.WriteAncientBlocksPoW(bc.db, []*types.Block{bc.genesisBlock}, []rlp.RawValue{rlp.EmptyList}, td)</span>
+<a id="__codelineno-1-152" name="__codelineno-1-152" href="#__codelineno-1-152"></a><span class="w"> </span>       if err != nil {
+<a id="__codelineno-1-153" name="__codelineno-1-153" href="#__codelineno-1-153"></a><span class="w"> </span>           log.Error(&quot;Error writing genesis to ancients&quot;, &quot;err&quot;, err)
+<a id="__codelineno-1-154" name="__codelineno-1-154" href="#__codelineno-1-154"></a><span class="w"> </span>           return 0, err
+<a id="__codelineno-1-155" name="__codelineno-1-155" href="#__codelineno-1-155"></a><span class="gu">@@ -2936,9 +2997,28 @@ func (bc *BlockChain) InsertHeadersBeforeCutoff(headers []*types.Header) (int, e</span>
+<a id="__codelineno-1-156" name="__codelineno-1-156" href="#__codelineno-1-156"></a><span class="w"> </span>       return 0, fmt.Errorf(&quot;headers are gapped with the ancient store, first: %d, ancient: %d&quot;, first, frozen)
+<a id="__codelineno-1-157" name="__codelineno-1-157" href="#__codelineno-1-157"></a><span class="w"> </span>   }
+<a id="__codelineno-1-158" name="__codelineno-1-158" href="#__codelineno-1-158"></a>
+<a id="__codelineno-1-159" name="__codelineno-1-159" href="#__codelineno-1-159"></a><span class="gi">+   // ETC: compute parent TD for the header chain and use PoW version if</span>
+<a id="__codelineno-1-160" name="__codelineno-1-160" href="#__codelineno-1-160"></a><span class="gi">+   // available. On PoW chains a missing parent TD is corruption / unknown</span>
+<a id="__codelineno-1-161" name="__codelineno-1-161" href="#__codelineno-1-161"></a><span class="gi">+   // ancestor; the no-TD writer would leave the freezer inconsistent.</span>
+<a id="__codelineno-1-162" name="__codelineno-1-162" href="#__codelineno-1-162"></a><span class="gi">+   var td *big.Int</span>
+<a id="__codelineno-1-163" name="__codelineno-1-163" href="#__codelineno-1-163"></a><span class="gi">+   if first == 1 {</span>
+<a id="__codelineno-1-164" name="__codelineno-1-164" href="#__codelineno-1-164"></a><span class="gi">+       td = new(big.Int).Add(bc.genesisBlock.Difficulty(), headers[0].Difficulty)</span>
+<a id="__codelineno-1-165" name="__codelineno-1-165" href="#__codelineno-1-165"></a><span class="gi">+   } else {</span>
+<a id="__codelineno-1-166" name="__codelineno-1-166" href="#__codelineno-1-166"></a><span class="gi">+       parentTd := bc.GetTd(headers[0].ParentHash, first-1)</span>
+<a id="__codelineno-1-167" name="__codelineno-1-167" href="#__codelineno-1-167"></a><span class="gi">+       if parentTd != nil {</span>
+<a id="__codelineno-1-168" name="__codelineno-1-168" href="#__codelineno-1-168"></a><span class="gi">+           td = new(big.Int).Add(parentTd, headers[0].Difficulty)</span>
+<a id="__codelineno-1-169" name="__codelineno-1-169" href="#__codelineno-1-169"></a><span class="gi">+       }</span>
+<a id="__codelineno-1-170" name="__codelineno-1-170" href="#__codelineno-1-170"></a><span class="gi">+   }</span>
+<a id="__codelineno-1-171" name="__codelineno-1-171" href="#__codelineno-1-171"></a><span class="w"> </span>   // Write headers to the ancient store, with block bodies and receipts set to nil
+<a id="__codelineno-1-172" name="__codelineno-1-172" href="#__codelineno-1-172"></a><span class="w"> </span>   // to ensure consistency across tables in the freezer.
+<a id="__codelineno-1-173" name="__codelineno-1-173" href="#__codelineno-1-173"></a><span class="gd">-   _, err := rawdb.WriteAncientHeaderChain(bc.db, headers)</span>
+<a id="__codelineno-1-174" name="__codelineno-1-174" href="#__codelineno-1-174"></a><span class="gi">+   var err error</span>
+<a id="__codelineno-1-175" name="__codelineno-1-175" href="#__codelineno-1-175"></a><span class="gi">+   if td != nil {</span>
+<a id="__codelineno-1-176" name="__codelineno-1-176" href="#__codelineno-1-176"></a><span class="gi">+       _, err = rawdb.WriteAncientHeaderChainPoW(bc.db, headers, td)</span>
+<a id="__codelineno-1-177" name="__codelineno-1-177" href="#__codelineno-1-177"></a><span class="gi">+   } else if bc.chainConfig.IsPow() {</span>
+<a id="__codelineno-1-178" name="__codelineno-1-178" href="#__codelineno-1-178"></a><span class="gi">+       return 0, consensus.ErrUnknownAncestor</span>
+<a id="__codelineno-1-179" name="__codelineno-1-179" href="#__codelineno-1-179"></a><span class="gi">+   } else {</span>
+<a id="__codelineno-1-180" name="__codelineno-1-180" href="#__codelineno-1-180"></a><span class="gi">+       _, err = rawdb.WriteAncientHeaderChain(bc.db, headers)</span>
+<a id="__codelineno-1-181" name="__codelineno-1-181" href="#__codelineno-1-181"></a><span class="gi">+   }</span>
+<a id="__codelineno-1-182" name="__codelineno-1-182" href="#__codelineno-1-182"></a><span class="w"> </span>   if err != nil {
+<a id="__codelineno-1-183" name="__codelineno-1-183" href="#__codelineno-1-183"></a><span class="w"> </span>       return 0, err
+<a id="__codelineno-1-184" name="__codelineno-1-184" href="#__codelineno-1-184"></a><span class="w"> </span>   }
 </code></pre></div>
 
 </details>

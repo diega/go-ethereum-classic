@@ -1209,7 +1209,7 @@
 <tr>
 <td>Delta</td>
 <td>+2 -1</td>
-<td>+2 -1</td>
+<td>+7 -1</td>
 </tr>
 </tbody>
 </table>
@@ -1242,29 +1242,41 @@
 </details>
 
 <details>
-<summary>ETC delta on v1.17.3 (+2 -1)</summary>
+<summary>ETC delta on v1.17.3 (+7 -1)</summary>
 
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gh">diff --git a/core/genesis.go b/core/genesis.go</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="gh">index 6a0affa52..2f111aee1 100644</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="gh">index 6a0affa52..df9b97280 100644</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="gd">--- a/core/genesis.go</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="gi">+++ b/core/genesis.go</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="gu">@@ -511,7 +511,7 @@ func (g *Genesis) toBlockWithRoot(root common.Hash) *types.Block {</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w"> </span>           head.Difficulty = params.GenesisDifficulty
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w"> </span>       }
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w"> </span>   }
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="gd">-   if g.Config != nil &amp;&amp; g.Config.IsLondon(common.Big0) {</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="gi">+   if g.Config != nil &amp;&amp; g.Config.IsEIP1559(common.Big0) {</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w"> </span>       if g.BaseFee != nil {
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w"> </span>           head.BaseFee = g.BaseFee
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w"> </span>       } else {
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="gu">@@ -590,6 +590,7 @@ func (g *Genesis) Commit(db ethdb.Database, triedb *triedb.Database, tracer *tra</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w"> </span>   }
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w"> </span>   batch := db.NewBatch()
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w"> </span>   rawdb.WriteGenesisStateSpec(batch, block.Hash(), blob)
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="gi">+   rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), block.Difficulty())</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w"> </span>   rawdb.WriteBlock(batch, block)
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w"> </span>   rawdb.WriteReceipts(batch, block.Hash(), block.NumberU64(), nil)
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w"> </span>   rawdb.WriteCanonicalHash(batch, block.Hash(), block.NumberU64())
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="gu">@@ -457,6 +457,11 @@ func (g *Genesis) chainConfigOrDefault(ghash common.Hash, stored *params.ChainCo</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w"> </span>   switch {
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w"> </span>   case g != nil:
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w"> </span>       return g.Config
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="gi">+   // ETC shares ETH mainnet&#39;s genesis hash, so the hash-based cases below would</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="gi">+   // misresolve a Classic datadir to mainnet. A stored Classic/Mordor config must win</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="gi">+   // (IsClassic lives in params/config_etc.go).</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="gi">+   case stored != nil &amp;&amp; stored.IsClassic():</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="gi">+       return stored</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w"> </span>   case ghash == params.MainnetGenesisHash:
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w"> </span>       return params.MainnetChainConfig
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w"> </span>   case ghash == params.HoleskyGenesisHash:
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="gu">@@ -511,7 +516,7 @@ func (g *Genesis) toBlockWithRoot(root common.Hash) *types.Block {</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w"> </span>           head.Difficulty = params.GenesisDifficulty
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w"> </span>       }
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w"> </span>   }
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="gd">-   if g.Config != nil &amp;&amp; g.Config.IsLondon(common.Big0) {</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="gi">+   if g.Config != nil &amp;&amp; g.Config.IsEIP1559(common.Big0) {</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w"> </span>       if g.BaseFee != nil {
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w"> </span>           head.BaseFee = g.BaseFee
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w"> </span>       } else {
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="gu">@@ -590,6 +595,7 @@ func (g *Genesis) Commit(db ethdb.Database, triedb *triedb.Database, tracer *tra</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w"> </span>   }
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w"> </span>   batch := db.NewBatch()
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w"> </span>   rawdb.WriteGenesisStateSpec(batch, block.Hash(), blob)
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="gi">+   rawdb.WriteTd(batch, block.Hash(), block.NumberU64(), block.Difficulty())</span>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w"> </span>   rawdb.WriteBlock(batch, block)
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w"> </span>   rawdb.WriteReceipts(batch, block.Hash(), block.NumberU64(), nil)
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w"> </span>   rawdb.WriteCanonicalHash(batch, block.Hash(), block.NumberU64())
 </code></pre></div>
 
 </details>

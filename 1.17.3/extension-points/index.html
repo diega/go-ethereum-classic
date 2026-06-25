@@ -1462,7 +1462,7 @@ that originally existed in upstream.</p>
 <tbody>
 <tr>
 <td>Total extension points</td>
-<td style="text-align: right;">87</td>
+<td style="text-align: right;">90</td>
 </tr>
 <tr>
 <td>Files touched</td>
@@ -1485,11 +1485,11 @@ that originally existed in upstream.</p>
 </tr>
 <tr>
 <td>conditional</td>
-<td style="text-align: right;">30</td>
+<td style="text-align: right;">31</td>
 </tr>
 <tr>
 <td>call</td>
-<td style="text-align: right;">18</td>
+<td style="text-align: right;">20</td>
 </tr>
 <tr>
 <td>function</td>
@@ -1564,7 +1564,7 @@ that originally existed in upstream.</p>
 <td>handler.messForceEnable/Disable</td>
 <td>126-127</td>
 <td>MESS emergency override flags propagated from ethconfig</td>
-<td>eth/handler_mess.go</td>
+<td>eth/sync_mess.go</td>
 </tr>
 <tr>
 <td style="text-align: right;">7</td>
@@ -1663,6 +1663,14 @@ that originally existed in upstream.</p>
 <tbody>
 <tr>
 <td style="text-align: right;">17</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/genesis.go#L463"><code>core/genesis.go</code></a></td>
+<td>chainConfigOrDefault Classic guard</td>
+<td>463</td>
+<td>Prefers a stored Classic/Mordor config over the ETH/ETC shared genesis hash, so a Classic datadir opened without an explicit genesis isn't misresolved to Ethereum mainnet</td>
+<td>params/config_etc.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">18</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/handler.go#L264-L282"><code>eth/handler.go</code></a></td>
 <td>isPow dispatch in runEthPeer</td>
 <td>264-282</td>
@@ -1670,7 +1678,7 @@ that originally existed in upstream.</p>
 <td>eth/protocols/eth/handshake_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">18</td>
+<td style="text-align: right;">19</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/handler.go#L325-L327"><code>eth/handler.go</code></a></td>
 <td>isPow notify chainSync</td>
 <td>325-327</td>
@@ -1678,7 +1686,7 @@ that originally existed in upstream.</p>
 <td>eth/sync_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">19</td>
+<td style="text-align: right;">20</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/handler.go#L462-L465"><code>eth/handler.go</code></a></td>
 <td>isPow in Start (txFetcher guard)</td>
 <td>462-465</td>
@@ -1686,7 +1694,7 @@ that originally existed in upstream.</p>
 <td>eth/sync_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">20</td>
+<td style="text-align: right;">21</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/handler.go#L467-L477"><code>eth/handler.go</code></a></td>
 <td>isPow in Start (PoW syncer)</td>
 <td>467-477</td>
@@ -1694,7 +1702,7 @@ that originally existed in upstream.</p>
 <td>eth/handler_pow.go, eth/sync_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">21</td>
+<td style="text-align: right;">22</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/handler.go#L490-L496"><code>eth/handler.go</code></a></td>
 <td>isPow in Stop</td>
 <td>490-496</td>
@@ -1702,7 +1710,7 @@ that originally existed in upstream.</p>
 <td>eth/sync_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">22</td>
+<td style="text-align: right;">23</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/handler_eth.go#L62-L64"><code>eth/handler_eth.go</code></a></td>
 <td>NewBlockHashesPacket PoW dispatch</td>
 <td>62-64</td>
@@ -1710,7 +1718,7 @@ that originally existed in upstream.</p>
 <td>eth/handler_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">23</td>
+<td style="text-align: right;">24</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/handler_eth.go#L66-L67"><code>eth/handler_eth.go</code></a></td>
 <td>NewBlockPacket PoW dispatch</td>
 <td>66-67</td>
@@ -1718,7 +1726,7 @@ that originally existed in upstream.</p>
 <td>eth/handler_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">24</td>
+<td style="text-align: right;">25</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/peer.go#L54-L56"><code>eth/peer.go</code></a></td>
 <td>PoW block in ethPeer.info()</td>
 <td>54-56</td>
@@ -1726,7 +1734,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">25</td>
+<td style="text-align: right;">26</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/evm.go#L58-L60"><code>core/evm.go</code></a></td>
 <td>London-without-EIP1559 baseFee=0</td>
 <td>58-60</td>
@@ -1734,7 +1742,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">26</td>
+<td style="text-align: right;">27</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/vm/evm.go#L159-L160"><code>core/vm/evm.go</code></a></td>
 <td>IsSpiral instruction set</td>
 <td>159-160</td>
@@ -1742,7 +1750,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">27</td>
+<td style="text-align: right;">28</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/vm/evm.go#L185"><code>core/vm/evm.go</code></a></td>
 <td>IsEIP160 activation</td>
 <td>185,188-189</td>
@@ -1750,7 +1758,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">28</td>
+<td style="text-align: right;">29</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/consensus/misc/eip1559/eip1559.go#L66"><code>consensus/misc/eip1559/eip1559.go</code></a></td>
 <td>IsEIP1559 guard</td>
 <td>66</td>
@@ -1758,7 +1766,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">29</td>
+<td style="text-align: right;">30</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/blockchain.go#L1663-L1672"><code>core/blockchain.go</code></a></td>
 <td>forker in writeKnownBlock</td>
 <td>1663-1672</td>
@@ -1766,7 +1774,7 @@ that originally existed in upstream.</p>
 <td>core/forkchoice_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">30</td>
+<td style="text-align: right;">31</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/blockchain.go#L1807-L1815"><code>core/blockchain.go</code></a></td>
 <td>forker in writeBlockAndSetHead</td>
 <td>1807-1815</td>
@@ -1774,7 +1782,7 @@ that originally existed in upstream.</p>
 <td>core/forkchoice_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">31</td>
+<td style="text-align: right;">32</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/blockchain.go#L428-L429"><code>core/blockchain.go</code></a></td>
 <td>IsPow in NewBlockChain</td>
 <td>428-429</td>
@@ -1782,7 +1790,7 @@ that originally existed in upstream.</p>
 <td>core/forkchoice_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">32</td>
+<td style="text-align: right;">33</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/downloader/queue.go#L498-L500"><code>eth/downloader/queue.go</code></a></td>
 <td>revokeHook in Revoke</td>
 <td>498-500</td>
@@ -1790,7 +1798,7 @@ that originally existed in upstream.</p>
 <td>eth/downloader/queue_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">33</td>
+<td style="text-align: right;">34</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/downloader/fetchers_concurrent.go#L131"><code>eth/downloader/fetchers_concurrent.go</code></a></td>
 <td>errNoPeers check</td>
 <td>131</td>
@@ -1798,7 +1806,7 @@ that originally existed in upstream.</p>
 <td>eth/downloader/downloader_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">34</td>
+<td style="text-align: right;">35</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/downloader/fetchers_concurrent.go#L317-L322"><code>eth/downloader/fetchers_concurrent.go</code></a></td>
 <td>master peer cancel</td>
 <td>317-322</td>
@@ -1806,7 +1814,7 @@ that originally existed in upstream.</p>
 <td>eth/downloader/downloader_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">35</td>
+<td style="text-align: right;">36</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/downloader/fetchers.go#L48"><code>eth/downloader/fetchers.go</code></a></td>
 <td>cancelCh case</td>
 <td>48</td>
@@ -1829,7 +1837,23 @@ that originally existed in upstream.</p>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: right;">36</td>
+<td style="text-align: right;">37</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/params/config.go#L1157"><code>params/config.go</code></a></td>
+<td>checkCompatible → checkCompatibleETC</td>
+<td>1157</td>
+<td>Guards the ETC fork blocks (ECIP-1017/1041/1099, Spiral) against incompatible changes; upstream's enumerated checkCompatible omits them although they enter the fork ID</td>
+<td>params/config_etc.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">38</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/params/config.go#L945"><code>params/config.go</code></a></td>
+<td>CheckConfigForkOrder → checkConfigForkOrderETC</td>
+<td>945</td>
+<td>Validates ETC fork ordering (Gotham/DieHard/Etchash/Spiral interleaved with the shared forks)</td>
+<td>params/config_etc.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">39</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/rawdb/accessors_chain.go#L737"><code>core/rawdb/accessors_chain.go</code></a></td>
 <td>DeleteTd in DeleteBlock</td>
 <td>737</td>
@@ -1837,7 +1861,7 @@ that originally existed in upstream.</p>
 <td>core/rawdb/accessors_chain_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">37</td>
+<td style="text-align: right;">40</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/rawdb/accessors_chain.go#L746"><code>core/rawdb/accessors_chain.go</code></a></td>
 <td>DeleteTd in DeleteBlockWithoutNumber</td>
 <td>746</td>
@@ -1845,7 +1869,7 @@ that originally existed in upstream.</p>
 <td>core/rawdb/accessors_chain_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">38</td>
+<td style="text-align: right;">41</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/blockchain.go#L1221"><code>core/blockchain.go</code></a></td>
 <td>WriteTd in SetHead reset</td>
 <td>1221</td>
@@ -1853,7 +1877,7 @@ that originally existed in upstream.</p>
 <td>core/rawdb/accessors_chain_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">39</td>
+<td style="text-align: right;">42</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/blockchain.go#L1645-L1648"><code>core/blockchain.go</code></a></td>
 <td>WriteTd for sidechain block</td>
 <td>1645-1648</td>
@@ -1861,7 +1885,7 @@ that originally existed in upstream.</p>
 <td>core/rawdb/accessors_chain_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">40</td>
+<td style="text-align: right;">43</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/blockchain.go#L1693-L1697"><code>core/blockchain.go</code></a></td>
 <td>WriteTd for canonical block</td>
 <td>1693-1697</td>
@@ -1869,7 +1893,7 @@ that originally existed in upstream.</p>
 <td>core/rawdb/accessors_chain_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">41</td>
+<td style="text-align: right;">44</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/headerchain.go#L228-L242"><code>core/headerchain.go</code></a></td>
 <td>TD write in WriteHeaders</td>
 <td>228-242</td>
@@ -1877,7 +1901,7 @@ that originally existed in upstream.</p>
 <td>core/rawdb/accessors_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">42</td>
+<td style="text-align: right;">45</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/rawdb/chain_freezer.go#L344-L349"><code>core/rawdb/chain_freezer.go</code></a></td>
 <td>AppendRaw TD in freezeRange</td>
 <td>344-349</td>
@@ -1885,7 +1909,7 @@ that originally existed in upstream.</p>
 <td>core/rawdb/ancient_scheme.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">43</td>
+<td style="text-align: right;">46</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/genesis.go#L592"><code>core/genesis.go</code></a></td>
 <td>WriteTd in Commit</td>
 <td>592</td>
@@ -1893,7 +1917,7 @@ that originally existed in upstream.</p>
 <td>core/rawdb/accessors_chain_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">44</td>
+<td style="text-align: right;">47</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/ethstats/ethstats.go#L693"><code>ethstats/ethstats.go</code></a></td>
 <td>GetTd in assembleBlockStats</td>
 <td>693,704</td>
@@ -1901,7 +1925,7 @@ that originally existed in upstream.</p>
 <td>eth/api_backend_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">45</td>
+<td style="text-align: right;">48</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/internal/ethapi/backend.go#L73"><code>internal/ethapi/backend.go</code></a></td>
 <td>GetTd in Backend interface</td>
 <td>73</td>
@@ -1909,7 +1933,7 @@ that originally existed in upstream.</p>
 <td>eth/api_backend_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">46</td>
+<td style="text-align: right;">49</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/internal/ethapi/api.go#L467"><code>internal/ethapi/api.go</code></a></td>
 <td>rpcMarshalHeader in GetHeaderByNumber</td>
 <td>467</td>
@@ -1917,7 +1941,7 @@ that originally existed in upstream.</p>
 <td>internal/ethapi/api_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">47</td>
+<td style="text-align: right;">50</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/internal/ethapi/api.go#L483"><code>internal/ethapi/api.go</code></a></td>
 <td>rpcMarshalHeader in GetHeaderByHash</td>
 <td>483</td>
@@ -1925,7 +1949,7 @@ that originally existed in upstream.</p>
 <td>internal/ethapi/api_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">48</td>
+<td style="text-align: right;">51</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/internal/ethapi/api.go#L498"><code>internal/ethapi/api.go</code></a></td>
 <td>rpcMarshalBlock in GetBlockByNumber</td>
 <td>498</td>
@@ -1933,7 +1957,7 @@ that originally existed in upstream.</p>
 <td>internal/ethapi/api_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">49</td>
+<td style="text-align: right;">52</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/internal/ethapi/api.go#L518"><code>internal/ethapi/api.go</code></a></td>
 <td>rpcMarshalBlock in GetBlockByHash</td>
 <td>518</td>
@@ -1941,7 +1965,7 @@ that originally existed in upstream.</p>
 <td>internal/ethapi/api_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">50</td>
+<td style="text-align: right;">53</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/internal/ethapi/api.go#L533"><code>internal/ethapi/api.go</code></a></td>
 <td>rpcMarshalBlock in GetUncleByBlockNumberAndIndex</td>
 <td>533</td>
@@ -1949,7 +1973,7 @@ that originally existed in upstream.</p>
 <td>internal/ethapi/api_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">51</td>
+<td style="text-align: right;">54</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/internal/ethapi/api.go#L548"><code>internal/ethapi/api.go</code></a></td>
 <td>rpcMarshalBlock in GetUncleByBlockHashAndIndex</td>
 <td>548</td>
@@ -1957,7 +1981,7 @@ that originally existed in upstream.</p>
 <td>internal/ethapi/api_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">52</td>
+<td style="text-align: right;">55</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/backend.go#L183"><code>eth/backend.go</code></a></td>
 <td>ResolvePath for ethash CacheDir</td>
 <td>183</td>
@@ -1965,7 +1989,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">53</td>
+<td style="text-align: right;">56</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/handler.go#L142"><code>eth/handler.go</code></a></td>
 <td>handler.minedBlockSub</td>
 <td>142</td>
@@ -1973,7 +1997,7 @@ that originally existed in upstream.</p>
 <td>eth/handler_mining_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">54</td>
+<td style="text-align: right;">57</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/backend.go#L350-L354"><code>eth/backend.go</code></a></td>
 <td>Conditional NewPoW miner creation</td>
 <td>350-354</td>
@@ -1981,7 +2005,7 @@ that originally existed in upstream.</p>
 <td>miner/miner_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">55</td>
+<td style="text-align: right;">58</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/backend.go#L352"><code>eth/backend.go</code></a></td>
 <td>minerUpdate goroutine</td>
 <td>352</td>
@@ -1989,7 +2013,7 @@ that originally existed in upstream.</p>
 <td>eth/backend_mining_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">56</td>
+<td style="text-align: right;">59</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/backend.go#L579"><code>eth/backend.go</code></a></td>
 <td>CloseMining in Stop</td>
 <td>579</td>
@@ -2012,7 +2036,7 @@ that originally existed in upstream.</p>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: right;">57</td>
+<td style="text-align: right;">60</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/chain_makers.go#L240"><code>core/chain_makers.go</code></a></td>
 <td>IsEIP1559 in GenerateChain header</td>
 <td>240,242</td>
@@ -2020,7 +2044,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">58</td>
+<td style="text-align: right;">61</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/chain_makers.go#L505"><code>core/chain_makers.go</code></a></td>
 <td>IsEIP1559 in makeHeader</td>
 <td>505,507</td>
@@ -2028,7 +2052,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">59</td>
+<td style="text-align: right;">62</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/state_transition.go#L341"><code>core/state_transition.go</code></a></td>
 <td>IsEIP1559 in gas price</td>
 <td>341</td>
@@ -2036,7 +2060,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">60</td>
+<td style="text-align: right;">63</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/txpool/legacypool/legacypool.go#L1260"><code>core/txpool/legacypool/legacypool.go</code></a></td>
 <td>IsEIP1559 in pool reset</td>
 <td>1260</td>
@@ -2044,7 +2068,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">61</td>
+<td style="text-align: right;">64</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/gasprice/feehistory.go#L92"><code>eth/gasprice/feehistory.go</code></a></td>
 <td>IsEIP1559 in fee history</td>
 <td>92</td>
@@ -2052,7 +2076,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">62</td>
+<td style="text-align: right;">65</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/graphql/graphql.go#L785"><code>graphql/graphql.go</code></a></td>
 <td>IsEIP1559 in GraphQL baseFee</td>
 <td>785</td>
@@ -2060,7 +2084,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">63</td>
+<td style="text-align: right;">66</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/internal/ethapi/simulate.go#L213"><code>internal/ethapi/simulate.go</code></a></td>
 <td>IsEIP1559 in simulation</td>
 <td>213</td>
@@ -2068,7 +2092,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">64</td>
+<td style="text-align: right;">67</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/internal/ethapi/transaction_args.go#L212"><code>internal/ethapi/transaction_args.go</code></a></td>
 <td>IsEIP1559 in tx args</td>
 <td>212</td>
@@ -2076,7 +2100,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">65</td>
+<td style="text-align: right;">68</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/miner/worker.go#L255"><code>miner/worker.go</code></a></td>
 <td>IsEIP1559 in miner</td>
 <td>255,257</td>
@@ -2099,7 +2123,7 @@ that originally existed in upstream.</p>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: right;">66</td>
+<td style="text-align: right;">69</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/rawdb/ancient_scheme.go#L39-L40"><code>core/rawdb/ancient_scheme.go</code></a></td>
 <td>ChainFreezerDifficultyTable</td>
 <td>39-40</td>
@@ -2107,15 +2131,15 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">67</td>
+<td style="text-align: right;">70</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/rawdb/ancient_scheme.go#L52"><code>core/rawdb/ancient_scheme.go</code></a></td>
 <td>Difficulty table in freezer schema</td>
 <td>52</td>
-<td>Registers difficulty table in chainFreezerNoSnappy map (snappy-compressed, non-prunable)</td>
+<td>Registers the diffs (total-difficulty) table in chainFreezerTableConfigs — uncompressed (noSnappy: true, same as core-geth), non-prunable</td>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">68</td>
+<td style="text-align: right;">71</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/headerchain.go#L39"><code>core/headerchain.go</code></a></td>
 <td>tdCacheLimit</td>
 <td>39</td>
@@ -2123,7 +2147,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">69</td>
+<td style="text-align: right;">72</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/downloader/downloader.go#L74"><code>eth/downloader/downloader.go</code></a></td>
 <td>errStallingPeer etc.</td>
 <td>74</td>
@@ -2131,7 +2155,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">70</td>
+<td style="text-align: right;">73</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/downloader/metrics.go#L28"><code>eth/downloader/metrics.go</code></a></td>
 <td>headerDropMeter</td>
 <td>28</td>
@@ -2139,7 +2163,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">71</td>
+<td style="text-align: right;">74</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/params/bootnodes.go#L59-L72"><code>params/bootnodes.go</code></a></td>
 <td>ClassicBootnodes, MordorBootnodes</td>
 <td>59-72</td>
@@ -2147,7 +2171,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">72</td>
+<td style="text-align: right;">75</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/params/bootnodes.go#L101"><code>params/bootnodes.go</code></a></td>
 <td>etcDNSPrefix + DNS discovery</td>
 <td>101,117-119,120-122</td>
@@ -2170,7 +2194,7 @@ that originally existed in upstream.</p>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: right;">73</td>
+<td style="text-align: right;">76</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/ethconfig/config.go#L229-L253"><code>eth/ethconfig/config.go</code></a></td>
 <td>CreateConsensusEngineWithConfig</td>
 <td>229-253</td>
@@ -2178,7 +2202,7 @@ that originally existed in upstream.</p>
 <td>consensus/etc</td>
 </tr>
 <tr>
-<td style="text-align: right;">74</td>
+<td style="text-align: right;">77</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/peer.go#L72-L73"><code>eth/peer.go</code></a></td>
 <td>KnownBlock, AsyncSendNewBlock, AsyncSendNewBlockHash</td>
 <td>72-73,78-79,84-85</td>
@@ -2186,7 +2210,7 @@ that originally existed in upstream.</p>
 <td>eth/handler_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">75</td>
+<td style="text-align: right;">78</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/vm/eips.go#L171-L175"><code>core/vm/eips.go</code></a></td>
 <td>enable160</td>
 <td>171-175</td>
@@ -2209,7 +2233,7 @@ that originally existed in upstream.</p>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: right;">76</td>
+<td style="text-align: right;">79</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/downloader/downloader.go#L188-L189"><code>eth/downloader/downloader.go</code></a></td>
 <td>BlockChain.GetTd</td>
 <td>188-189</td>
@@ -2217,7 +2241,7 @@ that originally existed in upstream.</p>
 <td>core/blockchain_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">77</td>
+<td style="text-align: right;">80</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/downloader/peer.go#L60"><code>eth/downloader/peer.go</code></a></td>
 <td>Peer.Head()</td>
 <td>60</td>
@@ -2225,7 +2249,7 @@ that originally existed in upstream.</p>
 <td>eth/protocols/eth/peer_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">78</td>
+<td style="text-align: right;">81</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/ethstats/ethstats.go#L69"><code>ethstats/ethstats.go</code></a></td>
 <td>backend.GetTd</td>
 <td>69</td>
@@ -2248,7 +2272,7 @@ that originally existed in upstream.</p>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: right;">79</td>
+<td style="text-align: right;">82</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/ethconfig/config.go#L28-L29"><code>eth/ethconfig/config.go</code></a></td>
 <td>consensus/etc and consensus/ethash imports</td>
 <td>28-29</td>
@@ -2271,7 +2295,7 @@ that originally existed in upstream.</p>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: right;">80</td>
+<td style="text-align: right;">83</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/handler.go#L113"><code>eth/handler.go</code></a></td>
 <td>handlerConfig.IsPow</td>
 <td>113</td>
@@ -2279,7 +2303,7 @@ that originally existed in upstream.</p>
 <td>eth/backend.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">81</td>
+<td style="text-align: right;">84</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/handler.go#L177-L179"><code>eth/handler.go</code></a></td>
 <td>isPow initialization</td>
 <td>177-179</td>
@@ -2287,7 +2311,7 @@ that originally existed in upstream.</p>
 <td>—</td>
 </tr>
 <tr>
-<td style="text-align: right;">82</td>
+<td style="text-align: right;">85</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/backend.go#L342"><code>eth/backend.go</code></a></td>
 <td>IsPow passthrough</td>
 <td>342</td>
@@ -2295,7 +2319,7 @@ that originally existed in upstream.</p>
 <td>eth/handler.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">83</td>
+<td style="text-align: right;">86</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/backend.go#L343-L344"><code>eth/backend.go</code></a></td>
 <td>MESS flags passthrough</td>
 <td>343-344</td>
@@ -2303,7 +2327,7 @@ that originally existed in upstream.</p>
 <td>eth/handler.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">84</td>
+<td style="text-align: right;">87</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/backend.go#L439"><code>eth/backend.go</code></a></td>
 <td>isPow to MakeProtocols</td>
 <td>439</td>
@@ -2311,7 +2335,7 @@ that originally existed in upstream.</p>
 <td>eth/protocols/eth/handler.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">85</td>
+<td style="text-align: right;">88</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/protocols/eth/handler.go#L101"><code>eth/protocols/eth/handler.go</code></a></td>
 <td>MakeProtocols versions param</td>
 <td>101</td>
@@ -2319,7 +2343,7 @@ that originally existed in upstream.</p>
 <td>eth/protocols/eth/protocol_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">86</td>
+<td style="text-align: right;">89</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/protocols/eth/handler.go#L169-L171"><code>eth/protocols/eth/handler.go</code></a></td>
 <td>versionHandlers registry</td>
 <td>169-171</td>
@@ -2327,7 +2351,7 @@ that originally existed in upstream.</p>
 <td>eth/protocols/eth/handlers_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">87</td>
+<td style="text-align: right;">90</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/protocols/eth/handler.go#L203-L204"><code>eth/protocols/eth/handler.go</code></a></td>
 <td>versionHandlers dispatch</td>
 <td>203-204</td>

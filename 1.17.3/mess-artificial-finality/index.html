@@ -1133,10 +1133,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#fork-choice" class="md-nav__link">
+  <a href="#fork-choice-revived-with-the-mess-hook" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fork Choice
+        Fork Choice — revived, with the MESS hook
       
     </span>
   </a>
@@ -1414,10 +1414,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#fork-choice" class="md-nav__link">
+  <a href="#fork-choice-revived-with-the-mess-hook" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fork Choice
+        Fork Choice — revived, with the MESS hook
       
     </span>
   </a>
@@ -1503,29 +1503,40 @@ chains that diverge far from the canonical head.</p>
 <p>MESS shipped as a temporary safety measure, not a permanent consensus rule, so it is
 <strong>not part of the <a href="../etc-forks/">fork ID</a></strong> — core-geth classifies ECBP-1100 as a
 cross-compatible transition rather than a hard fork, so it never enters the forkid
-block list. It activated at a fixed height and was later deactivated by default:</p>
+block list. In go-ethereum-classic it is configured <strong>only for Classic mainnet</strong>
+(<code>params/config_etc.go</code>):</p>
 <table>
 <thead>
 <tr>
 <th>Network</th>
-<th style="text-align: right;">Activated</th>
-<th style="text-align: right;">Deactivated (default)</th>
+<th style="text-align: right;">MESS activated</th>
+<th style="text-align: right;">MESS deactivated</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Classic (mainnet)</td>
 <td style="text-align: right;">11,380,000 (09 Oct 2020)</td>
-<td style="text-align: right;">19,250,000 (31 Jan 2023, with the Spiral hard fork)</td>
+<td style="text-align: right;">19,250,000 (31 Jan 2024, with the Spiral hard fork)</td>
 </tr>
 <tr>
 <td>Mordor (testnet)</td>
-<td style="text-align: right;">2,380,000 (29 Sep 2020)</td>
-<td style="text-align: right;">10,400,000 (13 Jan 2024)</td>
+<td style="text-align: right;"><em>not configured</em></td>
+<td style="text-align: right;"><em>not configured</em></td>
 </tr>
 </tbody>
 </table>
+<p><a href="https://ecips.ethereumclassic.org/ECIPs/ecip-1110">ECIP-1110</a> ties MESS deactivation to the
+Spiral activation block (19,250,000), which Ethereum Classic announced for 31 Jan 2024.</p>
 <blockquote>
+<p><strong>Mordor divergence (intentional):</strong> getc's <code>MordorChainConfig</code> leaves <code>ECBP1100Transition</code> /
+<code>ECBP1100DeactivateTransition</code> <strong>unset</strong>, so <code>IsECBP1100</code> is always false on Mordor — a
+deliberate divergence from core-geth. This does <strong>not</strong> affect syncing or block validity: MESS
+is a <strong>fork-choice / reorg policy</strong> (it only vetoes deep reorgs against a competing chain via
+<code>reorgFilter</code>), never a block-validity rule, and it is only active once a node is already
+synced — not during catch-up. Mordor replays to the same canonical chain with or without it.
+The only thing getc forgoes is MESS's deep-reorg protection during the elapsed
+2,380,000 → 10,400,000 window.</p>
 <p>Note: MESS activated at <strong>11,380,000</strong> — distinct from <strong>Etchash (ECIP-1099)</strong> at
 <strong>11,700,000</strong>. Etchash <em>is</em> a consensus fork (it changes the PoW DAG) and counts
 toward the fork ID, which is why it appears in the <a href="../etc-forks/">fork list</a> and MESS does not.</p>
@@ -1540,7 +1551,7 @@ toward the fork ID, which is why it appears in the <a href="../etc-forks/">fork 
 <tbody>
 <tr>
 <td>Dedicated files</td>
-<td style="text-align: right;">4</td>
+<td style="text-align: right;">3</td>
 </tr>
 <tr>
 <td>Extension points</td>
@@ -1560,20 +1571,27 @@ toward the fork ID, which is why it appears in the <a href="../etc-forks/">fork 
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    → reorgFilter(current, extern)
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>      → IsMESSEnabled() &amp;&amp; IsECBP1100(num)
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>      → findCommonAncestor()
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>      → ecbp1100(): antigravity polynomial check
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        → REJECT (errReorgFinality) or ALLOW
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>          → if unresolved (no ancestor / missing header) → REJECT + log (fail-closed)
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>      → ecbp1100(): antigravity polynomial check
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>          → REJECT (errReorgFinality) + log, or ALLOW
 </code></pre></div>
+<p>Note the <strong>fail-closed</strong> stance: if the common ancestor cannot be resolved, MESS rejects the
+reorg rather than allowing it — a reorg it cannot verify is exactly the case MESS exists to
+guard. (core-geth propagates the same error in its equivalent <code>ForkChoice.ReorgNeeded</code>.)</p>
 <h3 id="activation-lifecycle">Activation lifecycle<a class="headerlink" href="#activation-lifecycle" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>sync completes
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  → checkMESSActivation()                     [eth/handler_mess.go]
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    → shouldEnableMESS(peers, headTime)
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>      → peers ≥ 5 &amp;&amp; head not stale
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    → forker.EnableMESS(true)
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>  ← messSafetyLoop repeats every 15 s
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    → disable if peers &lt; 5 or head stale
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>chainSyncer loop  [eth/sync_pow.go]            — on sync done / when already synced
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  → checkMESSActivation()                      [eth/sync_mess.go]
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>      enable:  !enabled &amp;&amp; shouldEnableMESS() &amp;&amp; peers ≥ 5  → EnableMESS(true,  &quot;synced&quot;)
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>      disable: enabled &amp;&amp; peers &lt; 5                         → EnableMESS(false, &quot;low peers&quot;)
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>      shouldEnableMESS() = !messForceDisable &amp;&amp; (messForceEnable || IsECBP1100(head))
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>messSafetyLoop  [eth/sync_mess.go]             — separate ticker, 30 × blocktime ≈ 6.5 min (ECIP-1100)
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>  → if enabled &amp;&amp; head stale → EnableMESS(false, &quot;stale head&quot;)
 </code></pre></div>
 <h2 id="dedicated-files">Dedicated Files<a class="headerlink" href="#dedicated-files" title="Permanent link">&para;</a></h2>
-<p>These files are entirely new — they exist only for MESS support.</p>
+<p>These files are <strong>entirely new and exist only for MESS</strong>. Files that MESS merely <em>hooks
+into</em> — like the revived <code>core/forkchoice_pow.go</code> — are shown under <strong>Fork Choice</strong> below,
+not here.</p>
 <table>
 <thead>
 <tr>
@@ -1584,19 +1602,14 @@ toward the fork ID, which is why it appears in the <a href="../etc-forks/">fork 
 </thead>
 <tbody>
 <tr>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/forkchoice_pow.go"><code>core/forkchoice_pow.go</code></a></td>
-<td>Fork choice with MESS reorg filter — ChainReader, ForkChoice, ReorgNeeded, reorgAllowed</td>
-<td style="text-align: right;"><strong>+152 -0</strong></td>
-</tr>
-<tr>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/blockchain_mess.go"><code>core/blockchain_mess.go</code></a> · <a href="../file-diffs/mess-artificial-finality/core-blockchain_mess-go/">diff</a></td>
 <td>MESS algorithm — ecbp1100 polynomial, findCommonAncestor, NewForkChoiceWithMESS</td>
-<td style="text-align: right;"><strong>+261 -0</strong></td>
+<td style="text-align: right;"><strong>+270 -0</strong></td>
 </tr>
 <tr>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/core/blockchain_mess_test.go"><code>core/blockchain_mess_test.go</code></a> · <a href="../file-diffs/mess-artificial-finality/core-blockchain_mess_test-go/">diff</a></td>
 <td>MESS unit tests</td>
-<td style="text-align: right;"><strong>+620 -0</strong></td>
+<td style="text-align: right;"><strong>+700 -0</strong></td>
 </tr>
 <tr>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.3-full-node/eth/sync_mess.go"><code>eth/sync_mess.go</code></a> · <a href="../file-diffs/mess-artificial-finality/eth-sync_mess-go/">diff</a></td>
@@ -1605,8 +1618,13 @@ toward the fork ID, which is why it appears in the <a href="../etc-forks/">fork 
 </tr>
 </tbody>
 </table>
-<h2 id="fork-choice">Fork Choice<a class="headerlink" href="#fork-choice" title="Permanent link">&para;</a></h2>
-<p>Reimplemented from upstream — the fork choice abstraction exists to support MESS.</p>
+<h2 id="fork-choice-revived-with-the-mess-hook">Fork Choice — revived, with the MESS hook<a class="headerlink" href="#fork-choice-revived-with-the-mess-hook" title="Permanent link">&para;</a></h2>
+<p><code>core/forkchoice_pow.go</code> is <strong>not</strong> a MESS-only file: it transplants back the pre-purge
+total-difficulty fork choice that <a href="../upstream-purges/">upstream removed with TD</a>. MESS only
+<strong>adds a hook</strong> here — the <code>reorgFilter</code> / <code>reorgAllowed</code> callback that lets the MESS
+algorithm veto a reorg. The symbols below are that revived fork choice (full picture in the
+<a href="../subsystem-total-difficulty-td/">Total Difficulty</a> subsystem); the MESS algorithm itself
+lives in <code>core/blockchain_mess.go</code>.</p>
 <table>
 <thead>
 <tr>
@@ -1684,7 +1702,7 @@ toward the fork ID, which is why it appears in the <a href="../etc-forks/">fork 
 <td>handler.messForceEnable/Disable</td>
 <td>126-127</td>
 <td>MESS emergency override flags propagated from ethconfig</td>
-<td>eth/handler_mess.go</td>
+<td>eth/sync_mess.go</td>
 </tr>
 <tr>
 <td style="text-align: right;">3</td>
