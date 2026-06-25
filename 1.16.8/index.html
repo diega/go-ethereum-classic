@@ -1413,11 +1413,20 @@ fork tracks upstream with minimal rebase friction (see <a href="fork-architectur
 <td style="text-align: right;"><strong>-3283</strong></td>
 </tr>
 <tr>
+<td><strong>Functional code Δ</strong></td>
+<td style="text-align: right;"><strong>+11869 -220</strong></td>
+</tr>
+<tr>
 <td>Modified upstream files</td>
 <td style="text-align: right;"><strong>+3059 -3283</strong></td>
 </tr>
 </tbody>
 </table>
+<blockquote>
+<p><strong>Functional code Δ</strong> counts only Go production + test code. The far larger <em>Lines removed</em>
+above is dominated by regenerated <code>cmd/devp2p/internal/ethtest</code> fixtures (~25k lines of
+testdata JSON for the PoW chain), not functional changes.</p>
+</blockquote>
 <h2 id="commits">Commits<a class="headerlink" href="#commits" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
