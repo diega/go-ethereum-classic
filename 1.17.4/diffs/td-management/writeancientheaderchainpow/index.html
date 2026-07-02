@@ -1251,7 +1251,7 @@
 <tr>
 <td>File</td>
 <td><code>core/rawdb/accessors_chain.go</code></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/core/rawdb/accessors_chain_pow.go#L66-L92"><code>accessors_chain_pow.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/core/rawdb/accessors_chain_pow.go#L73-L106"><code>accessors_chain_pow.go</code></a></td>
 </tr>
 <tr>
 <td>Symbol</td>
@@ -1287,21 +1287,16 @@
 <a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w"> </span>           if err := op.AppendRaw(ChainFreezerHashTable, num, header.Hash().Bytes()); err != nil {
 <a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w"> </span>               return fmt.Errorf(&quot;can&#39;t add block %d hash: %v&quot;, num, err)
 <a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w"> </span>           }
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gu">@@ -17,12 +18,8 @@</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w"> </span>           if err := op.AppendRaw(ChainFreezerReceiptTable, num, nil); err != nil {
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w"> </span>               return fmt.Errorf(&quot;can&#39;t append block %d receipts: %v&quot;, num, err)
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gu">@@ -24,6 +25,9 @@</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w"> </span>           if err := op.AppendRaw(ChainFreezerBALTable, num, nil); err != nil {
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w"> </span>               return fmt.Errorf(&quot;can&#39;t append block %d bals: %v&quot;, num, err)
 <a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w"> </span>           }
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gd">-           // The assumption is held that BAL of ancient block is no longer available</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="gd">-           // (it may still reachable, but it&#39;s not worthwhile to even retrieve it</span>
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="gd">-           // from the network). A nil entry is stored in the BAL table as the absence</span>
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="gd">-           // placeholder.</span>
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="gd">-           if err := op.AppendRaw(ChainFreezerBALTable, num, nil); err != nil {</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="gd">-               return fmt.Errorf(&quot;can&#39;t append block %d bals: %v&quot;, num, err)</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="gi">+           if err := op.Append(ChainFreezerDifficultyTable, num, new(big.Int).Set(tdSum)); err != nil {</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="gi">+               return fmt.Errorf(&quot;can&#39;t append block %d total difficulty: %v&quot;, num, err)</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w"> </span>           }
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="w"> </span>       }
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w"> </span>       return nil
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gi">+           if err := op.Append(ChainFreezerDifficultyTable, num, new(big.Int).Set(tdSum)); err != nil {</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="gi">+               return fmt.Errorf(&quot;can&#39;t append block %d total difficulty: %v&quot;, num, err)</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="gi">+           }</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w"> </span>       }
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w"> </span>       return nil
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w"> </span>   })
 </code></pre></div>
 <p><a href="../../../subsystem-total-difficulty-td/">← Total Difficulty (TD)</a></p>
 
