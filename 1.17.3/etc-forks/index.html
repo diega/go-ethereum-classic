@@ -12,7 +12,7 @@
         <link rel="prev" href="../mess-artificial-finality/">
       
       
-        <link rel="next" href="../test-status/">
+        <link rel="next" href="../migrating-from-core-geth/">
       
       
         
@@ -1152,6 +1152,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrating-from-core-geth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrating from core-geth
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1340,8 +1368,8 @@
 
 <h1 id="etc-network-forks-ecips">ETC Network Forks &amp; ECIPs<a class="headerlink" href="#etc-network-forks-ecips" title="Permanent link">&para;</a></h1>
 <p>Ethereum Classic shares Ethereum's pre-DAO history, then diverges. This page maps
-every fork activation for the networks getc ships with. All values are read from
-<code>params/config_etc.go</code>.</p>
+every fork activation for the networks getc ships with. Values are cross-checked against
+<code>params/config_etc.go</code> at generation time.</p>
 <h2 id="classic-mainnet-chain-id-61">Classic (mainnet, chain ID 61)<a class="headerlink" href="#classic-mainnet-chain-id-61" title="Permanent link">&para;</a></h2>
 <p>ETC's defining choice: it did <strong>not</strong> apply the DAO fork — the chain that became
 ETC is the original, unforked one (so <code>DAOForkBlock</code> is nil, which also
@@ -1445,13 +1473,18 @@ is nil and the chain never merges.</p>
 <td>Istanbul</td>
 </tr>
 <tr>
-<td>Magneto / Etchash</td>
+<td>Etchash</td>
 <td style="text-align: right;">2,520,000</td>
-<td>Berlin + ECIP-1099</td>
+<td>ECIP-1099 (60k-epoch DAG)</td>
+</tr>
+<tr>
+<td>Magneto</td>
+<td style="text-align: right;">3,985,893</td>
+<td>Berlin</td>
 </tr>
 <tr>
 <td>Mystique</td>
-<td style="text-align: right;">3,985,893</td>
+<td style="text-align: right;">5,520,000</td>
 <td>London without EIP-1559</td>
 </tr>
 <tr>
