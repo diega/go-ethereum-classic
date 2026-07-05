@@ -1490,7 +1490,7 @@ that originally existed in upstream.</p>
 <tbody>
 <tr>
 <td>Total extension points</td>
-<td style="text-align: right;">94</td>
+<td style="text-align: right;">95</td>
 </tr>
 <tr>
 <td>Files touched</td>
@@ -1509,7 +1509,7 @@ that originally existed in upstream.</p>
 <tbody>
 <tr>
 <td>field</td>
-<td style="text-align: right;">29</td>
+<td style="text-align: right;">30</td>
 </tr>
 <tr>
 <td>conditional</td>
@@ -1867,9 +1867,9 @@ that originally existed in upstream.</p>
 </tr>
 <tr>
 <td style="text-align: right;">39</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/backend.go#L383-L388"><code>eth/backend.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/backend.go#L383-L389"><code>eth/backend.go</code></a></td>
 <td>Conditional NewPoW miner creation</td>
-<td>383-388</td>
+<td>383-389</td>
 <td>Creates miner with PoW support (miner.NewPoW) for IsPow chains, standard miner.New for PoS</td>
 <td>miner/miner_pow.go</td>
 </tr>
@@ -2042,17 +2042,17 @@ that originally existed in upstream.</p>
 </tr>
 <tr>
 <td style="text-align: right;">59</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/backend.go#L385"><code>eth/backend.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/backend.go#L386"><code>eth/backend.go</code></a></td>
 <td>minerUpdate goroutine</td>
-<td>385</td>
+<td>386</td>
 <td>Launches minerUpdate goroutine for PoW chains — coordinates mining pause/resume with downloader sync events</td>
 <td>eth/backend_mining_pow.go</td>
 </tr>
 <tr>
 <td style="text-align: right;">60</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/backend.go#L634"><code>eth/backend.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/backend.go#L635"><code>eth/backend.go</code></a></td>
 <td>CloseMining in Stop</td>
-<td>634</td>
+<td>635</td>
 <td>Closes PoW mining goroutines before stopping other subsystems</td>
 <td>miner/miner_pow.go</td>
 </tr>
@@ -2388,14 +2388,22 @@ that originally existed in upstream.</p>
 </tr>
 <tr>
 <td style="text-align: right;">91</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/backend.go#L489"><code>eth/backend.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/backend.go#L384"><code>eth/backend.go</code></a></td>
+<td>etherbase seed in New</td>
+<td>384</td>
+<td>Seeds the mining etherbase from Miner.PendingFeeRecipient at backend construction — restored from the #28623 removal (etherbase: config.Miner.Etherbase); without it --mine dies at startup with 'etherbase missing'</td>
+<td>eth/backend_mining_pow.go</td>
+</tr>
+<tr>
+<td style="text-align: right;">92</td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/backend.go#L490"><code>eth/backend.go</code></a></td>
 <td>isPow to MakeProtocols</td>
-<td>489</td>
+<td>490</td>
 <td>Passes isPow flag to eth.MakeProtocols for protocol version selection</td>
 <td>eth/protocols/eth/handler.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">92</td>
+<td style="text-align: right;">93</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handler.go#L108"><code>eth/protocols/eth/handler.go</code></a></td>
 <td>MakeProtocols versions param</td>
 <td>108</td>
@@ -2403,7 +2411,7 @@ that originally existed in upstream.</p>
 <td>eth/protocols/eth/protocol_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">93</td>
+<td style="text-align: right;">94</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handler.go#L175-L177"><code>eth/protocols/eth/handler.go</code></a></td>
 <td>versionHandlers registry</td>
 <td>175-177</td>
@@ -2411,7 +2419,7 @@ that originally existed in upstream.</p>
 <td>eth/protocols/eth/handlers_pow.go</td>
 </tr>
 <tr>
-<td style="text-align: right;">94</td>
+<td style="text-align: right;">95</td>
 <td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handler.go#L245-L246"><code>eth/protocols/eth/handler.go</code></a></td>
 <td>versionHandlers dispatch</td>
 <td>245-246</td>
