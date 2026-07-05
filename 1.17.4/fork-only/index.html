@@ -954,6 +954,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#eth-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eth Service
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#miner" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -969,6 +980,17 @@
     <span class="md-ellipsis">
       
         MESS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rpc-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RPC &amp; API
       
     </span>
   </a>
@@ -1402,6 +1424,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#eth-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eth Service
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#miner" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1417,6 +1450,17 @@
     <span class="md-ellipsis">
       
         MESS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rpc-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RPC &amp; API
       
     </span>
   </a>
@@ -1479,14 +1523,14 @@ pre-purge nor adopted from core-geth. Three views of the same thing:</p>
 <tbody>
 <tr>
 <td><a href="#consensus-ethash">Consensus &amp; Ethash</a></td>
+<td style="text-align: right;">2</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">30</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">39</td>
 </tr>
 <tr>
 <td><a href="#total-difficulty-td">Total Difficulty (TD)</a></td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">9</td>
@@ -1510,14 +1554,14 @@ pre-purge nor adopted from core-geth. Three views of the same thing:</p>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">37</td>
+<td style="text-align: right;">42</td>
 </tr>
 <tr>
-<td>Eth Service</td>
+<td><a href="#eth-service">Eth Service</a></td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">19</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">23</td>
 </tr>
 <tr>
 <td><a href="#miner">Miner</a></td>
@@ -1534,25 +1578,25 @@ pre-purge nor adopted from core-geth. Three views of the same thing:</p>
 <td style="text-align: right;">17</td>
 </tr>
 <tr>
-<td>RPC &amp; API</td>
+<td><a href="#rpc-api">RPC &amp; API</a></td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">7</td>
 </tr>
 <tr>
 <td><a href="#cli-config-genesis">CLI, Config &amp; Genesis</a></td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">4</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
 <td style="text-align: right;">102</td>
 </tr>
 <tr>
 <td><strong>Total</strong></td>
-<td style="text-align: right;"><strong>9</strong></td>
+<td style="text-align: right;"><strong>12</strong></td>
 <td style="text-align: right;"><strong>8</strong></td>
-<td style="text-align: right;"><strong>15</strong></td>
-<td style="text-align: right;"><strong>493</strong></td>
+<td style="text-align: right;"><strong>22</strong></td>
+<td style="text-align: right;"><strong>511</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1571,6 +1615,11 @@ pre-purge nor adopted from core-geth. Three views of the same thing:</p>
 <td><code>Ethash.VerifySeal</code></td>
 <td>🆕</td>
 <td><a href="../diffs/ethash-verification/ethash-verifyseal/">view</a></td>
+</tr>
+<tr>
+<td><code>TestVerifyUncleHeaderVerifiesSeal</code></td>
+<td>🆕</td>
+<td><a href="../diffs/ethash-verification/testverifyuncleheaderverifiesseal/">view</a></td>
 </tr>
 </tbody>
 </table>
@@ -1599,8 +1648,16 @@ pre-purge nor adopted from core-geth. Three views of the same thing:</p>
 </thead>
 <tbody>
 <tr>
+<td><code>consensus/etc/difficulty_bomb_etc_test.go</code></td>
+<td><a href="../file-diffs/etc-consensus/consensus-etc-difficulty_bomb_etc_test-go/">view</a></td>
+</tr>
+<tr>
 <td><code>consensus/etc/engine_etc_test.go</code></td>
 <td><a href="../file-diffs/etc-consensus/consensus-etc-engine_etc_test-go/">view</a></td>
+</tr>
+<tr>
+<td><code>consensus/etc/reward_era_etc_test.go</code></td>
+<td><a href="../file-diffs/etc-consensus/consensus-etc-reward_era_etc_test-go/">view</a></td>
 </tr>
 <tr>
 <td><code>consensus/ethash/algorithm_etc_test.go</code></td>
@@ -1618,9 +1675,13 @@ pre-purge nor adopted from core-geth. Three views of the same thing:</p>
 <td><code>consensus/ethash/sealer_etc_test.go</code></td>
 <td><a href="../file-diffs/etc-consensus/consensus-ethash-sealer_etc_test-go/">view</a></td>
 </tr>
+<tr>
+<td><code>metrics/meter_forced_etc_test.go</code></td>
+<td><a href="../file-diffs/misc-plumbing/metrics-meter_forced_etc_test-go/">view</a></td>
+</tr>
 </tbody>
 </table>
-<p><em>30 fork-only lines in this subsystem's 3-way diffs.</em></p>
+<p><em>39 fork-only lines in this subsystem's 3-way diffs.</em></p>
 <h2 id="total-difficulty-td">Total Difficulty (TD)<a class="headerlink" href="#total-difficulty-td" title="Permanent link">&para;</a></h2>
 <p><strong>Symbols</strong> — fork-authored, no upstream/core-geth origin:</p>
 <table>
@@ -1633,9 +1694,19 @@ pre-purge nor adopted from core-geth. Three views of the same thing:</p>
 </thead>
 <tbody>
 <tr>
+<td><code>BlockChain.SetPreserve</code></td>
+<td>🆕</td>
+<td><a href="../diffs/fork-choice/blockchain-setpreserve/">view</a></td>
+</tr>
+<tr>
 <td><code>SubscribeSideBlocks</code></td>
 <td>🆕</td>
 <td><a href="../diffs/pow-mining/subscribesideblocks/">view</a></td>
+</tr>
+<tr>
+<td><code>TestForkChoicePreserveEqualTD</code></td>
+<td>🆕</td>
+<td><a href="../diffs/fork-choice/testforkchoicepreserveequaltd/">view</a></td>
 </tr>
 </tbody>
 </table>
@@ -1754,7 +1825,24 @@ pre-purge nor adopted from core-geth. Three views of the same thing:</p>
 </tr>
 </tbody>
 </table>
-<p><em>37 fork-only lines in this subsystem's 3-way diffs.</em></p>
+<p><em>42 fork-only lines in this subsystem's 3-way diffs.</em></p>
+<h2 id="eth-service">Eth Service<a class="headerlink" href="#eth-service" title="Permanent link">&para;</a></h2>
+<p><strong>ETC/MESS tests:</strong></p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eth/ethconfig/config_etc_test.go</code></td>
+<td><a href="../file-diffs/etc-consensus/eth-ethconfig-config_etc_test-go/">view</a></td>
+</tr>
+</tbody>
+</table>
+<p><em>23 fork-only lines in this subsystem's 3-way diffs.</em></p>
 <h2 id="miner">Miner<a class="headerlink" href="#miner" title="Permanent link">&para;</a></h2>
 <p><strong>Symbols</strong> — fork-authored, no upstream/core-geth origin:</p>
 <table>
@@ -1847,6 +1935,23 @@ pre-purge nor adopted from core-geth. Three views of the same thing:</p>
 </tbody>
 </table>
 <p><em>17 fork-only lines in this subsystem's 3-way diffs.</em></p>
+<h2 id="rpc-api">RPC &amp; API<a class="headerlink" href="#rpc-api" title="Permanent link">&para;</a></h2>
+<p><strong>ETC/MESS tests:</strong></p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ethstats/ethstats_etc_test.go</code></td>
+<td><a href="../file-diffs/misc-plumbing/ethstats-ethstats_etc_test-go/">view</a></td>
+</tr>
+</tbody>
+</table>
+<p><em>7 fork-only lines in this subsystem's 3-way diffs.</em></p>
 <h2 id="cli-config-genesis">CLI, Config &amp; Genesis<a class="headerlink" href="#cli-config-genesis" title="Permanent link">&para;</a></h2>
 <p><strong>Symbols</strong> — fork-authored, no upstream/core-geth origin:</p>
 <table>
@@ -1906,6 +2011,14 @@ pre-purge nor adopted from core-geth. Three views of the same thing:</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>core/forkid/forkid_etc_test.go</code></td>
+<td><a href="../file-diffs/chain-configuration/core-forkid-forkid_etc_test-go/">view</a></td>
+</tr>
+<tr>
+<td><code>core/genesis_hash_etc_test.go</code></td>
+<td><a href="../file-diffs/chain-configuration/core-genesis_hash_etc_test-go/">view</a></td>
+</tr>
 <tr>
 <td><code>params/bootnodes_etc_test.go</code></td>
 <td><a href="../file-diffs/chain-configuration/params-bootnodes_etc_test-go/">view</a></td>

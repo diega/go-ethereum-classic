@@ -1360,11 +1360,11 @@
 </tr>
 <tr>
 <td>✏️ In-place (modified on upstream)</td>
-<td style="text-align: right;">14</td>
+<td style="text-align: right;">15</td>
 </tr>
 <tr>
 <td>🆕 New (fork-only, no upstream pedigree)</td>
-<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
 </tr>
 </tbody>
 </table>
@@ -1530,6 +1530,13 @@
 <td><a href="../diffs/td-management/headerchain-writeheaders-td/">view</a></td>
 </tr>
 <tr>
+<td><code>HeaderChain.writeHeadersAndSetHead (fork choice)</code></td>
+<td>symbol</td>
+<td>upstream v1.17.4</td>
+<td><strong>+12 -1</strong></td>
+<td><a href="../diffs/td-management/headerchain-writeheadersandsethead-fork-choice/">view</a></td>
+</tr>
+<tr>
 <td><code>WriteAncientBlocksPoW</code></td>
 <td>symbol</td>
 <td>upstream v1.17.4</td>
@@ -1547,7 +1554,7 @@
 <td><code>core/blockchain.go</code></td>
 <td>file</td>
 <td>upstream v1.17.4</td>
-<td><strong>+87 -7</strong></td>
+<td><strong>+88 -8</strong></td>
 <td><a href="../file-diffs/core-and-evm/core-blockchain-go/">view</a></td>
 </tr>
 <tr>
@@ -1561,7 +1568,7 @@
 <td><code>core/headerchain.go</code></td>
 <td>file</td>
 <td>upstream v1.17.4</td>
-<td><strong>+26 -1</strong></td>
+<td><strong>+40 -4</strong></td>
 <td><a href="../file-diffs/core-and-evm/core-headerchain-go/">view</a></td>
 </tr>
 <tr>
@@ -1601,11 +1608,25 @@
 </thead>
 <tbody>
 <tr>
+<td><code>BlockChain.SetPreserve</code></td>
+<td>symbol</td>
+<td>—</td>
+<td>🆕</td>
+<td><a href="../diffs/fork-choice/blockchain-setpreserve/">view</a></td>
+</tr>
+<tr>
 <td><code>SubscribeSideBlocks</code></td>
 <td>symbol</td>
 <td>—</td>
 <td>🆕</td>
 <td><a href="../diffs/pow-mining/subscribesideblocks/">view</a></td>
+</tr>
+<tr>
+<td><code>TestForkChoicePreserveEqualTD</code></td>
+<td>symbol</td>
+<td>—</td>
+<td>🆕</td>
+<td><a href="../diffs/fork-choice/testforkchoicepreserveequaltd/">view</a></td>
 </tr>
 <tr>
 <td><code>core/blockchain_etc_test.go</code></td>

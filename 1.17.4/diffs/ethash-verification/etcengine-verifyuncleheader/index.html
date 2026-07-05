@@ -1251,7 +1251,7 @@
 <tr>
 <td>File</td>
 <td><code>consensus/ethash/consensus.go</code></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/consensus/etc/engine.go#L314-L364"><code>engine.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/consensus/etc/engine.go#L313-L367"><code>engine.go</code></a></td>
 </tr>
 <tr>
 <td>Symbol</td>
@@ -1266,7 +1266,7 @@
 </tbody>
 </table>
 <blockquote>
-<p>Uncle-header validation. getc splits the pre-purge ethash.verifyHeader (which took an <code>uncle bool</code>) into two functions: verifyHeader (canonical) and this one. The future-block check is intentionally omitted for uncles (they are historical); BaseFee-nil and post-merge field absence ARE validated, matching what core-geth/upstream check outside their <code>if !uncle</code> guard. Compared here against the unified pre-purge/core-geth verifyHeader, so the cross-check surfaces any validation that drifts from it.</p>
+<p>Uncle-header validation. getc splits the pre-purge ethash.verifyHeader (which took an <code>uncle bool</code>) into two functions: verifyHeader (canonical) and this one. The future-block check is intentionally omitted for uncles (they are historical); BaseFee-nil and post-merge field absence ARE validated, matching what core-geth/upstream check outside their <code>if !uncle</code> guard. The PoW seal IS verified (e.inner.VerifySeal): pre-purge VerifyUncles called verifyHeader with seal=true, so seal verification is part of uncle validation — omitting it would let a block carry an uncle with a forged nonce/mixDigest (and collect its ECIP-1017 uncle reward) while the rest of the network rejects the block. Compared here against the unified pre-purge/core-geth verifyHeader, so the cross-check surfaces any validation that drifts from it.</p>
 </blockquote>
 <h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
 <div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-up">upstream</span><span class="l-com">common</span><span class="l-cg">core-geth</span><span class="l-adapted">≈ adapted (origin inferred by similarity)</span><span class="l-fork">fork-only</span></div>
@@ -1298,7 +1298,7 @@
 <div class="fork"><span class="mk"></span>    // ETC-specific: London (Mystique) does NOT include EIP-1559; BaseFee must be nil</div>
 <div class="purge adapted"><span class="mk"><a class="src approx" href="https://github.com/ethereum/go-ethereum/blob/ac3418def67355041bdb6fad901899e13feb33a0/consensus/ethash/consensus.go#L299-L300" title="closest match — origin lines 299–300 (inferred by similarity, not exact)">≈</a></span>    if header.BaseFee != nil {</div>
 <div class="purge adapted"><span class="mk"></span>        return fmt.Errorf("invalid baseFee: ETC does not support EIP-1559, have %d, expected nil", header.BaseFee)</div>
-<div class="coregeth"><span class="mk"><a class="src" href="https://github.com/etclabscore/core-geth/blob/v1.12.20/consensus/ethash/consensus.go#L268" title="origin line 268">↗</a></span>    }</div>
+<div class="fork"><span class="mk"></span>    }</div>
 <div class="fork"><span class="mk"></span>    // Verify gas limit follows the standard rules</div>
 <div class="purge adapted"><span class="mk"><a class="src approx" href="https://github.com/ethereum/go-ethereum/blob/ac3418def67355041bdb6fad901899e13feb33a0/consensus/ethash/consensus.go#L302" title="closest match — origin line 302 (inferred by similarity, not exact)">≈</a></span>    if err := misc.VerifyGaslimit(parent.GasLimit, header.GasLimit); err != nil {</div>
 <div class="common"><span class="mk"></span>        return err</div>
@@ -1319,13 +1319,17 @@
 <div class="common"><span class="mk"></span>    }</div>
 <div class="purge adapted"><span class="mk"><a class="src approx" href="https://github.com/ethereum/go-ethereum/blob/ac3418def67355041bdb6fad901899e13feb33a0/consensus/ethash/consensus.go#L299-L300" title="closest match — origin lines 299–300 (inferred by similarity, not exact)">≈</a></span>    if header.ParentBeaconRoot != nil {</div>
 <div class="purge adapted"><span class="mk"></span>        return fmt.Errorf("invalid parentBeaconRoot: have %x, expected nil", header.ParentBeaconRoot)</div>
+<div class="upstream"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/v1.17.4/consensus/ethash/consensus.go#L294" title="origin line 294">↗</a></span>    }</div>
+<div class="fork"><span class="mk"></span>    // Verify the PoW seal</div>
+<div class="coregeth adapted"><span class="mk"><a class="src approx" href="https://github.com/etclabscore/core-geth/blob/v1.12.20/consensus/ethash/consensus.go#L309" title="closest match — origin line 309 (inferred by similarity, not exact)">≈</a></span>    if err := e.inner.VerifySeal(header); err != nil {</div>
+<div class="common"><span class="mk"></span>        return err</div>
 <div class="common"><span class="mk"></span>    }</div>
 <div class="common"><span class="mk"></span>    return nil</div>
 <div class="common"><span class="mk"></span>}</div>
 </div></div>
 
 <details>
-<summary>core-geth validation — +21 -79</summary>
+<summary>core-geth validation — +23 -77</summary>
 
 | | |
 |---|---|
@@ -1335,7 +1339,7 @@
 
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/core-geth/consensus/ethash/consensus.go</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gi">+++ b/etc/consensus/etc/engine.go</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -1,109 +1,51 @@</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -1,108 +1,54 @@</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gd">-// verifyHeader checks whether a header conforms to the consensus rules of the</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gd">-// stock Ethereum ethash engine.</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gd">-// See YP section 4.3.4. &quot;Block Header Validity&quot;</span>
@@ -1458,14 +1462,15 @@
 <a id="__codelineno-0-123" name="__codelineno-0-123" href="#__codelineno-0-123"></a><span class="gd">-       if err := ethash.verifySeal(chain, header, false); err != nil {</span>
 <a id="__codelineno-0-124" name="__codelineno-0-124" href="#__codelineno-0-124"></a><span class="gd">-           return err</span>
 <a id="__codelineno-0-125" name="__codelineno-0-125" href="#__codelineno-0-125"></a><span class="gd">-       }</span>
-<a id="__codelineno-0-126" name="__codelineno-0-126" href="#__codelineno-0-126"></a><span class="gd">-   }</span>
-<a id="__codelineno-0-127" name="__codelineno-0-127" href="#__codelineno-0-127"></a><span class="gd">-   // If all checks passed, validate any special fields for hard forks</span>
-<a id="__codelineno-0-128" name="__codelineno-0-128" href="#__codelineno-0-128"></a><span class="gd">-   if err := mutations.VerifyDAOHeaderExtraData(chain.Config(), header); err != nil {</span>
-<a id="__codelineno-0-129" name="__codelineno-0-129" href="#__codelineno-0-129"></a><span class="gd">-       return err</span>
-<a id="__codelineno-0-130" name="__codelineno-0-130" href="#__codelineno-0-130"></a><span class="gi">+       return fmt.Errorf(&quot;invalid parentBeaconRoot: have %x, expected nil&quot;, header.ParentBeaconRoot)</span>
-<a id="__codelineno-0-131" name="__codelineno-0-131" href="#__codelineno-0-131"></a><span class="w"> </span>   }
-<a id="__codelineno-0-132" name="__codelineno-0-132" href="#__codelineno-0-132"></a><span class="w"> </span>   return nil
-<a id="__codelineno-0-133" name="__codelineno-0-133" href="#__codelineno-0-133"></a><span class="w"> </span>}
+<a id="__codelineno-0-126" name="__codelineno-0-126" href="#__codelineno-0-126"></a><span class="gi">+       return fmt.Errorf(&quot;invalid parentBeaconRoot: have %x, expected nil&quot;, header.ParentBeaconRoot)</span>
+<a id="__codelineno-0-127" name="__codelineno-0-127" href="#__codelineno-0-127"></a><span class="w"> </span>   }
+<a id="__codelineno-0-128" name="__codelineno-0-128" href="#__codelineno-0-128"></a><span class="gd">-   // If all checks passed, validate any special fields for hard forks</span>
+<a id="__codelineno-0-129" name="__codelineno-0-129" href="#__codelineno-0-129"></a><span class="gd">-   if err := mutations.VerifyDAOHeaderExtraData(chain.Config(), header); err != nil {</span>
+<a id="__codelineno-0-130" name="__codelineno-0-130" href="#__codelineno-0-130"></a><span class="gi">+   // Verify the PoW seal</span>
+<a id="__codelineno-0-131" name="__codelineno-0-131" href="#__codelineno-0-131"></a><span class="gi">+   if err := e.inner.VerifySeal(header); err != nil {</span>
+<a id="__codelineno-0-132" name="__codelineno-0-132" href="#__codelineno-0-132"></a><span class="w"> </span>       return err
+<a id="__codelineno-0-133" name="__codelineno-0-133" href="#__codelineno-0-133"></a><span class="w"> </span>   }
+<a id="__codelineno-0-134" name="__codelineno-0-134" href="#__codelineno-0-134"></a><span class="w"> </span>   return nil
 </code></pre></div>
 
 </details>

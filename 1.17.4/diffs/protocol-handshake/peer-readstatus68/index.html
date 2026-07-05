@@ -1251,7 +1251,7 @@
 <tr>
 <td>File</td>
 <td><code>eth/protocols/eth/handshake.go</code></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handshake_pow.go#L70-L88"><code>handshake_pow.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handshake_pow.go#L59-L82"><code>handshake_pow.go</code></a></td>
 </tr>
 <tr>
 <td>Symbol</td>
@@ -1266,13 +1266,13 @@
 </tbody>
 </table>
 <blockquote>
-<p>ETH68 status message reader. Upstream v1.17.2 renamed readStatus69 to readStatus and removed readStatus68.</p>
+<p>ETH68 status message reader. Upstream v1.17.2 renamed readStatus69 to readStatus and removed readStatus68. Carries core-geth's readStatus tdlen&gt;100 bound.</p>
 </blockquote>
 <h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
 <div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-fork">fork-only</span></div>
 <div class="tw-code"><div class="tw-inner">
 <div class="fork"><span class="mk"></span>// readStatus68 reads and validates an ETH/68 status message from the peer.</div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/handshake.go#L75-L92" title="origin lines 75–92">↗</a></span>func (p *Peer) readStatus68(networkID uint64, status *StatusPacket68, genesis common.Hash, forkFilter forkid.Filter) error {</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/handshake.go#L75-L90" title="origin lines 75–90">↗</a></span>func (p *Peer) readStatus68(networkID uint64, status *StatusPacket68, genesis common.Hash, forkFilter forkid.Filter) error {</div>
 <div class="purge"><span class="mk"></span>    if err := p.readStatusMsg(status); err != nil {</div>
 <div class="purge"><span class="mk"></span>        return err</div>
 <div class="purge"><span class="mk"></span>    }</div>
@@ -1288,7 +1288,12 @@
 <div class="purge"><span class="mk"></span>    if err := forkFilter(status.ForkID); err != nil {</div>
 <div class="purge"><span class="mk"></span>        return fmt.Errorf("%w: %v", errForkIDRejected, err)</div>
 <div class="purge"><span class="mk"></span>    }</div>
-<div class="purge"><span class="mk"></span>    return nil</div>
+<div class="fork"><span class="mk"></span>    // TD at mainnet block #7753254 is 76 bits. If it becomes 100 million times</div>
+<div class="fork"><span class="mk"></span>    // larger, it will still fit within 100 bits</div>
+<div class="fork"><span class="mk"></span>    if tdlen := status.TD.BitLen(); tdlen &gt; 100 {</div>
+<div class="fork"><span class="mk"></span>        return fmt.Errorf("too large total difficulty: bitlen %d", tdlen)</div>
+<div class="fork"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/handshake.go#L91-L92" title="origin lines 91–92">↗</a></span>    return nil</div>
 <div class="purge"><span class="mk"></span>}</div>
 </div></div>
 

@@ -1251,7 +1251,7 @@
 <tr>
 <td>File</td>
 <td><code>eth/protocols/eth/handshake.go</code></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handshake_pow.go#L30-L68"><code>handshake_pow.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handshake_pow.go#L28-L57"><code>handshake_pow.go</code></a></td>
 </tr>
 <tr>
 <td>Symbol</td>
@@ -1266,7 +1266,7 @@
 </tbody>
 </table>
 <blockquote>
-<p>Derived from upstream's ETH68 handshake (Peer.handshake68) before #33511 dropped it: exported and renamed, with PoW-specific guards added — rejects peers whose TD exceeds ETH's TTD (ETC shares ETH's genesis hash) and nil-TD peers, and calls InitPoWExtension.</p>
+<p>Derived from upstream's ETH68 handshake (Peer.handshake68) before #33511 dropped it: exported and renamed, sending and validating TD and calling InitPoWExtension. TD is bounded by BitLen &lt;= 100 in readStatus68, matching core-geth's readStatus. ETH-mainnet peers (which share ETC's genesis hash and network ID) are separated by the fork ID via forkFilter — no TD ceiling is used, since ETC's own perpetual-PoW TD keeps rising and would eventually cross any fixed ETH threshold.</p>
 </blockquote>
 <h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
 <div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-adapted">≈ adapted (origin inferred by similarity)</span><span class="l-fork">fork-only</span></div>
@@ -1296,15 +1296,6 @@
 <div class="blank"><span class="mk"></span> </div>
 <div class="fork"><span class="mk"></span>    if err := waitForHandshake(errc, p); err != nil {</div>
 <div class="fork"><span class="mk"></span>        return err</div>
-<div class="fork"><span class="mk"></span>    }</div>
-<div class="fork"><span class="mk"></span>    // Reject peers with TD &gt;= ETH mainnet's TTD. Such high TD indicates the peer</div>
-<div class="fork"><span class="mk"></span>    // is from ETH mainnet (which shares the same genesis hash but much higher TD).</div>
-<div class="fork"><span class="mk"></span>    if status.TD != nil &amp;&amp; status.TD.Cmp(params.MainnetTerminalTotalDifficulty) &gt;= 0 {</div>
-<div class="fork"><span class="mk"></span>        return fmt.Errorf("peer TD %v exceeds ETH TTD, likely wrong network", status.TD)</div>
-<div class="fork"><span class="mk"></span>    }</div>
-<div class="fork"><span class="mk"></span>    // Reject peers with nil TD - required for proper PoW sync</div>
-<div class="fork"><span class="mk"></span>    if status.TD == nil {</div>
-<div class="fork"><span class="mk"></span>        return errors.New("peer has nil TD, rejecting for PoW sync")</div>
 <div class="fork"><span class="mk"></span>    }</div>
 <div class="fork"><span class="mk"></span>    // Initialize PoW extension with peer's head info directly</div>
 <div class="fork"><span class="mk"></span>    p.InitPoWExtension(status.Head, status.TD)</div>

@@ -1266,12 +1266,12 @@
 </tbody>
 </table>
 <blockquote>
-<p>ADAPT: <code>NewMeterForced()</code> → <code>NewMeter()</code> (<a href="https://github.com/ethereum/go-ethereum/pull/28035">#28035</a>)</p>
+<p><code>NewMeterForced()</code> call kept as in the original; the forced constructor is revived in metrics/meter_forced.go (see Metrics). core-geth adapted this call to <code>NewMeter()</code> instead (<a href="https://github.com/etclabscore/core-geth/commit/7239c0bc9">7239c0bc9</a>), which without --metrics constructs a NilMeter — its local hashrate permanently reads 0.</p>
 </blockquote>
 <h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
-<div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-cg">core-geth</span></div>
+<div class="tw-legend"><span class="l-purge">pre-purge</span></div>
 <div class="tw-code"><div class="tw-inner">
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/ac3418def67355041bdb6fad901899e13feb33a0/consensus/ethash/ethash.go#L471-L492" title="origin lines 471–492">↗</a></span>// New creates a full sized ethash PoW scheme and starts a background thread for</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/ac3418def67355041bdb6fad901899e13feb33a0/consensus/ethash/ethash.go#L471-L500" title="origin lines 471–500">↗</a></span>// New creates a full sized ethash PoW scheme and starts a background thread for</div>
 <div class="purge"><span class="mk"></span>// remote mining, also optionally notifying a batch of remote services of new work</div>
 <div class="purge"><span class="mk"></span>// packages.</div>
 <div class="purge"><span class="mk"></span>func New(config Config, notify []string, noverify bool) *Ethash {</div>
@@ -1293,8 +1293,8 @@
 <div class="purge"><span class="mk"></span>        caches:   newlru(config.CachesInMem, newCache),</div>
 <div class="purge"><span class="mk"></span>        datasets: newlru(config.DatasetsInMem, newDataset),</div>
 <div class="purge"><span class="mk"></span>        update:   make(chan struct{}),</div>
-<div class="coregeth"><span class="mk"><a class="src" href="https://github.com/etclabscore/core-geth/blob/v1.12.20/consensus/ethash/ethash.go#L613" title="origin line 613">↗</a></span>        hashrate: metrics.NewMeter(),</div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/ac3418def67355041bdb6fad901899e13feb33a0/consensus/ethash/ethash.go#L494-L500" title="origin lines 494–500">↗</a></span>    }</div>
+<div class="purge"><span class="mk"></span>        hashrate: metrics.NewMeterForced(),</div>
+<div class="purge"><span class="mk"></span>    }</div>
 <div class="purge"><span class="mk"></span>    if config.PowMode == ModeShared {</div>
 <div class="purge"><span class="mk"></span>        ethash.shared = sharedEthash</div>
 <div class="purge"><span class="mk"></span>    }</div>
@@ -1304,13 +1304,26 @@
 </div></div>
 
 <details>
-<summary>core-geth validation — **Identical** ✅</summary>
+<summary>core-geth validation — +1 -1</summary>
 
 | | |
 |---|---|
 | File | [`ethash.go`](https://github.com/etclabscore/core-geth/blob/v1.12.20/consensus/ethash/ethash.go) |
 | Symbol | `New` |
 | Ref | `v1.12.20` |
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/core-geth/consensus/ethash/ethash.go</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gi">+++ b/etc/consensus/ethash/ethash.go</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -20,7 +20,7 @@</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w"> </span>       caches:   newlru(config.CachesInMem, newCache),
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w"> </span>       datasets: newlru(config.DatasetsInMem, newDataset),
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>       update:   make(chan struct{}),
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gd">-       hashrate: metrics.NewMeter(),</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gi">+       hashrate: metrics.NewMeterForced(),</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w"> </span>   }
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w"> </span>   if config.PowMode == ModeShared {
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w"> </span>       ethash.shared = sharedEthash
+</code></pre></div>
 
 </details>
 

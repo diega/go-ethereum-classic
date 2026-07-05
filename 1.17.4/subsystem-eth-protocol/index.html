@@ -1356,7 +1356,7 @@
 <tbody>
 <tr>
 <td>🔄 Revived (from upstream pre-purge)</td>
-<td style="text-align: right;">26</td>
+<td style="text-align: right;">33</td>
 </tr>
 <tr>
 <td>✏️ In-place (modified on upstream)</td>
@@ -1403,6 +1403,13 @@
 <td><a href="../diffs/protocol-types/eth68-const-%2B-protocollengths/">view</a></td>
 </tr>
 <tr>
+<td><code>GetReceiptsPacket</code></td>
+<td>symbol</td>
+<td>purge1</td>
+<td>✅</td>
+<td><a href="../diffs/protocol-types/getreceiptspacket/">view</a></td>
+</tr>
+<tr>
 <td><code>NewBlockHashesPacket</code></td>
 <td>symbol</td>
 <td>purge_eth68</td>
@@ -1434,7 +1441,7 @@
 <td><code>Peer.Handshake68PoW</code></td>
 <td>symbol</td>
 <td>purge_eth68</td>
-<td><strong>+25 -11</strong></td>
+<td><strong>+16 -11</strong></td>
 <td><a href="../diffs/protocol-handshake/peer-handshake68pow/">view</a></td>
 </tr>
 <tr>
@@ -1457,6 +1464,13 @@
 <td>purge1</td>
 <td><strong>+1 -1</strong></td>
 <td><a href="../diffs/protocol-peers/peer-knownblock/">view</a></td>
+</tr>
+<tr>
+<td><code>Peer.ReplyReceiptsRLP</code></td>
+<td>symbol</td>
+<td>purge1</td>
+<td>✅</td>
+<td><a href="../diffs/protocol-peers/peer-replyreceiptsrlp/">view</a></td>
 </tr>
 <tr>
 <td><code>Peer.SendNewBlock</code></td>
@@ -1497,7 +1511,7 @@
 <td><code>Peer.readStatus68</code></td>
 <td>symbol</td>
 <td>purge_eth68</td>
-<td><strong>+1 -0</strong></td>
+<td><strong>+6 -0</strong></td>
 <td><a href="../diffs/protocol-handshake/peer-readstatus68/">view</a></td>
 </tr>
 <tr>
@@ -1506,6 +1520,27 @@
 <td>purge1</td>
 <td><strong>+4 -0</strong></td>
 <td><a href="../diffs/protocol-peers/powpeerextension/">view</a></td>
+</tr>
+<tr>
+<td><code>ReceiptsPacket</code></td>
+<td>symbol</td>
+<td>purge1</td>
+<td>✅</td>
+<td><a href="../diffs/protocol-types/receiptspacket/">view</a></td>
+</tr>
+<tr>
+<td><code>ReceiptsRLPPacket</code></td>
+<td>symbol</td>
+<td>purge1</td>
+<td>✅</td>
+<td><a href="../diffs/protocol-types/receiptsrlppacket/">view</a></td>
+</tr>
+<tr>
+<td><code>ServiceGetReceiptsQuery</code></td>
+<td>symbol</td>
+<td>purge1</td>
+<td>✅</td>
+<td><a href="../diffs/protocol-handlers/servicegetreceiptsquery/">view</a></td>
 </tr>
 <tr>
 <td><code>StatusPacket68</code></td>
@@ -1529,6 +1564,13 @@
 <td><a href="../diffs/protocol-tests-ethtest/ethtest-testdata/">view</a></td>
 </tr>
 <tr>
+<td><code>handleGetReceiptsPoW</code></td>
+<td>symbol</td>
+<td>purge1</td>
+<td><strong>+3 -2</strong></td>
+<td><a href="../diffs/protocol-handlers/handlegetreceiptspow/">view</a></td>
+</tr>
+<tr>
 <td><code>handleNewBlockPow</code></td>
 <td>symbol</td>
 <td>purge1</td>
@@ -1541,6 +1583,13 @@
 <td>purge1</td>
 <td><strong>+2 -2</strong></td>
 <td><a href="../diffs/protocol-handlers/handlenewblockhashespow/">view</a></td>
+</tr>
+<tr>
+<td><code>handleReceiptsPoW</code></td>
+<td>symbol</td>
+<td>purge1</td>
+<td><strong>+7 -4</strong></td>
+<td><a href="../diffs/protocol-handlers/handlereceiptspow/">view</a></td>
 </tr>
 <tr>
 <td><code>peer PoW consts</code></td>
