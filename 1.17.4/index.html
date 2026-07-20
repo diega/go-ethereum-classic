@@ -17,7 +17,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -25,7 +25,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1394,7 +1394,7 @@ transplanting the deleted code from just before each
 <a href="upstream-purges/">upstream purge</a>, kept in sibling <code>_pow.go</code> / <code>_etc.go</code> files so the
 fork tracks upstream with minimal rebase friction (see <a href="fork-architecture/">Fork Architecture</a>).</p>
 <p>Branch <a href="https://github.com/diega/go-ethereum-classic/tree/etc/v1.17.4-full-node"><code>etc/v1.17.4-full-node</code></a>
-· Commit <a href="https://github.com/diega/go-ethereum-classic/commit/93c10c974996ead5b1e52725c3740591ecada3d5"><code>93c10c974</code></a>
+· Commit <a href="https://github.com/diega/go-ethereum-classic/commit/632203588d357685ca65f8bfb539912778129aff"><code>632203588</code></a>
 · Base <a href="https://github.com/ethereum/go-ethereum/releases/tag/v1.17.4"><code>go-ethereum/v1.17.4</code></a></p>
 <h2 id="where-to-look">Where to look<a class="headerlink" href="#where-to-look" title="Permanent link">&para;</a></h2>
 <table>
@@ -1463,7 +1463,7 @@ fork tracks upstream with minimal rebase friction (see <a href="fork-architectur
 </tr>
 <tr>
 <td>Lines added</td>
-<td style="text-align: right;"><strong>+17963</strong></td>
+<td style="text-align: right;"><strong>+17971</strong></td>
 </tr>
 <tr>
 <td>Lines removed</td>
@@ -1471,11 +1471,11 @@ fork tracks upstream with minimal rebase friction (see <a href="fork-architectur
 </tr>
 <tr>
 <td><strong>Functional code Δ</strong></td>
-<td style="text-align: right;"><strong>+16248 -251</strong></td>
+<td style="text-align: right;"><strong>+16256 -251</strong></td>
 </tr>
 <tr>
 <td>Modified upstream files</td>
-<td style="text-align: right;"><strong>+3093 -25756</strong></td>
+<td style="text-align: right;"><strong>+3101 -25756</strong></td>
 </tr>
 <tr>
 <td>Extension points</td>
@@ -1551,28 +1551,28 @@ testdata JSON for the PoW chain), not functional changes.</p>
 </tr>
 <tr>
 <td style="text-align: right;">8</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/424a0d1b1"><code>424a0d1b1</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/67fa44ec8"><code>67fa44ec8</code></a></td>
 <td>cmd: ETC CLI wiring and Mordor/Classic presets</td>
 <td style="text-align: right;">8</td>
-<td style="text-align: right;"><strong>+476 -14</strong></td>
+<td style="text-align: right;"><strong>+484 -14</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">9</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/9f9762bbf"><code>9f9762bbf</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/c9dfd04b9"><code>c9dfd04b9</code></a></td>
 <td>cmd/devp2p/internal/ethtest: regenerate testdata so eth/snap integration suites pass against PoW</td>
 <td style="text-align: right;">15</td>
 <td style="text-align: right;"><strong>+1390 -25439</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">10</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/ff5f57b38"><code>ff5f57b38</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/7f8633379"><code>7f8633379</code></a></td>
 <td>core,eth: migrate core-geth chain config on first start</td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;"><strong>+159 -0</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">11</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/93c10c974"><code>93c10c974</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/632203588"><code>632203588</code></a></td>
 <td>all: prepare for publication as Go Ethereum Classic</td>
 <td style="text-align: right;">13</td>
 <td style="text-align: right;"><strong>+376 -182</strong></td>
@@ -1647,7 +1647,7 @@ testdata JSON for the PoW chain), not functional changes.</p>
 </tr>
 <tr>
 <td><a href="subsystem-cli-config-and-genesis/">CLI, Config &amp; Genesis</a></td>
-<td style="text-align: right;">11</td>
+<td style="text-align: right;">21</td>
 <td style="text-align: right;">6</td>
 <td style="text-align: right;">10</td>
 </tr>
@@ -1717,7 +1717,7 @@ testdata JSON for the PoW chain), not functional changes.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="javascripts/version-tag.js"></script>
       
