@@ -19,7 +19,7 @@
     
     
       
-        <title>ETCEngine.VerifyUncles - Go Ethereum Classic — Fork Documentation</title>
+        <title>consensus/etc/difficulty_parity_etc_test.go - Go Ethereum Classic — Fork Documentation</title>
       
     
     
@@ -85,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#etcengineverifyuncles" class="md-skip">
+        <a href="#consensusetcdifficulty_parity_etc_testgo" class="md-skip">
           Skip to content
         </a>
       
@@ -125,7 +125,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ETCEngine.VerifyUncles
+              consensus/etc/difficulty_parity_etc_test.go
             
           </span>
         </div>
@@ -1201,25 +1201,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#3-way-merge-purge-getc-upstream" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3-way merge — purge → getc ← upstream
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1238,140 +1219,34 @@
   
 
 
-<h1 id="etcengineverifyuncles">ETCEngine.VerifyUncles<a class="headerlink" href="#etcengineverifyuncles" title="Permanent link">&para;</a></h1>
+<h1 id="consensusetcdifficulty_parity_etc_testgo"><code>consensus/etc/difficulty_parity_etc_test.go</code><a class="headerlink" href="#consensusetcdifficulty_parity_etc_testgo" title="Permanent link">&para;</a></h1>
 <table>
 <thead>
 <tr>
 <th></th>
-<th>Source (upstream pre-purge)</th>
-<th>Current</th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>File</td>
-<td><code>consensus/ethash/consensus.go</code></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/consensus/etc/engine.go#L257-L315"><code>engine.go</code></a></td>
+<td>Type</td>
+<td><strong>NEW</strong></td>
 </tr>
 <tr>
-<td>Symbol</td>
-<td><code>Ethash.VerifyUncles</code></td>
-<td><code>ETCEngine.VerifyUncles</code></td>
+<td>Upstream Lines</td>
+<td>—</td>
 </tr>
 <tr>
-<td>Ref</td>
-<td><a href="https://github.com/ethereum/go-ethereum/commit/dde2da0efb8e9a1812f470bc43254134cd1f8cc0" title="all: remove ethash pow, only retain shims needed for consensus and tests (#27178)"><code>dde2da0ef</code></a><code>~1</code></td>
-<td><code>etc/v1.17.4-full-node</code></td>
+<td>Changed</td>
+<td><strong>+120 -0</strong></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>Verifies a block's ommers (bounded count, valid recent ancestry, not already included), delegating each uncle header to verifyUncleHeader. Revived from pre-purge ethash.VerifyUncles.</p>
+<p>Parity guard: a PoW config without ECIP bomb keys is delegated to the standard ethash difficulty schedule (protects the regenerated ethtest testdata chain), while ECIP bomb keys take precedence over the Ethereum bomb-delay forks</p>
 </blockquote>
-<h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
-<div class="tw-legend"><span class="l-up">upstream</span><span class="l-com">common</span><span class="l-adapted">≈ adapted (origin inferred by similarity)</span><span class="l-fork">fork-only</span></div>
-<div class="tw-code"><div class="tw-inner">
-<div class="fork"><span class="mk"></span>// VerifyUncles verifies that the given block's uncles conform to ETC consensus rules.</div>
-<div class="fork"><span class="mk"></span>// This implementation uses ETC-specific difficulty calculation (with ECIP-1010).</div>
-<div class="fork"><span class="mk"></span>func (e *ETCEngine) VerifyUncles(chain consensus.ChainReader, block *types.Block) error {</div>
-<div class="common"><span class="mk"></span>    // Verify that there are at most 2 uncles included in this block</div>
-<div class="common"><span class="mk"></span>    if len(block.Uncles()) &gt; maxUncles {</div>
-<div class="common"><span class="mk"></span>        return errTooManyUncles</div>
-<div class="common"><span class="mk"></span>    }</div>
-<div class="common"><span class="mk"></span>    if len(block.Uncles()) == 0 {</div>
-<div class="common"><span class="mk"></span>        return nil</div>
-<div class="common"><span class="mk"></span>    }</div>
-<div class="common"><span class="mk"></span>    // Gather the set of past uncles and ancestors</div>
-<div class="common"><span class="mk"></span>    uncles, ancestors := mapset.NewSet[common.Hash](), make(map[common.Hash]*types.Header)</div>
-<div class="blank"><span class="mk"></span> </div>
-<div class="common"><span class="mk"></span>    number, parent := block.NumberU64()-1, block.ParentHash()</div>
-<div class="common"><span class="mk"></span>    for i := 0; i &lt; 7; i++ {</div>
-<div class="common"><span class="mk"></span>        ancestorHeader := chain.GetHeader(parent, number)</div>
-<div class="common"><span class="mk"></span>        if ancestorHeader == nil {</div>
-<div class="common"><span class="mk"></span>            break</div>
-<div class="common"><span class="mk"></span>        }</div>
-<div class="common"><span class="mk"></span>        ancestors[parent] = ancestorHeader</div>
-<div class="common"><span class="mk"></span>        // If the ancestor doesn't have any uncles, we don't have to iterate them</div>
-<div class="common"><span class="mk"></span>        if ancestorHeader.UncleHash != types.EmptyUncleHash {</div>
-<div class="common"><span class="mk"></span>            // Need to add those uncles to the banned list too</div>
-<div class="common"><span class="mk"></span>            ancestor := chain.GetBlock(parent, number)</div>
-<div class="common"><span class="mk"></span>            if ancestor == nil {</div>
-<div class="common"><span class="mk"></span>                break</div>
-<div class="common"><span class="mk"></span>            }</div>
-<div class="common"><span class="mk"></span>            for _, uncle := range ancestor.Uncles() {</div>
-<div class="common"><span class="mk"></span>                uncles.Add(uncle.Hash())</div>
-<div class="common"><span class="mk"></span>            }</div>
-<div class="common"><span class="mk"></span>        }</div>
-<div class="common"><span class="mk"></span>        parent, number = ancestorHeader.ParentHash, number-1</div>
-<div class="common"><span class="mk"></span>    }</div>
-<div class="common"><span class="mk"></span>    ancestors[block.Hash()] = block.Header()</div>
-<div class="common"><span class="mk"></span>    uncles.Add(block.Hash())</div>
-<div class="blank"><span class="mk"></span> </div>
-<div class="common"><span class="mk"></span>    // Verify each of the uncles that it's recent, but not an ancestor</div>
-<div class="common"><span class="mk"></span>    for _, uncle := range block.Uncles() {</div>
-<div class="common"><span class="mk"></span>        // Make sure every uncle is rewarded only once</div>
-<div class="common"><span class="mk"></span>        hash := uncle.Hash()</div>
-<div class="common"><span class="mk"></span>        if uncles.Contains(hash) {</div>
-<div class="common"><span class="mk"></span>            return errDuplicateUncle</div>
-<div class="common"><span class="mk"></span>        }</div>
-<div class="common"><span class="mk"></span>        uncles.Add(hash)</div>
-<div class="blank"><span class="mk"></span> </div>
-<div class="common"><span class="mk"></span>        // Make sure the uncle has a valid ancestry</div>
-<div class="common"><span class="mk"></span>        if ancestors[hash] != nil {</div>
-<div class="common"><span class="mk"></span>            return errUncleIsAncestor</div>
-<div class="common"><span class="mk"></span>        }</div>
-<div class="common"><span class="mk"></span>        if ancestors[uncle.ParentHash] == nil || uncle.ParentHash == block.ParentHash() {</div>
-<div class="common"><span class="mk"></span>            return errDanglingUncle</div>
-<div class="common"><span class="mk"></span>        }</div>
-<div class="fork"><span class="mk"></span>        // Use ETC-specific header verification (with ECIP-1010 difficulty)</div>
-<div class="upstream adapted"><span class="mk"><a class="src approx" href="https://github.com/ethereum/go-ethereum/blob/v1.17.4/consensus/ethash/consensus.go#L212" title="closest match — origin line 212 (inferred by similarity, not exact)">≈</a></span>        if err := e.verifyUncleHeader(chain, uncle, ancestors[uncle.ParentHash]); err != nil {</div>
-<div class="common"><span class="mk"></span>            return err</div>
-<div class="common"><span class="mk"></span>        }</div>
-<div class="common"><span class="mk"></span>    }</div>
-<div class="common"><span class="mk"></span>    return nil</div>
-<div class="common"><span class="mk"></span>}</div>
-</div></div>
-
-<details>
-<summary>core-geth validation — +5 -8</summary>
-
-| | |
-|---|---|
-| File | [`consensus.go`](https://github.com/etclabscore/core-geth/blob/v1.12.20/consensus/ethash/consensus.go) |
-| Symbol | `Ethash.VerifyUncles` |
-| Ref | `v1.12.20` |
-
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/core-geth/consensus/ethash/consensus.go</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gi">+++ b/etc/consensus/etc/engine.go</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -1,10 +1,6 @@</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gd">-// VerifyUncles verifies that the given block&#39;s uncles conform to the consensus</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gd">-// rules of the stock Ethereum ethash engine.</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gd">-func (ethash *Ethash) VerifyUncles(chain consensus.ChainReader, block *types.Block) error {</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gd">-   // If we&#39;re running a full engine faking, accept any input as valid</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gd">-   if ethash.config.PowMode == ModeFullFake {</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gd">-       return nil</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gd">-   }</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gi">+// VerifyUncles verifies that the given block&#39;s uncles conform to ETC consensus rules.</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gi">+// This implementation uses ETC-specific difficulty calculation (with ECIP-1010).</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="gi">+func (e *ETCEngine) VerifyUncles(chain consensus.ChainReader, block *types.Block) error {</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w"> </span>   // Verify that there are at most 2 uncles included in this block
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>   if len(block.Uncles()) &gt; maxUncles {
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w"> </span>       return errTooManyUncles
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gu">@@ -54,7 +50,8 @@</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w"> </span>       if ancestors[uncle.ParentHash] == nil || uncle.ParentHash == block.ParentHash() {
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w"> </span>           return errDanglingUncle
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w"> </span>       }
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="gd">-       if err := ethash.verifyHeader(chain, uncle, ancestors[uncle.ParentHash], true, true, time.Now().Unix()); err != nil {</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gi">+       // Use ETC-specific header verification (with ECIP-1010 difficulty)</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gi">+       if err := e.verifyUncleHeader(chain, uncle, ancestors[uncle.ParentHash]); err != nil {</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w"> </span>           return err
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w"> </span>       }
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w"> </span>   }
-</code></pre></div>
-
-</details>
-
-<p><a href="../../../subsystem-consensus-and-ethash/">← Consensus &amp; Ethash</a></p>
+<p><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/consensus/etc/difficulty_parity_etc_test.go">View full file on GitHub</a></p>
+<p><a href="../../../subsystem-consensus-and-ethash/">← Back to Consensus &amp; Ethash</a></p>
 
 
 

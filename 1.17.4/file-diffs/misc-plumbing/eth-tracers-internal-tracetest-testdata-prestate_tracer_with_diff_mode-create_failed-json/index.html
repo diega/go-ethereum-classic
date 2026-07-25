@@ -19,7 +19,7 @@
     
     
       
-        <title>consensus/etc/reward_era_etc_test.go - Go Ethereum Classic — Fork Documentation</title>
+        <title>eth/tracers/internal/tracetest/testdata/prestate_tracer_with_diff_mode/create_failed.json - Go Ethereum Classic — Fork Documentation</title>
       
     
     
@@ -85,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#consensusetcreward_era_etc_testgo" class="md-skip">
+        <a href="#ethtracersinternaltracetesttestdataprestate_tracer_with_diff_modecreate_failedjson" class="md-skip">
           Skip to content
         </a>
       
@@ -125,7 +125,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              consensus/etc/reward_era_etc_test.go
+              eth/tracers/internal/tracetest/testdata/prestate_tracer_with_diff_mode/create_failed.json
             
           </span>
         </div>
@@ -1219,7 +1219,7 @@
   
 
 
-<h1 id="consensusetcreward_era_etc_testgo"><code>consensus/etc/reward_era_etc_test.go</code><a class="headerlink" href="#consensusetcreward_era_etc_testgo" title="Permanent link">&para;</a></h1>
+<h1 id="ethtracersinternaltracetesttestdataprestate_tracer_with_diff_modecreate_failedjson"><code>eth/tracers/internal/tracetest/testdata/prestate_tracer_with_diff_mode/create_failed.json</code><a class="headerlink" href="#ethtracersinternaltracetesttestdataprestate_tracer_with_diff_modecreate_failedjson" title="Permanent link">&para;</a></h1>
 <table>
 <thead>
 <tr>
@@ -1230,23 +1230,35 @@
 <tbody>
 <tr>
 <td>Type</td>
-<td><strong>NEW</strong></td>
+<td><strong>MOD</strong></td>
 </tr>
 <tr>
 <td>Upstream Lines</td>
-<td>—</td>
+<td>94</td>
 </tr>
 <tr>
 <td>Changed</td>
-<td><strong>+46 -0</strong></td>
+<td><strong>+1 -0</strong></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>Checks the ECIP-1017 era reward equals reward*4^era/5^era with a single final division, across eras 0–40</p>
+<p>Add mainnet's real terminalTotalDifficulty to the replayed mainnet-shaped genesis config — the fixture carries a type-2 transaction, and without a TTD the config reads as perpetual PoW (no fee market), so the tx type would be rejected</p>
 </blockquote>
-<p><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/consensus/etc/reward_era_etc_test.go">View full file on GitHub</a></p>
-<p><a href="../../../subsystem-consensus-and-ethash/">← Back to Consensus &amp; Ethash</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/eth/tracers/internal/tracetest/testdata/prestate_tracer_with_diff_mode/create_failed.json b/eth/tracers/internal/tracetest/testdata/prestate_tracer_with_diff_mode/create_failed.json</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index b5bccf7bd..669414611 100644</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gd">--- a/eth/tracers/internal/tracetest/testdata/prestate_tracer_with_diff_mode/create_failed.json</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gi">+++ b/eth/tracers/internal/tracetest/testdata/prestate_tracer_with_diff_mode/create_failed.json</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -55,6 +55,7 @@</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>      &quot;londonBlock&quot;: 12965000,
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span>      &quot;arrowGlacierBlock&quot;: 13773000,
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w"> </span>      &quot;grayGlacierBlock&quot;: 15050000,
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gi">+      &quot;terminalTotalDifficulty&quot;: 58750000000000000000000,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w"> </span>      &quot;ethash&quot;: {}
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w"> </span>    }
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span>  },
+</code></pre></div>
+<p><a href="../../../subsystem-eth-service/">← Back to Eth Service</a></p>
 
 
 

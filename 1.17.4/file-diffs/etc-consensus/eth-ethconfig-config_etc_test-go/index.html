@@ -1238,12 +1238,12 @@
 </tr>
 <tr>
 <td>Changed</td>
-<td><strong>+52 -0</strong></td>
+<td><strong>+114 -0</strong></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>Regression test: the engine created for PoW chains must expose Hashrate() float64 — a beacon-style wrapper makes the miner/ethstats hashrate assertions fail silently to 0 (core-geth ships that bug)</p>
+<p>Engine-selection tests: any perpetual PoW config (with or without ECIP keys, any chain ID) gets the ETCEngine and merge-track configs get beacon; plus the regression that the PoW engine must expose Hashrate() float64 — a beacon-style wrapper makes the miner/ethstats hashrate assertions fail silently to 0 (core-geth ships that bug)</p>
 </blockquote>
 <p><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/ethconfig/config_etc_test.go">View full file on GitHub</a></p>
 <p><a href="../../../subsystem-eth-service/">← Back to Eth Service</a></p>

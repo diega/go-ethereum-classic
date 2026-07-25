@@ -1380,23 +1380,23 @@
 <tbody>
 <tr>
 <td>Total files compared</td>
-<td style="text-align: right;">161</td>
+<td style="text-align: right;">160</td>
 </tr>
 <tr>
 <td>Identical patches</td>
-<td style="text-align: right;">107</td>
+<td style="text-align: right;">104</td>
 </tr>
 <tr>
 <td>Changed patches</td>
-<td style="text-align: right;">54</td>
+<td style="text-align: right;">56</td>
 </tr>
 <tr>
 <td>Only in v1.17.3</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
 </tr>
 <tr>
 <td>Only in v1.17.4</td>
-<td style="text-align: right;">13</td>
+<td style="text-align: right;">15</td>
 </tr>
 </tbody>
 </table>
@@ -1437,7 +1437,7 @@
 <td><code>consensus/etc/engine.go</code></td>
 <td>📝</td>
 <td style="text-align: right;">+771 -0</td>
-<td style="text-align: right;">+703 -0</td>
+<td style="text-align: right;">+633 -0</td>
 <td><a href="consensus-etc-engine-go/">view</a></td>
 </tr>
 <tr>
@@ -1445,13 +1445,6 @@
 <td>✅</td>
 <td style="text-align: right;">+126 -0</td>
 <td style="text-align: right;">+126 -0</td>
-<td>—</td>
-</tr>
-<tr>
-<td><code>consensus/etc/rewards_test.go</code></td>
-<td>✅</td>
-<td style="text-align: right;">+254 -0</td>
-<td style="text-align: right;">+254 -0</td>
 <td>—</td>
 </tr>
 <tr>
@@ -1479,7 +1472,7 @@
 <td><code>consensus/ethash/consensus_etc_test.go</code></td>
 <td>📝</td>
 <td style="text-align: right;">+398 -0</td>
-<td style="text-align: right;">+399 -0</td>
+<td style="text-align: right;">+426 -0</td>
 <td><a href="consensus-ethash-consensus_etc_test-go/">view</a></td>
 </tr>
 <tr>
@@ -1540,10 +1533,10 @@
 </tr>
 <tr>
 <td><code>core/blockchain_mess_test.go</code></td>
-<td>✅</td>
+<td>📝</td>
 <td style="text-align: right;">+700 -0</td>
 <td style="text-align: right;">+700 -0</td>
-<td>—</td>
+<td><a href="core-blockchain_mess_test-go/">view</a></td>
 </tr>
 <tr>
 <td><code>core/blockchain_pow.go</code></td>
@@ -1624,10 +1617,10 @@
 </tr>
 <tr>
 <td><code>core/txpool/validation_etc_test.go</code></td>
-<td>✅</td>
+<td>📝</td>
 <td style="text-align: right;">+176 -0</td>
-<td style="text-align: right;">+176 -0</td>
-<td>—</td>
+<td style="text-align: right;">+187 -0</td>
+<td><a href="core-txpool-validation_etc_test-go/">view</a></td>
 </tr>
 <tr>
 <td><code>core/vm/jump_table_etc.go</code></td>
@@ -1871,7 +1864,7 @@
 <td><code>params/config_etc.go</code></td>
 <td>📝</td>
 <td style="text-align: right;">+330 -0</td>
-<td style="text-align: right;">+330 -0</td>
+<td style="text-align: right;">+341 -0</td>
 <td><a href="params-config_etc-go/">view</a></td>
 </tr>
 <tr>
@@ -2256,7 +2249,7 @@
 <td><code>eth/ethconfig/config.go</code></td>
 <td>📝</td>
 <td style="text-align: right;">+32 -0</td>
-<td style="text-align: right;">+32 -0</td>
+<td style="text-align: right;">+31 -2</td>
 <td><a href="eth-ethconfig-config-go/">view</a></td>
 </tr>
 <tr>
@@ -2572,6 +2565,12 @@
 <td style="text-align: right;">+2 -4</td>
 <td>upstream file no longer modified in v1.17.4</td>
 </tr>
+<tr>
+<td><code>consensus/etc/rewards_test.go</code></td>
+<td>NEW</td>
+<td style="text-align: right;">+254 -0</td>
+<td>ETC-created file, no longer needed in v1.17.4</td>
+</tr>
 </tbody>
 </table>
 <h2 id="files-only-in-v1174">Files Only in v1.17.4<a class="headerlink" href="#files-only-in-v1174" title="Permanent link">&para;</a></h2>
@@ -2592,9 +2591,9 @@
 <td>new ETC-created file in v1.17.4</td>
 </tr>
 <tr>
-<td><code>consensus/etc/reward_era_etc_test.go</code></td>
+<td><code>consensus/etc/difficulty_parity_etc_test.go</code></td>
 <td>NEW</td>
-<td style="text-align: right;">+46 -0</td>
+<td style="text-align: right;">+120 -0</td>
 <td>new ETC-created file in v1.17.4</td>
 </tr>
 <tr>
@@ -2642,8 +2641,14 @@
 <tr>
 <td><code>eth/ethconfig/config_etc_test.go</code></td>
 <td>NEW</td>
-<td style="text-align: right;">+52 -0</td>
+<td style="text-align: right;">+114 -0</td>
 <td>new ETC-created file in v1.17.4</td>
+</tr>
+<tr>
+<td><code>eth/tracers/internal/tracetest/testdata/prestate_tracer_with_diff_mode/create_failed.json</code></td>
+<td>MOD</td>
+<td style="text-align: right;">+1 -0</td>
+<td>upstream file newly modified in v1.17.4</td>
 </tr>
 <tr>
 <td><code>ethstats/ethstats_etc_test.go</code></td>
@@ -2661,6 +2666,12 @@
 <td><code>metrics/meter_forced_etc_test.go</code></td>
 <td>NEW</td>
 <td style="text-align: right;">+31 -0</td>
+<td>new ETC-created file in v1.17.4</td>
+</tr>
+<tr>
+<td><code>params/config_etc_test.go</code></td>
+<td>NEW</td>
+<td style="text-align: right;">+123 -0</td>
 <td>new ETC-created file in v1.17.4</td>
 </tr>
 </tbody>

@@ -1256,26 +1256,86 @@
 <tr>
 <td>Delta</td>
 <td>+330 -0</td>
-<td>+330 -0</td>
+<td>+341 -0</td>
 </tr>
 </tbody>
 </table>
 <h3 id="diff-between-branches">Diff between branches<a class="headerlink" href="#diff-between-branches" title="Permanent link">&para;</a></h3>
 <p><div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh">diff --git a/params/config_etc.go b/params/config_etc.go</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 21569677b..869167648 100644</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gh">index 21569677b..6e9f9a592 100644</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gd">--- a/params/config_etc.go</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gi">+++ b/params/config_etc.go</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -247,8 +247,8 @@ func (c *ChainConfig) isEIP160(num *big.Int) bool {</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>// Enumerated on purpose: go-ethereum has always kept checkCompatible enumerated (only the
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span>// fork ID was moved to reflection), so this mirrors upstream&#39;s style and stays rebase-
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w"> </span>// friendly. TestETCForkCompatibilityCoverage enforces that every fork-ID *Block is guarded
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gd">-// here, giving us the fork-ID↔compatibility symmetry core-geth gets from its reflective</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gd">-// confp system — without importing reflection into production code.</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gi">+// here, giving us the fork-ID↔compatibility symmetry that a reflective config system would</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gi">+// provide — without importing reflection into production code.</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span>//
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w"> </span>// MESS (ECBP1100Transition / ECBP1100DeactivateTransition) is intentionally excluded, just
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>// like it is excluded from the fork ID: it is a fork-choice/reorg policy, not a block-
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gu">@@ -112,8 +112,12 @@ var (</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>   }
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span>)
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gd">-// IsClassic returns whether this chain is an Ethereum Classic chain.</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gd">-// ETC mainnet has ChainID 61, Mordor testnet has ChainID 63.</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gi">+// IsClassic returns whether this config is one of the well-known Ethereum</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gi">+// Classic networks: ETC mainnet (ChainID 61) or Mordor testnet (ChainID 63).</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="gi">+// It identifies presets for datadir/genesis resolution and CLI purposes only;</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="gi">+// consensus rules never branch on it. Block-validity behavior is derived from</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="gi">+// the individual config keys (IsPow, IsEIP1559, the ECIP fields), so custom</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gi">+// chains get ETC semantics by setting those keys, not by borrowing a chain ID.</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w"> </span>func (c *ChainConfig) IsClassic() bool {
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w"> </span>   if c.ChainID == nil {
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w"> </span>       return false
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gu">@@ -184,11 +188,19 @@ func (c *ChainConfig) IsSpiral(num *big.Int) bool {</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w"> </span>}
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w"> </span>// IsEIP1559 returns whether EIP-1559 (fee market) is active at the given block.
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="gd">-// Note: ETC has London (Mystique) WITHOUT EIP-1559, so this returns false for ETC.</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="gd">-// For most chains, IsEIP1559 is equivalent to IsLondon.</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="gi">+// To date no perpetual PoW chain (ethash with no terminal total difficulty)</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="gi">+// has activated a fee market: they run London as Mystique, i.e. the London</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="gi">+// opcodes WITHOUT the fee market, so this defaults to false when IsPow. For</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="gi">+// every other chain, IsEIP1559 is equivalent to IsLondon.</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="gi">+//</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="gi">+// This is a default, not a law of nature: a future fee-market activation on</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="gi">+// ETC (e.g. ECIP-1120, which keeps the EIP-1559 mechanics and changes only</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="gi">+// the base-fee disposition) would ship with its own activation key, checked</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="gi">+// here ahead of the PoW default — everything downstream (base fee calc,</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="gi">+// header validation, txpool, signer, RPC) already dispatches on this method.</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="w"> </span>func (c *ChainConfig) IsEIP1559(num *big.Int) bool {
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="gd">-   if c.IsClassic() {</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="gd">-       return false // ETC never has EIP-1559</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="gi">+   if c.IsPow() {</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="gi">+       return false // no perpetual PoW chain has activated a fee market so far</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w"> </span>   }
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="w"> </span>   return c.IsLondon(num)
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="w"> </span>}
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="gu">@@ -227,14 +239,13 @@ func (c *ChainConfig) IsECIP1099(num *big.Int) bool {</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="w"> </span>}
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="w"> </span>// isEIP160 returns true when EIP-160 (EXP gas cost increase) needs manual activation.
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="gd">-// For ETC: Die Hard (ECIP-1010) activated EIP-160 at block 3M, but Atlantis (ECIP-1054)</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="gd">-// activated EIP-161/170 at block 8.7M. Between these blocks, we need to patch the jump table.</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="gd">-// For ETH: Spurious Dragon (EIP-607) activated all together, so this is always false.</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="gi">+// The window only exists on configs that split Spurious Dragon: ETC&#39;s Die Hard</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="gi">+// (ECIP-1010) activated EIP-155/160 at block 3M but delayed EIP-161/170 to Atlantis</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="gi">+// (ECIP-1054, block 8.77M), so the jump table needs patching in between. Ethereum&#39;s</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="gi">+// EIP-607 activated EIP-155 and EIP-158 at the same block, making the window empty</span>
+<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="gi">+// there by construction — no chain identity check is needed.</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="w"> </span>func (c *ChainConfig) isEIP160(num *big.Int) bool {
+<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="gd">-   if c.IsClassic() {</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="gd">-       return c.IsEIP155(num) &amp;&amp; !c.IsEIP158(num)</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="gd">-   }</span>
+<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="gd">-   return false</span>
+<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="gi">+   return c.IsEIP155(num) &amp;&amp; !c.IsEIP158(num)</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="w"> </span>}
+<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>
+<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="w"> </span>// checkCompatibleETC guards the ETC-specific fork blocks against incompatible changes.
+<a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a><span class="gu">@@ -247,8 +258,8 @@ func (c *ChainConfig) isEIP160(num *big.Int) bool {</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a><span class="w"> </span>// Enumerated on purpose: go-ethereum has always kept checkCompatible enumerated (only the
+<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a><span class="w"> </span>// fork ID was moved to reflection), so this mirrors upstream&#39;s style and stays rebase-
+<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a><span class="w"> </span>// friendly. TestETCForkCompatibilityCoverage enforces that every fork-ID *Block is guarded
+<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a><span class="gd">-// here, giving us the fork-ID↔compatibility symmetry core-geth gets from its reflective</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="gd">-// confp system — without importing reflection into production code.</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="gi">+// here, giving us the fork-ID↔compatibility symmetry that a reflective config system would</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="gi">+// provide — without importing reflection into production code.</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a><span class="w"> </span>//
+<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a><span class="w"> </span>// MESS (ECBP1100Transition / ECBP1100DeactivateTransition) is intentionally excluded, just
+<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a><span class="w"> </span>// like it is excluded from the fork ID: it is a fork-choice/reorg policy, not a block-
 </code></pre></div>
 <a href="../">← Back to Version Comparison</a></p>
 
