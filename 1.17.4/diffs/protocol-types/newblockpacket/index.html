@@ -1251,7 +1251,7 @@
 <tr>
 <td>File</td>
 <td><code>eth/protocols/eth/protocol.go</code></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/protocol_pow.go#L91-L95"><code>protocol_pow.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/protocol_pow.go#L117-L123"><code>protocol_pow.go</code></a></td>
 </tr>
 <tr>
 <td>Symbol</td>
@@ -1266,13 +1266,15 @@
 </tbody>
 </table>
 <blockquote>
-<p>Block propagation packet with TD. Removed from upstream v1.17.2 protocol.go. Includes the sanityCheck() method — a faithful pre-purge revival (its tdlen&gt;100 bound is verbatim v1.11.6).</p>
+<p>Block propagation packet with TD. Removed from upstream v1.17.2 protocol.go. Still the type the sending side encodes and the backend consumes, so peer_pow.go and handler_eth.go are unchanged; inbound messages are decoded into rawNewBlockPacket instead and assembled into this afterwards. The sanityCheck() method moved to rawNewBlockPacket with it.</p>
 </blockquote>
 <h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
-<div class="tw-legend"><span class="l-purge">pre-purge</span></div>
+<div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-fork">fork-only</span></div>
 <div class="tw-code"><div class="tw-inner">
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/protocol.go#L206-L210" title="origin lines 206–210">↗</a></span>// NewBlockPacket is the network packet for the block propagation message.</div>
-<div class="purge"><span class="mk"></span>type NewBlockPacket struct {</div>
+<div class="fork"><span class="mk"></span>// NewBlockPacket is the network packet for the block propagation message. It is</div>
+<div class="fork"><span class="mk"></span>// what the sending side encodes and what the backend consumes; inbound messages</div>
+<div class="fork"><span class="mk"></span>// are decoded into rawNewBlockPacket first and assembled into this afterwards.</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/protocol.go#L207-L210" title="origin lines 207–210">↗</a></span>type NewBlockPacket struct {</div>
 <div class="purge"><span class="mk"></span>    Block *types.Block</div>
 <div class="purge"><span class="mk"></span>    TD    *big.Int</div>
 <div class="purge"><span class="mk"></span>}</div>

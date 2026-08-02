@@ -19,7 +19,7 @@
     
     
       
-        <title>ServiceGetReceiptsQuery - Go Ethereum Classic — Fork Documentation</title>
+        <title>ReceiptsPacket68 - Go Ethereum Classic — Fork Documentation</title>
       
     
     
@@ -85,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#servicegetreceiptsquery" class="md-skip">
+        <a href="#receiptspacket68" class="md-skip">
           Skip to content
         </a>
       
@@ -125,7 +125,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ServiceGetReceiptsQuery
+              ReceiptsPacket68
             
           </span>
         </div>
@@ -1238,7 +1238,7 @@
   
 
 
-<h1 id="servicegetreceiptsquery">ServiceGetReceiptsQuery<a class="headerlink" href="#servicegetreceiptsquery" title="Permanent link">&para;</a></h1>
+<h1 id="receiptspacket68">ReceiptsPacket68<a class="headerlink" href="#receiptspacket68" title="Permanent link">&para;</a></h1>
 <table>
 <thead>
 <tr>
@@ -1250,67 +1250,57 @@
 <tbody>
 <tr>
 <td>File</td>
-<td><code>eth/protocols/eth/handlers.go</code></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handlers_pow.go#L98-L127"><code>handlers_pow.go</code></a></td>
+<td><code>eth/protocols/eth/protocol.go</code></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/protocol_pow.go#L173-L178"><code>protocol_pow.go</code></a></td>
 </tr>
 <tr>
 <td>Symbol</td>
-<td><code>ServiceGetReceiptsQuery</code></td>
-<td><code>ServiceGetReceiptsQuery</code></td>
+<td><code>ReceiptsPacket</code></td>
+<td><code>ReceiptsPacket68</code></td>
 </tr>
 <tr>
 <td>Ref</td>
-<td><a href="https://github.com/ethereum/go-ethereum/commit/f4d53133f6e4b13f0dbcfef3bc45e9650d863b73" title="consensus, cmd, core, eth: remove support for non-merge mode of operation (#29169)"><code>f4d53133f</code></a><code>~1</code></td>
+<td><a href="https://github.com/ethereum/go-ethereum/commit/723aae2b4e77af7b2a1173280a05382c739ca4e1" title="eth/protocols/eth: drop protocol version eth/68 (#33511)"><code>723aae2b4</code></a><code>~1</code></td>
 <td><code>etc/v1.17.4-full-node</code></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>Char-for-char revival. rlp.EncodeToBytes(chain.GetReceiptsByHash(hash)) produces the consensus/network receipt encoding [status, cumulativeGasUsed, bloom, logs] — WITH the Bloom filter — as ETH68 peers expect. Distinct from the retained eth/69 ServiceGetReceiptsQuery69, which strips the bloom.</p>
+<p>{RequestId, List} where List is rlp.RawList[<em>ReceiptList68] — the delayed-decoding form #33835 gave the ETH68 receipts response, monomorphized. Upstream's pre-drop type was the generic ReceiptsPacket[L ReceiptsList] instantiated at L=</em>ReceiptList68; the generic and its ReceiptsList constraint (<em>ReceiptList68 | </em>ReceiptList69) are NOT revived because the only surviving instantiation is 68, and v1.17.4 itself abandoned the generic in favour of one concrete type per version (ReceiptsPacket69 / ReceiptsPacket70). Naming follows that v1.17.4 convention. Supersedes the earlier purge1 revival {RequestId, ReceiptsResponse}, which decoded every receipt into types.Receipt down to each types.Log.</p>
 </blockquote>
 <h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
-<div class="tw-legend"><span class="l-purge">pre-purge</span></div>
+<div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-adapted">≈ adapted (origin inferred by similarity)</span><span class="l-fork">fork-only</span></div>
 <div class="tw-code"><div class="tw-inner">
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L245-L274" title="origin lines 245–274">↗</a></span>// ServiceGetReceiptsQuery assembles the response to a receipt query. It is</div>
-<div class="purge"><span class="mk"></span>// exposed to allow external packages to test protocol behavior.</div>
-<div class="purge"><span class="mk"></span>func ServiceGetReceiptsQuery(chain *core.BlockChain, query GetReceiptsRequest) []rlp.RawValue {</div>
-<div class="purge"><span class="mk"></span>    // Gather state data until the fetch or network limits is reached</div>
-<div class="purge"><span class="mk"></span>    var (</div>
-<div class="purge"><span class="mk"></span>        bytes    int</div>
-<div class="purge"><span class="mk"></span>        receipts []rlp.RawValue</div>
-<div class="purge"><span class="mk"></span>    )</div>
-<div class="purge"><span class="mk"></span>    for lookups, hash := range query {</div>
-<div class="purge"><span class="mk"></span>        if bytes &gt;= softResponseLimit || len(receipts) &gt;= maxReceiptsServe ||</div>
-<div class="purge"><span class="mk"></span>            lookups &gt;= 2*maxReceiptsServe {</div>
-<div class="purge"><span class="mk"></span>            break</div>
-<div class="purge"><span class="mk"></span>        }</div>
-<div class="purge"><span class="mk"></span>        // Retrieve the requested block's receipts</div>
-<div class="purge"><span class="mk"></span>        results := chain.GetReceiptsByHash(hash)</div>
-<div class="purge"><span class="mk"></span>        if results == nil {</div>
-<div class="purge"><span class="mk"></span>            if header := chain.GetHeaderByHash(hash); header == nil || header.ReceiptHash != types.EmptyRootHash {</div>
-<div class="purge"><span class="mk"></span>                continue</div>
-<div class="purge"><span class="mk"></span>            }</div>
-<div class="purge"><span class="mk"></span>        }</div>
-<div class="purge"><span class="mk"></span>        // If known, encode and queue for response packet</div>
-<div class="purge"><span class="mk"></span>        if encoded, err := rlp.EncodeToBytes(results); err != nil {</div>
-<div class="purge"><span class="mk"></span>            log.Error("Failed to encode receipt", "err", err)</div>
-<div class="purge"><span class="mk"></span>        } else {</div>
-<div class="purge"><span class="mk"></span>            receipts = append(receipts, encoded)</div>
-<div class="purge"><span class="mk"></span>            bytes += len(encoded)</div>
-<div class="purge"><span class="mk"></span>        }</div>
-<div class="purge"><span class="mk"></span>    }</div>
-<div class="purge"><span class="mk"></span>    return receipts</div>
-<div class="purge"><span class="mk"></span>}</div>
+<div class="fork"><span class="mk"></span>// ReceiptsPacket68 is the network packet for block receipts distribution with</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/protocol.go#L270" title="origin line 270">↗</a></span>// request ID wrapping.</div>
+<div class="fork"><span class="mk"></span>type ReceiptsPacket68 struct {</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/protocol.go#L272" title="origin line 272">↗</a></span>    RequestId uint64</div>
+<div class="purge adapted"><span class="mk"><a class="src approx" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/protocol.go#L273" title="closest match — origin line 273 (inferred by similarity, not exact)">≈</a></span>    List      rlp.RawList[*ReceiptList68]</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/protocol.go#L274" title="origin line 274">↗</a></span>}</div>
 </div></div>
 
 <details>
-<summary>core-geth validation — **Identical** ✅</summary>
+<summary>core-geth validation — +3 -3</summary>
 
 | | |
 |---|---|
-| File | [`handlers.go`](https://github.com/etclabscore/core-geth/blob/v1.12.20/eth/protocols/eth/handlers.go) |
-| Symbol | `ServiceGetReceiptsQuery` |
+| File | [`protocol.go`](https://github.com/etclabscore/core-geth/blob/v1.12.20/eth/protocols/eth/protocol.go) |
+| Symbol | `ReceiptsPacket` |
 | Ref | `v1.12.20` |
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/core-geth/eth/protocols/eth/protocol.go</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gi">+++ b/etc/eth/protocols/eth/protocol_pow.go</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -1,6 +1,6 @@</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gd">-// ReceiptsPacket is the network packet for block receipts distribution with</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gi">+// ReceiptsPacket68 is the network packet for block receipts distribution with</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>// request ID wrapping.
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gd">-type ReceiptsPacket struct {</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gi">+type ReceiptsPacket68 struct {</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w"> </span>   RequestId uint64
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gd">-   ReceiptsResponse</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gi">+   List      rlp.RawList[*ReceiptList68]</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span>}
+</code></pre></div>
 
 </details>
 

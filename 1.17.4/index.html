@@ -1394,7 +1394,7 @@ transplanting the deleted code from just before each
 <a href="upstream-purges/">upstream purge</a>, kept in sibling <code>_pow.go</code> / <code>_etc.go</code> files so the
 fork tracks upstream with minimal rebase friction (see <a href="fork-architecture/">Fork Architecture</a>).</p>
 <p>Branch <a href="https://github.com/diega/go-ethereum-classic/tree/etc/v1.17.4-full-node"><code>etc/v1.17.4-full-node</code></a>
-· Commit <a href="https://github.com/diega/go-ethereum-classic/commit/8c438c8fe89caf11091cdb1aabff5de2f1b12e97"><code>8c438c8fe</code></a>
+· Commit <a href="https://github.com/diega/go-ethereum-classic/commit/9c74762b54cf629dc8b3e1a3739331e4afd0ceaa"><code>9c74762b5</code></a>
 · Base <a href="https://github.com/ethereum/go-ethereum/releases/tag/v1.17.4"><code>go-ethereum/v1.17.4</code></a></p>
 <h2 id="where-to-look">Where to look<a class="headerlink" href="#where-to-look" title="Permanent link">&para;</a></h2>
 <table>
@@ -1459,11 +1459,11 @@ fork tracks upstream with minimal rebase friction (see <a href="fork-architectur
 </tr>
 <tr>
 <td>Files changed</td>
-<td style="text-align: right;">180 (81 new, 99 modified)</td>
+<td style="text-align: right;">185 (86 new, 99 modified)</td>
 </tr>
 <tr>
 <td>Lines added</td>
-<td style="text-align: right;"><strong>+17955</strong></td>
+<td style="text-align: right;"><strong>+18873</strong></td>
 </tr>
 <tr>
 <td>Lines removed</td>
@@ -1471,7 +1471,7 @@ fork tracks upstream with minimal rebase friction (see <a href="fork-architectur
 </tr>
 <tr>
 <td><strong>Functional code Δ</strong></td>
-<td style="text-align: right;"><strong>+16239 -253</strong></td>
+<td style="text-align: right;"><strong>+17157 -253</strong></td>
 </tr>
 <tr>
 <td>Modified upstream files</td>
@@ -1502,77 +1502,77 @@ testdata JSON for the PoW chain), not functional changes.</p>
 <tbody>
 <tr>
 <td style="text-align: right;">1</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/a957a788a"><code>a957a788a</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/529a08190"><code>529a08190</code></a></td>
 <td>params: add ETC chain config fields and network configs</td>
 <td style="text-align: right;">7</td>
 <td style="text-align: right;"><strong>+724 -1</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">2</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/9b316b657"><code>9b316b657</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/550d38ac5"><code>550d38ac5</code></a></td>
 <td>consensus,core,metrics,params: add ETC consensus engine</td>
 <td style="text-align: right;">51</td>
 <td style="text-align: right;"><strong>+6469 -44</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">3</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/2bf2002b6"><code>2bf2002b6</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/4cd5b08ad"><code>4cd5b08ad</code></a></td>
 <td>core: restore total difficulty for the PoW chain</td>
 <td style="text-align: right;">15</td>
 <td style="text-align: right;"><strong>+829 -7</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">4</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/a2993faa2"><code>a2993faa2</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/4d2db8492"><code>4d2db8492</code></a></td>
 <td>eth/protocols/eth: add PoW eth/68 protocol stack</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;"><strong>+736 -7</strong></td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;"><strong>+1479 -7</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">5</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/8430cee05"><code>8430cee05</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/b103205db"><code>b103205db</code></a></td>
 <td>eth/downloader: add PoW initial sync</td>
 <td style="text-align: right;">10</td>
 <td style="text-align: right;"><strong>+1412 -5</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">6</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/8932647d4"><code>8932647d4</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/2350048fa"><code>2350048fa</code></a></td>
 <td>eth,ethstats,miner,core: PoW handler/miner stack and live broadcast</td>
-<td style="text-align: right;">53</td>
-<td style="text-align: right;"><strong>+4165 -26</strong></td>
+<td style="text-align: right;">54</td>
+<td style="text-align: right;"><strong>+4340 -26</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">7</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/7845ccd97"><code>7845ccd97</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/17dfcdcd2"><code>17dfcdcd2</code></a></td>
 <td>core,eth,params: add MESS (ECBP-1100) artificial finality</td>
 <td style="text-align: right;">13</td>
 <td style="text-align: right;"><strong>+1223 -45</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">8</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/50545cf14"><code>50545cf14</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/c858299d9"><code>c858299d9</code></a></td>
 <td>cmd: ETC CLI wiring and Mordor/Classic presets</td>
 <td style="text-align: right;">8</td>
-<td style="text-align: right;"><strong>+484 -14</strong></td>
+<td style="text-align: right;"><strong>+483 -13</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">9</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/61068ab10"><code>61068ab10</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/e0152576e"><code>e0152576e</code></a></td>
 <td>cmd/devp2p/internal/ethtest: regenerate testdata so eth/snap integration suites pass against PoW</td>
 <td style="text-align: right;">15</td>
 <td style="text-align: right;"><strong>+1390 -25439</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">10</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/504869081"><code>504869081</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/8bf6ed7a3"><code>8bf6ed7a3</code></a></td>
 <td>core,eth: migrate core-geth chain config on first start</td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;"><strong>+159 -0</strong></td>
 </tr>
 <tr>
 <td style="text-align: right;">11</td>
-<td><a href="https://github.com/diega/go-ethereum-classic/commit/8c438c8fe"><code>8c438c8fe</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/commit/9c74762b5"><code>9c74762b5</code></a></td>
 <td>all: prepare for publication as Go Ethereum Classic</td>
 <td style="text-align: right;">13</td>
 <td style="text-align: right;"><strong>+376 -182</strong></td>
@@ -1617,13 +1617,13 @@ testdata JSON for the PoW chain), not functional changes.</p>
 </tr>
 <tr>
 <td><a href="subsystem-eth-protocol/">eth Protocol</a></td>
-<td style="text-align: right;">33</td>
+<td style="text-align: right;">36</td>
 <td style="text-align: right;">9</td>
-<td style="text-align: right;">5</td>
+<td style="text-align: right;">6</td>
 </tr>
 <tr>
 <td><a href="subsystem-eth-service/">Eth Service</a></td>
-<td style="text-align: right;">8</td>
+<td style="text-align: right;">9</td>
 <td style="text-align: right;">8</td>
 <td style="text-align: right;">2</td>
 </tr>

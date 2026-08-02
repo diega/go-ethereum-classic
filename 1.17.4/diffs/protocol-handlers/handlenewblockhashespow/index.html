@@ -1251,7 +1251,7 @@
 <tr>
 <td>File</td>
 <td><code>eth/protocols/eth/handlers.go</code></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handlers_pow.go#L47-L59"><code>handlers_pow.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handlers_pow.go#L49-L64"><code>handlers_pow.go</code></a></td>
 </tr>
 <tr>
 <td>Symbol</td>
@@ -1266,7 +1266,7 @@
 </tbody>
 </table>
 <blockquote>
-<p>Renamed from handleNewBlockhashes to handleNewBlockhashesPow. Uses <code>return err</code> without errDecode wrapping, consistent with upstream v1.17.3, which no longer wraps handler errors in errDecode.</p>
+<p>Renamed from handleNewBlockhashes to handleNewBlockhashesPow. Uses <code>return err</code> without errDecode wrapping, consistent with upstream v1.17.3, which no longer wraps handler errors in errDecode. Otherwise the pre-purge revival is intact except for one added check, the maxBlockAnnouncements cap — NEW-ETC, since neither upstream nor core-geth ever bounded this message. Its shape is copied from the only protocol-level precedent for capping an unsolicited announcement, upstream's handleTransactions: decode, compare the count, return an error that drops the peer. Note the deliberate difference from the fetcher layer, which on the same kind of excess (hashLimit in the block fetcher, maxTxAnnounces in the tx fetcher) logs at Debug, marks a DOS meter and discards or truncates WITHOUT dropping the peer. Both behaviours are upstream's; they are split by layer, and this check lives at the protocol layer. The two tiers are complementary, the same way maxTransactionAnnouncements sits above maxTxAnnounces for transactions. What this buys is not heap: at ~35 bytes per announcement a 10 MiB message decodes to ~300k entries, and the pipeline that follows (the markBlock loop, Unpack's two slices, handleBlockAnnounces' two more) amplifies it only about 3.5x. It is the work per entry that matters — ~300k chain.HasBlock lookups and ~300k blockFetcher.Notify channel sends before hashLimit discards all but 256 of them. Covered by TestBlockAnnouncementLimit68.</p>
 </blockquote>
 <h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
 <div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-fork">fork-only</span></div>
@@ -1276,8 +1276,11 @@
 <div class="purge"><span class="mk"></span>    ann := new(NewBlockHashesPacket)</div>
 <div class="purge"><span class="mk"></span>    if err := msg.Decode(ann); err != nil {</div>
 <div class="fork"><span class="mk"></span>        return err</div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L281-L288" title="origin lines 281–288">↗</a></span>    }</div>
-<div class="purge"><span class="mk"></span>    // Mark the hashes as present at the remote node</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L281" title="origin line 281">↗</a></span>    }</div>
+<div class="fork"><span class="mk"></span>    if len(*ann) &gt; maxBlockAnnouncements {</div>
+<div class="fork"><span class="mk"></span>        return fmt.Errorf("too many block announcements: %d &gt; %d", len(*ann), maxBlockAnnouncements)</div>
+<div class="fork"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L282-L288" title="origin lines 282–288">↗</a></span>    // Mark the hashes as present at the remote node</div>
 <div class="purge"><span class="mk"></span>    for _, block := range *ann {</div>
 <div class="purge"><span class="mk"></span>        peer.markBlock(block.Hash)</div>
 <div class="purge"><span class="mk"></span>    }</div>
@@ -1287,7 +1290,7 @@
 </div></div>
 
 <details>
-<summary>core-geth validation — +2 -2</summary>
+<summary>core-geth validation — +5 -2</summary>
 
 | | |
 |---|---|
@@ -1297,7 +1300,7 @@
 
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/core-geth/eth/protocols/eth/handlers.go</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gi">+++ b/etc/eth/protocols/eth/handlers_pow.go</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -1,8 +1,8 @@</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -1,8 +1,11 @@</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gd">-func handleNewBlockhashes(backend Backend, msg Decoder, peer *Peer) error {</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gi">+func handleNewBlockhashesPow(backend Backend, msg Decoder, peer *Peer) error {</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>   // A batch of new block announcements just arrived
@@ -1305,9 +1308,12 @@
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w"> </span>   if err := msg.Decode(ann); err != nil {
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gd">-       return fmt.Errorf(&quot;%w: message %v: %v&quot;, errDecode, msg, err)</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gi">+       return err</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w"> </span>   }
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span>   // Mark the hashes as present at the remote node
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span>   for _, block := range *ann {
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gi">+   }</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gi">+   if len(*ann) &gt; maxBlockAnnouncements {</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="gi">+       return fmt.Errorf(&quot;too many block announcements: %d &gt; %d&quot;, len(*ann), maxBlockAnnouncements)</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w"> </span>   }
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>   // Mark the hashes as present at the remote node
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w"> </span>   for _, block := range *ann {
 </code></pre></div>
 
 </details>

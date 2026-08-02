@@ -1251,7 +1251,7 @@
 <tr>
 <td>File</td>
 <td><code>eth/protocols/eth/handlers.go</code></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handlers_pow.go#L61-L85"><code>handlers_pow.go</code></a></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handlers_pow.go#L66-L112"><code>handlers_pow.go</code></a></td>
 </tr>
 <tr>
 <td>Symbol</td>
@@ -1266,40 +1266,62 @@
 </tbody>
 </table>
 <blockquote>
-<p>Renamed from handleNewBlock to handleNewBlockPow. Uses <code>return err</code> without errDecode wrapping, consistent with upstream v1.17.3, which no longer wraps handler errors in errDecode.</p>
+<p>Renamed from handleNewBlock to handleNewBlockPow. Uses <code>return err</code> without errDecode wrapping, consistent with upstream v1.17.3, which no longer wraps handler errors in errDecode. The pre-purge revival is otherwise intact — sanityCheck, the uncle-hash and tx-root checks with their log.Warn-and-return-nil handling and karalabe's TODO, the ReceivedAt/ReceivedFrom stamping, markBlock — but the decode around it is NOT pre-purge: see the rawNewBlockPacket entry for why, and for the two checks that were re-expressed against the encoded form via the shared hashBodyParts helper rather than against a materialized types.Block.</p>
 </blockquote>
 <h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
 <div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-adapted">≈ adapted (origin inferred by similarity)</span><span class="l-fork">fork-only</span></div>
 <div class="tw-code"><div class="tw-inner">
 <div class="fork"><span class="mk"></span>func handleNewBlockPow(backend Backend, msg Decoder, peer *Peer) error {</div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L291-L293" title="origin lines 291–293">↗</a></span>    // Retrieve and decode the propagated block</div>
-<div class="purge"><span class="mk"></span>    ann := new(NewBlockPacket)</div>
-<div class="purge"><span class="mk"></span>    if err := msg.Decode(ann); err != nil {</div>
+<div class="fork"><span class="mk"></span>    // Retrieve the propagated block, leaving its body encoded for now</div>
+<div class="purge adapted"><span class="mk"><a class="src approx" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L292" title="closest match — origin line 292 (inferred by similarity, not exact)">≈</a></span>    ann := new(rawNewBlockPacket)</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L293" title="origin line 293">↗</a></span>    if err := msg.Decode(ann); err != nil {</div>
 <div class="purge adapted"><span class="mk"><a class="src approx" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L297" title="closest match — origin line 297 (inferred by similarity, not exact)">≈</a></span>        return err</div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L295-L306" title="origin lines 295–306">↗</a></span>    }</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L295-L298" title="origin lines 295–298">↗</a></span>    }</div>
 <div class="purge"><span class="mk"></span>    if err := ann.sanityCheck(); err != nil {</div>
 <div class="purge"><span class="mk"></span>        return err</div>
 <div class="purge"><span class="mk"></span>    }</div>
-<div class="purge"><span class="mk"></span>    if hash := types.CalcUncleHash(ann.Block.Uncles()); hash != ann.Block.UncleHash() {</div>
-<div class="purge"><span class="mk"></span>        log.Warn("Propagated block has invalid uncles", "have", hash, "exp", ann.Block.UncleHash())</div>
-<div class="purge"><span class="mk"></span>        return nil // TODO(karalabe): return error eventually, but wait a few releases</div>
+<div class="fork"><span class="mk"></span>    // Bound what the body may expand into. Decoding into rlp.RawList only counts</div>
+<div class="fork"><span class="mk"></span>    // the items, so this runs before any transaction or uncle is materialized.</div>
+<div class="fork"><span class="mk"></span>    if txs := ann.Block.Transactions.Len(); txs &gt; maxBlockTransactions {</div>
+<div class="fork"><span class="mk"></span>        return fmt.Errorf("too many transactions in propagated block: %d &gt; %d", txs, maxBlockTransactions)</div>
+<div class="fork"><span class="mk"></span>    }</div>
+<div class="fork"><span class="mk"></span>    if uncles := ann.Block.Uncles.Len(); uncles &gt; maxBlockUncles {</div>
+<div class="fork"><span class="mk"></span>        return fmt.Errorf("too many uncles in propagated block: %d &gt; %d", uncles, maxBlockUncles)</div>
+<div class="fork"><span class="mk"></span>    }</div>
+<div class="fork"><span class="mk"></span>    // Check the body against the header on the encoded form, so a block that is</div>
+<div class="fork"><span class="mk"></span>    // not what it claims to be is dropped without being materialized either.</div>
+<div class="fork"><span class="mk"></span>    header := ann.Block.Header</div>
+<div class="fork"><span class="mk"></span>    roots := hashBodyParts([]BlockBody{ann.Block.body()})</div>
+<div class="fork"><span class="mk"></span>    if hash := roots.UncleHashes[0]; hash != header.UncleHash {</div>
+<div class="purge adapted"><span class="mk"><a class="src approx" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L300" title="closest match — origin line 300 (inferred by similarity, not exact)">≈</a></span>        log.Warn("Propagated block has invalid uncles", "have", hash, "exp", header.UncleHash)</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L301-L302" title="origin lines 301–302">↗</a></span>        return nil // TODO(karalabe): return error eventually, but wait a few releases</div>
 <div class="purge"><span class="mk"></span>    }</div>
-<div class="purge"><span class="mk"></span>    if hash := types.DeriveSha(ann.Block.Transactions(), trie.NewStackTrie(nil)); hash != ann.Block.TxHash() {</div>
-<div class="purge"><span class="mk"></span>        log.Warn("Propagated block has invalid body", "have", hash, "exp", ann.Block.TxHash())</div>
-<div class="purge"><span class="mk"></span>        return nil // TODO(karalabe): return error eventually, but wait a few releases</div>
+<div class="fork"><span class="mk"></span>    if hash := roots.TransactionRoots[0]; hash != header.TxHash {</div>
+<div class="purge adapted"><span class="mk"><a class="src approx" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L304" title="closest match — origin line 304 (inferred by similarity, not exact)">≈</a></span>        log.Warn("Propagated block has invalid body", "have", hash, "exp", header.TxHash)</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L305-L306" title="origin lines 305–306">↗</a></span>        return nil // TODO(karalabe): return error eventually, but wait a few releases</div>
 <div class="purge"><span class="mk"></span>    }</div>
-<div class="purge adapted"><span class="mk"><a class="src approx" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L307" title="closest match — origin line 307 (inferred by similarity, not exact)">≈</a></span>    ann.Block.ReceivedAt = time.Now()</div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L308" title="origin line 308">↗</a></span>    ann.Block.ReceivedFrom = peer</div>
+<div class="fork"><span class="mk"></span>    // Bounded and self-consistent, so it is safe to materialize now.</div>
+<div class="fork"><span class="mk"></span>    txs, err := ann.Block.Transactions.Items()</div>
+<div class="fork"><span class="mk"></span>    if err != nil {</div>
+<div class="fork"><span class="mk"></span>        return fmt.Errorf("NewBlock: %w", err)</div>
+<div class="fork"><span class="mk"></span>    }</div>
+<div class="fork"><span class="mk"></span>    uncles, err := ann.Block.Uncles.Items()</div>
+<div class="fork"><span class="mk"></span>    if err != nil {</div>
+<div class="fork"><span class="mk"></span>        return fmt.Errorf("NewBlock: %w", err)</div>
+<div class="fork"><span class="mk"></span>    }</div>
+<div class="fork"><span class="mk"></span>    block := types.NewBlockWithHeader(header).WithBody(types.Body{Transactions: txs, Uncles: uncles})</div>
+<div class="fork"><span class="mk"></span>    block.ReceivedAt = time.Now()</div>
+<div class="fork"><span class="mk"></span>    block.ReceivedFrom = peer</div>
 <div class="blank"><span class="mk"></span> </div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L310-L311" title="origin lines 310–311">↗</a></span>    // Mark the peer as owning the block</div>
-<div class="purge"><span class="mk"></span>    peer.markBlock(ann.Block.Hash())</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L310" title="origin line 310">↗</a></span>    // Mark the peer as owning the block</div>
+<div class="purge adapted"><span class="mk"><a class="src approx" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L311" title="closest match — origin line 311 (inferred by similarity, not exact)">≈</a></span>    peer.markBlock(block.Hash())</div>
 <div class="blank"><span class="mk"></span> </div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L313-L314" title="origin lines 313–314">↗</a></span>    return backend.Handle(peer, ann)</div>
-<div class="purge"><span class="mk"></span>}</div>
+<div class="fork"><span class="mk"></span>    return backend.Handle(peer, &amp;NewBlockPacket{Block: block, TD: ann.TD})</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L314" title="origin line 314">↗</a></span>}</div>
 </div></div>
 
 <details>
-<summary>core-geth validation — +3 -3</summary>
+<summary>core-geth validation — +34 -12</summary>
 
 | | |
 |---|---|
@@ -1309,26 +1331,66 @@
 
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/core-geth/eth/protocols/eth/handlers.go</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gi">+++ b/etc/eth/protocols/eth/handlers_pow.go</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -1,8 +1,8 @@</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -1,25 +1,47 @@</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gd">-func handleNewBlock(backend Backend, msg Decoder, peer *Peer) error {</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gi">+func handleNewBlockPow(backend Backend, msg Decoder, peer *Peer) error {</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>   // Retrieve and decode the propagated block
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span>   ann := new(NewBlockPacket)
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w"> </span>   if err := msg.Decode(ann); err != nil {
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gd">-       return fmt.Errorf(&quot;%w: message %v: %v&quot;, errDecode, msg, err)</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gi">+       return err</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w"> </span>   }
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span>   if err := ann.sanityCheck(); err != nil {
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span>       return err
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="gu">@@ -15,7 +15,7 @@</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>       log.Warn(&quot;Propagated block has invalid body&quot;, &quot;have&quot;, hash, &quot;exp&quot;, ann.Block.TxHash())
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w"> </span>       return nil // TODO(karalabe): return error eventually, but wait a few releases
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w"> </span>   }
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gd">-   ann.Block.ReceivedAt = msg.Time()</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gi">+   ann.Block.ReceivedAt = time.Now()</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w"> </span>   ann.Block.ReceivedFrom = peer
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w"> </span>   // Mark the peer as owning the block
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gd">-   // Retrieve and decode the propagated block</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gd">-   ann := new(NewBlockPacket)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gi">+func handleNewBlockPow(backend Backend, msg Decoder, peer *Peer) error {</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gi">+   // Retrieve the propagated block, leaving its body encoded for now</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gi">+   ann := new(rawNewBlockPacket)</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w"> </span>   if err := msg.Decode(ann); err != nil {
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gd">-       return fmt.Errorf(&quot;%w: message %v: %v&quot;, errDecode, msg, err)</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gi">+       return err</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span>   }
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w"> </span>   if err := ann.sanityCheck(); err != nil {
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>       return err
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w"> </span>   }
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gd">-   if hash := types.CalcUncleHash(ann.Block.Uncles()); hash != ann.Block.UncleHash() {</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gd">-       log.Warn(&quot;Propagated block has invalid uncles&quot;, &quot;have&quot;, hash, &quot;exp&quot;, ann.Block.UncleHash())</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gi">+   // Bound what the body may expand into. Decoding into rlp.RawList only counts</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gi">+   // the items, so this runs before any transaction or uncle is materialized.</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="gi">+   if txs := ann.Block.Transactions.Len(); txs &gt; maxBlockTransactions {</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gi">+       return fmt.Errorf(&quot;too many transactions in propagated block: %d &gt; %d&quot;, txs, maxBlockTransactions)</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gi">+   }</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="gi">+   if uncles := ann.Block.Uncles.Len(); uncles &gt; maxBlockUncles {</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="gi">+       return fmt.Errorf(&quot;too many uncles in propagated block: %d &gt; %d&quot;, uncles, maxBlockUncles)</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="gi">+   }</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="gi">+   // Check the body against the header on the encoded form, so a block that is</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="gi">+   // not what it claims to be is dropped without being materialized either.</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="gi">+   header := ann.Block.Header</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="gi">+   roots := hashBodyParts([]BlockBody{ann.Block.body()})</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="gi">+   if hash := roots.UncleHashes[0]; hash != header.UncleHash {</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="gi">+       log.Warn(&quot;Propagated block has invalid uncles&quot;, &quot;have&quot;, hash, &quot;exp&quot;, header.UncleHash)</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w"> </span>       return nil // TODO(karalabe): return error eventually, but wait a few releases
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w"> </span>   }
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="gd">-   if hash := types.DeriveSha(ann.Block.Transactions(), trie.NewStackTrie(nil)); hash != ann.Block.TxHash() {</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="gd">-       log.Warn(&quot;Propagated block has invalid body&quot;, &quot;have&quot;, hash, &quot;exp&quot;, ann.Block.TxHash())</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="gi">+   if hash := roots.TransactionRoots[0]; hash != header.TxHash {</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="gi">+       log.Warn(&quot;Propagated block has invalid body&quot;, &quot;have&quot;, hash, &quot;exp&quot;, header.TxHash)</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w"> </span>       return nil // TODO(karalabe): return error eventually, but wait a few releases
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="w"> </span>   }
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="gd">-   ann.Block.ReceivedAt = msg.Time()</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="gd">-   ann.Block.ReceivedFrom = peer</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="gi">+   // Bounded and self-consistent, so it is safe to materialize now.</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="gi">+   txs, err := ann.Block.Transactions.Items()</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="gi">+   if err != nil {</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="gi">+       return fmt.Errorf(&quot;NewBlock: %w&quot;, err)</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="gi">+   }</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="gi">+   uncles, err := ann.Block.Uncles.Items()</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="gi">+   if err != nil {</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="gi">+       return fmt.Errorf(&quot;NewBlock: %w&quot;, err)</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="gi">+   }</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="gi">+   block := types.NewBlockWithHeader(header).WithBody(types.Body{Transactions: txs, Uncles: uncles})</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="gi">+   block.ReceivedAt = time.Now()</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="gi">+   block.ReceivedFrom = peer</span>
+<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>
+<a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="w"> </span>   // Mark the peer as owning the block
+<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="gd">-   peer.markBlock(ann.Block.Hash())</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="gi">+   peer.markBlock(block.Hash())</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>
+<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="gd">-   return backend.Handle(peer, ann)</span>
+<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="gi">+   return backend.Handle(peer, &amp;NewBlockPacket{Block: block, TD: ann.TD})</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="w"> </span>}
 </code></pre></div>
 
 </details>

@@ -926,10 +926,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#eth-protocol-1826-documented" class="md-nav__link">
+  <a href="#eth-protocol-2130-documented" class="md-nav__link">
     <span class="md-ellipsis">
       
-        eth Protocol — 18/26 documented
+        eth Protocol — 21/30 documented
       
     </span>
   </a>
@@ -937,10 +937,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#eth-service-1313-documented" class="md-nav__link">
+  <a href="#eth-service-1414-documented" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Eth Service — 13/13 documented
+        Eth Service — 14/14 documented
       
     </span>
   </a>
@@ -1446,10 +1446,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#eth-protocol-1826-documented" class="md-nav__link">
+  <a href="#eth-protocol-2130-documented" class="md-nav__link">
     <span class="md-ellipsis">
       
-        eth Protocol — 18/26 documented
+        eth Protocol — 21/30 documented
       
     </span>
   </a>
@@ -1457,10 +1457,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#eth-service-1313-documented" class="md-nav__link">
+  <a href="#eth-service-1414-documented" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Eth Service — 13/13 documented
+        Eth Service — 14/14 documented
       
     </span>
   </a>
@@ -1556,11 +1556,11 @@ against upstream, grouped by subsystem, so nothing the fork touched can hide.</p
 <tbody>
 <tr>
 <td>Files touched vs upstream</td>
-<td style="text-align: right;">180</td>
+<td style="text-align: right;">185</td>
 </tr>
 <tr>
 <td>Documented in the wiki</td>
-<td style="text-align: right;">142</td>
+<td style="text-align: right;">146</td>
 </tr>
 <tr>
 <td>Undocumented — production code</td>
@@ -1568,7 +1568,7 @@ against upstream, grouped by subsystem, so nothing the fork touched can hide.</p
 </tr>
 <tr>
 <td>Undocumented — tests</td>
-<td style="text-align: right;">4</td>
+<td style="text-align: right;">5</td>
 </tr>
 <tr>
 <td>Undocumented — fixtures/data</td>
@@ -1597,7 +1597,7 @@ against upstream, grouped by subsystem, so nothing the fork touched can hide.</p
 <tbody>
 <tr>
 <td>upstream pre-purge</td>
-<td style="text-align: right;">6754</td>
+<td style="text-align: right;">6847</td>
 </tr>
 <tr>
 <td>upstream current</td>
@@ -1605,7 +1605,7 @@ against upstream, grouped by subsystem, so nothing the fork touched can hide.</p
 </tr>
 <tr>
 <td>common (in both)</td>
-<td style="text-align: right;">373</td>
+<td style="text-align: right;">419</td>
 </tr>
 <tr>
 <td>core-geth</td>
@@ -1613,15 +1613,15 @@ against upstream, grouped by subsystem, so nothing the fork touched can hide.</p
 </tr>
 <tr>
 <td>≈ adapted from upstream/core-geth (inferred)</td>
-<td style="text-align: right;">583</td>
+<td style="text-align: right;">596</td>
 </tr>
 <tr>
 <td><strong>fork-only</strong></td>
-<td style="text-align: right;"><strong>743</strong></td>
+<td style="text-align: right;"><strong>774</strong></td>
 </tr>
 <tr>
 <td>total</td>
-<td style="text-align: right;">8940</td>
+<td style="text-align: right;">9123</td>
 </tr>
 </tbody>
 </table>
@@ -2007,7 +2007,7 @@ the rest — the adapted count is a heuristic, shown separately so it isn't mist
 </tr>
 </tbody>
 </table>
-<h2 id="eth-protocol-1826-documented">eth Protocol — 18/26 documented<a class="headerlink" href="#eth-protocol-1826-documented" title="Permanent link">&para;</a></h2>
+<h2 id="eth-protocol-2130-documented">eth Protocol — 21/30 documented<a class="headerlink" href="#eth-protocol-2130-documented" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -2108,6 +2108,11 @@ the rest — the adapted count is a heuristic, shown separately so it isn't mist
 <td style="text-align: center;">✅</td>
 </tr>
 <tr>
+<td><code>eth/protocols/eth/handler_pow_test.go</code></td>
+<td>test</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
 <td><code>eth/protocols/eth/handlers_pow.go</code></td>
 <td>code</td>
 <td style="text-align: center;">✅</td>
@@ -2147,9 +2152,24 @@ the rest — the adapted count is a heuristic, shown separately so it isn't mist
 <td>code</td>
 <td style="text-align: center;">✅</td>
 </tr>
+<tr>
+<td><code>eth/protocols/eth/protocol_pow_test.go</code></td>
+<td>test</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td><code>eth/protocols/eth/receipt_pow.go</code></td>
+<td>code</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td><code>eth/protocols/eth/receipt_pow_test.go</code></td>
+<td>test</td>
+<td style="text-align: center;">—</td>
+</tr>
 </tbody>
 </table>
-<h2 id="eth-service-1313-documented">Eth Service — 13/13 documented<a class="headerlink" href="#eth-service-1313-documented" title="Permanent link">&para;</a></h2>
+<h2 id="eth-service-1414-documented">Eth Service — 14/14 documented<a class="headerlink" href="#eth-service-1414-documented" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -2197,6 +2217,11 @@ the rest — the adapted count is a heuristic, shown separately so it isn't mist
 <tr>
 <td><code>eth/handler_eth.go</code></td>
 <td>code</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td><code>eth/handler_eth_pow_test.go</code></td>
+<td>test</td>
 <td style="text-align: center;">✅</td>
 </tr>
 <tr>

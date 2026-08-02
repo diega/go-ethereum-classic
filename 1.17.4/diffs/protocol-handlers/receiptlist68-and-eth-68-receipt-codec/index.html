@@ -19,7 +19,7 @@
     
     
       
-        <title>handleReceiptsPoW - Go Ethereum Classic — Fork Documentation</title>
+        <title>ReceiptList68 and eth/68 receipt codec - Go Ethereum Classic — Fork Documentation</title>
       
     
     
@@ -85,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#handlereceiptspow" class="md-skip">
+        <a href="#receiptlist68-and-eth68-receipt-codec" class="md-skip">
           Skip to content
         </a>
       
@@ -125,7 +125,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              handleReceiptsPoW
+              ReceiptList68 and eth/68 receipt codec
             
           </span>
         </div>
@@ -1238,7 +1238,7 @@
   
 
 
-<h1 id="handlereceiptspow">handleReceiptsPoW<a class="headerlink" href="#handlereceiptspow" title="Permanent link">&para;</a></h1>
+<h1 id="receiptlist68-and-eth68-receipt-codec">ReceiptList68 and eth/68 receipt codec<a class="headerlink" href="#receiptlist68-and-eth68-receipt-codec" title="Permanent link">&para;</a></h1>
 <table>
 <thead>
 <tr>
@@ -1250,94 +1250,34 @@
 <tbody>
 <tr>
 <td>File</td>
-<td><code>eth/protocols/eth/handlers.go</code></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handlers_pow.go#L129-L151"><code>handlers_pow.go</code></a></td>
+<td><code>eth/protocols/eth/receipt.go</code></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/receipt_pow.go#L185-L190"><code>receipt_pow.go</code></a></td>
 </tr>
 <tr>
 <td>Symbol</td>
-<td><code>handleReceipts</code></td>
-<td><code>handleReceiptsPoW</code></td>
+<td><code>ReceiptList68</code></td>
+<td><code>ReceiptList68</code></td>
 </tr>
 <tr>
 <td>Ref</td>
-<td><a href="https://github.com/ethereum/go-ethereum/commit/f4d53133f6e4b13f0dbcfef3bc45e9650d863b73" title="consensus, cmd, core, eth: remove support for non-merge mode of operation (#29169)"><code>f4d53133f</code></a><code>~1</code></td>
+<td><a href="https://github.com/ethereum/go-ethereum/commit/723aae2b4e77af7b2a1173280a05382c739ca4e1" title="eth/protocols/eth: drop protocol version eth/68 (#33511)"><code>723aae2b4</code></a><code>~1</code></td>
 <td><code>etc/v1.17.4-full-node</code></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>The wire decode into ReceiptsPacket (ReceiptsResponse = []types.Receipts) is byte-identical to pre-purge — each receipt parsed from the WITH-bloom network form — as is the DeriveSha metadata. It differs from pre-purge only at the dispatch line: pre-purge passed res.ReceiptsResponse (structs) straight through, but upstream v1.17.4's downloader (inherited unchanged, fetchResult.Receipts is rlp.RawValue) stores receipts as storage-RLP, and every receipt handler encodes to that form at this boundary — the eth/69 path does so via dispatchReceipts -&gt; ReceiptList.EncodeForStorage. handleReceiptsPoW uses types.EncodeBlockReceiptLists for the same step (the encoder the downloader's own DeliverReceipts tests feed in). So it matches the fork's receipt-handler architecture, not a one-off; the eth/68 wire is with-bloom (network) while storage is bloom-less, so a decode+re-encode is intrinsic — the same network-&gt;storage conversion pre-purge did later, inside InsertReceiptChain, which v1.17.4 moved to the handler layer.</p>
+<p>Byte-for-byte revival of the whole eth/68 half of upstream's receipt.go as it stood right before #33511 deleted it: maxReceiptSize, Receipt.decode68 / decodeDatabase / decodeInnerList / encodeForStorage / encodeForNetwork68, the receiptListBuffers scratch struct with initBuffers and its encodeForStorage, ReceiptList68 with NewReceiptList68 / setBuffers / EncodeForStorage / Derivable / DecodeRLP / EncodeRLP, and blockReceiptsToNetwork68. The eth/69 halves (decode69, encodeForNetwork69, ReceiptList69) are NOT revived — v1.17.4 carries their successors in receipt.go. Shared helpers are reused from that file rather than duplicated: newReceipt, Receipt.bloom, Receipt.encodeForHash, newDerivableRawList and txTypesInBody. Exactly two deviations from the source, both forced by later upstream refactors: (1) Derivable calls encodeForHash(&amp;rl.buf.bloom, outbuf) because #33153 (eth/70) changed that method's parameter from <em>receiptListBuffers to </em>[6]byte; (2) the setBuffers doc comment no longer says "implements ReceiptsList", since that type constraint was removed along with the generic packet. Note this leaves Receipt.decodeInnerList (revived, flag driven) alongside the current Receipt.decode in receipt.go (upstream, eth/69-only, inlined by #33153) — near-duplicate parsers, accepted so that no upstream file is touched. Covered by TestReceiptList68 in receipt_pow_test.go, itself a byte-for-byte revival sharing the receiptsTests fixture still present in the upstream receipt_test.go.</p>
 </blockquote>
 <h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
-<div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-adapted">≈ adapted (origin inferred by similarity)</span><span class="l-fork">fork-only</span></div>
+<div class="tw-legend"><span class="l-purge">pre-purge</span></div>
 <div class="tw-code"><div class="tw-inner">
-<div class="fork"><span class="mk"></span>// handleReceiptsPoW handles a batch of receipts arriving from an ETH68 (PoW) peer.</div>
-<div class="fork"><span class="mk"></span>func handleReceiptsPoW(backend Backend, msg Decoder, peer *Peer) error {</div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L366-L368" title="origin lines 366–368">↗</a></span>    // A batch of receipts arrived to one of our previous requests</div>
-<div class="purge"><span class="mk"></span>    res := new(ReceiptsPacket)</div>
-<div class="purge"><span class="mk"></span>    if err := msg.Decode(res); err != nil {</div>
-<div class="fork"><span class="mk"></span>        return err</div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L370-L374" title="origin lines 370–374">↗</a></span>    }</div>
-<div class="purge"><span class="mk"></span>    metadata := func() interface{} {</div>
-<div class="purge"><span class="mk"></span>        hasher := trie.NewStackTrie(nil)</div>
-<div class="purge"><span class="mk"></span>        hashes := make([]common.Hash, len(res.ReceiptsResponse))</div>
-<div class="purge"><span class="mk"></span>        for i, receipt := range res.ReceiptsResponse {</div>
-<div class="purge adapted"><span class="mk"><a class="src approx" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L375" title="closest match — origin line 375 (inferred by similarity, not exact)">≈</a></span>            hashes[i] = types.DeriveSha(receipt, hasher)</div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L376-L378" title="origin lines 376–378">↗</a></span>        }</div>
-<div class="purge"><span class="mk"></span>        return hashes</div>
-<div class="purge"><span class="mk"></span>    }</div>
-<div class="fork"><span class="mk"></span>    // Re-encode to the storage form the downloader consumes.</div>
-<div class="fork"><span class="mk"></span>    enc := ReceiptsRLPResponse(types.EncodeBlockReceiptLists([]types.Receipts(res.ReceiptsResponse)))</div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L379-L381" title="origin lines 379–381">↗</a></span>    return peer.dispatchResponse(&amp;Response{</div>
-<div class="purge"><span class="mk"></span>        id:   res.RequestId,</div>
-<div class="purge"><span class="mk"></span>        code: ReceiptsMsg,</div>
-<div class="fork"><span class="mk"></span>        Res:  &amp;enc,</div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L383-L384" title="origin lines 383–384">↗</a></span>    }, metadata)</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/receipt.go#L266-L271" title="origin lines 266–271">↗</a></span>// ReceiptList68 is a block receipt list as downloaded by eth/68.</div>
+<div class="purge"><span class="mk"></span>// This also implements types.DerivableList for validation purposes.</div>
+<div class="purge"><span class="mk"></span>type ReceiptList68 struct {</div>
+<div class="purge"><span class="mk"></span>    buf   *receiptListBuffers</div>
+<div class="purge"><span class="mk"></span>    items rlp.RawList[Receipt]</div>
 <div class="purge"><span class="mk"></span>}</div>
 </div></div>
-
-<details>
-<summary>core-geth validation — +7 -4</summary>
-
-| | |
-|---|---|
-| File | [`handlers.go`](https://github.com/etclabscore/core-geth/blob/v1.12.20/eth/protocols/eth/handlers.go) |
-| Symbol | `handleReceipts` |
-| Ref | `v1.12.20` |
-
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/core-geth/eth/protocols/eth/handlers.go</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gi">+++ b/etc/eth/protocols/eth/handlers_pow.go</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -1,20 +1,23 @@</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gd">-func handleReceipts(backend Backend, msg Decoder, peer *Peer) error {</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gi">+// handleReceiptsPoW handles a batch of receipts arriving from an ETH68 (PoW) peer.</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gi">+func handleReceiptsPoW(backend Backend, msg Decoder, peer *Peer) error {</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span>   // A batch of receipts arrived to one of our previous requests
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w"> </span>   res := new(ReceiptsPacket)
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w"> </span>   if err := msg.Decode(res); err != nil {
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gd">-       return fmt.Errorf(&quot;%w: message %v: %v&quot;, errDecode, msg, err)</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gi">+       return err</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span>   }
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span>   metadata := func() interface{} {
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w"> </span>       hasher := trie.NewStackTrie(nil)
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w"> </span>       hashes := make([]common.Hash, len(res.ReceiptsResponse))
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w"> </span>       for i, receipt := range res.ReceiptsResponse {
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gd">-           hashes[i] = types.DeriveSha(types.Receipts(receipt), hasher)</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gi">+           hashes[i] = types.DeriveSha(receipt, hasher)</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w"> </span>       }
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w"> </span>       return hashes
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w"> </span>   }
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gi">+   // Re-encode to the storage form the downloader consumes.</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gi">+   enc := ReceiptsRLPResponse(types.EncodeBlockReceiptLists([]types.Receipts(res.ReceiptsResponse)))</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w"> </span>   return peer.dispatchResponse(&amp;Response{
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w"> </span>       id:   res.RequestId,
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w"> </span>       code: ReceiptsMsg,
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="gd">-       Res:  &amp;res.ReceiptsResponse,</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="gi">+       Res:  &amp;enc,</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w"> </span>   }, metadata)
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w"> </span>}
-</code></pre></div>
-
-</details>
 
 <p><a href="../../../subsystem-eth-protocol/">← eth Protocol</a></p>
 

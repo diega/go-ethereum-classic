@@ -19,7 +19,7 @@
     
     
       
-        <title>ReceiptsPacket - Go Ethereum Classic — Fork Documentation</title>
+        <title>handleReceipts68 - Go Ethereum Classic — Fork Documentation</title>
       
     
     
@@ -85,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#receiptspacket" class="md-skip">
+        <a href="#handlereceipts68" class="md-skip">
           Skip to content
         </a>
       
@@ -125,7 +125,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ReceiptsPacket
+              handleReceipts68
             
           </span>
         </div>
@@ -1238,7 +1238,7 @@
   
 
 
-<h1 id="receiptspacket">ReceiptsPacket<a class="headerlink" href="#receiptspacket" title="Permanent link">&para;</a></h1>
+<h1 id="handlereceipts68">handleReceipts68<a class="headerlink" href="#handlereceipts68" title="Permanent link">&para;</a></h1>
 <table>
 <thead>
 <tr>
@@ -1250,43 +1250,139 @@
 <tbody>
 <tr>
 <td>File</td>
-<td><code>eth/protocols/eth/protocol.go</code></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/protocol_pow.go#L119-L124"><code>protocol_pow.go</code></a></td>
+<td><code>eth/protocols/eth/handlers.go</code></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handlers_pow.go#L162-L206"><code>handlers_pow.go</code></a></td>
 </tr>
 <tr>
 <td>Symbol</td>
-<td><code>ReceiptsPacket</code></td>
-<td><code>ReceiptsPacket</code></td>
+<td><code>handleReceipts</code></td>
+<td><code>handleReceipts68</code></td>
 </tr>
 <tr>
 <td>Ref</td>
-<td><a href="https://github.com/ethereum/go-ethereum/commit/f4d53133f6e4b13f0dbcfef3bc45e9650d863b73" title="consensus, cmd, core, eth: remove support for non-merge mode of operation (#29169)"><code>f4d53133f</code></a><code>~1</code></td>
+<td><a href="https://github.com/ethereum/go-ethereum/commit/723aae2b4e77af7b2a1173280a05382c739ca4e1" title="eth/protocols/eth: drop protocol version eth/68 (#33511)"><code>723aae2b4</code></a><code>~1</code></td>
 <td><code>etc/v1.17.4-full-node</code></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>{RequestId, ReceiptsResponse}, where ReceiptsResponse = []types.Receipts RLP-decodes each receipt in the WITH-bloom network form. This is the ETH68 receipts response; eth/69 replaced it with ReceiptsPacket69 (bloom-less rlp.RawList[*ReceiptList]).</p>
+<p>Revival of upstream's generic handleReceipts[L ReceiptsList], monomorphized at L=*ReceiptList68 (the only two lines that differ from the source: the signature and <code>new(ReceiptsPacket68)</code>). Everything else — the tracker.Fulfil call, the shared receiptListBuffers assignment, the DeriveSha metadata closure and the EncodeForStorage loop — is verbatim. This restores the three protections the purge1 revival lacked: the response is matched against its request before the receipts are materialized (rlp.RawList only counts items on decode), the item count is capped at the number requested via tracker's ErrTooManyItems, and an unsolicited or oversized response now returns an error that drops the peer instead of being silently discarded by dispatchResponse. Logs are never decoded into types.Log on the network path.</p>
 </blockquote>
 <h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
-<div class="tw-legend"><span class="l-purge">pre-purge</span></div>
+<div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-cg">core-geth</span><span class="l-adapted">≈ adapted (origin inferred by similarity)</span><span class="l-fork">fork-only</span></div>
 <div class="tw-code"><div class="tw-inner">
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/protocol.go#L269-L274" title="origin lines 269–274">↗</a></span>// ReceiptsPacket is the network packet for block receipts distribution with</div>
-<div class="purge"><span class="mk"></span>// request ID wrapping.</div>
-<div class="purge"><span class="mk"></span>type ReceiptsPacket struct {</div>
-<div class="purge"><span class="mk"></span>    RequestId uint64</div>
-<div class="purge"><span class="mk"></span>    ReceiptsResponse</div>
+<div class="fork"><span class="mk"></span>func handleReceipts68(backend Backend, msg Decoder, peer *Peer) error {</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/handlers.go#L494" title="origin line 494">↗</a></span>    // A batch of receipts arrived to one of our previous requests</div>
+<div class="coregeth adapted"><span class="mk"><a class="src approx" href="https://github.com/etclabscore/core-geth/blob/v1.12.20/eth/protocols/eth/handlers.go#L367" title="closest match — origin line 367 (inferred by similarity, not exact)">≈</a></span>    res := new(ReceiptsPacket68)</div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/handlers.go#L496-L498" title="origin lines 496–498">↗</a></span>    if err := msg.Decode(res); err != nil {</div>
+<div class="purge"><span class="mk"></span>        return err</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/handlers.go#L500-L503" title="origin lines 500–503">↗</a></span>    tresp := tracker.Response{ID: res.RequestId, MsgCode: ReceiptsMsg, Size: res.List.Len()}</div>
+<div class="purge"><span class="mk"></span>    if err := peer.tracker.Fulfil(tresp); err != nil {</div>
+<div class="purge"><span class="mk"></span>        return fmt.Errorf("Receipts: %w", err)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/handlers.go#L505-L514" title="origin lines 505–514">↗</a></span>    // Assign temporary hashing buffer to each list item, the same buffer is shared</div>
+<div class="purge"><span class="mk"></span>    // between all receipt list instances.</div>
+<div class="purge"><span class="mk"></span>    receiptLists, err := res.List.Items()</div>
+<div class="purge"><span class="mk"></span>    if err != nil {</div>
+<div class="purge"><span class="mk"></span>        return fmt.Errorf("Receipts: %w", err)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    buffers := new(receiptListBuffers)</div>
+<div class="purge"><span class="mk"></span>    for i := range receiptLists {</div>
+<div class="purge"><span class="mk"></span>        receiptLists[i].setBuffers(buffers)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/cee751a1edc34a3f04be13e794e504f59ac11fc0/eth/protocols/eth/handlers.go#L516-L537" title="origin lines 516–537">↗</a></span>    metadata := func() interface{} {</div>
+<div class="purge"><span class="mk"></span>        hasher := trie.NewStackTrie(nil)</div>
+<div class="purge"><span class="mk"></span>        hashes := make([]common.Hash, len(receiptLists))</div>
+<div class="purge"><span class="mk"></span>        for i := range receiptLists {</div>
+<div class="purge"><span class="mk"></span>            hashes[i] = types.DeriveSha(receiptLists[i].Derivable(), hasher)</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        return hashes</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    var enc ReceiptsRLPResponse</div>
+<div class="purge"><span class="mk"></span>    for i := range receiptLists {</div>
+<div class="purge"><span class="mk"></span>        encReceipts, err := receiptLists[i].EncodeForStorage()</div>
+<div class="purge"><span class="mk"></span>        if err != nil {</div>
+<div class="purge"><span class="mk"></span>            return fmt.Errorf("Receipts: invalid list %d: %v", i, err)</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        enc = append(enc, encReceipts)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    return peer.dispatchResponse(&amp;Response{</div>
+<div class="purge"><span class="mk"></span>        id:   res.RequestId,</div>
+<div class="purge"><span class="mk"></span>        code: ReceiptsMsg,</div>
+<div class="purge"><span class="mk"></span>        Res:  &amp;enc,</div>
+<div class="purge"><span class="mk"></span>    }, metadata)</div>
 <div class="purge"><span class="mk"></span>}</div>
 </div></div>
 
 <details>
-<summary>core-geth validation — **Identical** ✅</summary>
+<summary>core-geth validation — +32 -7</summary>
 
 | | |
 |---|---|
-| File | [`protocol.go`](https://github.com/etclabscore/core-geth/blob/v1.12.20/eth/protocols/eth/protocol.go) |
-| Symbol | `ReceiptsPacket` |
+| File | [`handlers.go`](https://github.com/etclabscore/core-geth/blob/v1.12.20/eth/protocols/eth/handlers.go) |
+| Symbol | `handleReceipts` |
 | Ref | `v1.12.20` |
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/core-geth/eth/protocols/eth/handlers.go</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gi">+++ b/etc/eth/protocols/eth/handlers_pow.go</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -1,20 +1,45 @@</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gd">-func handleReceipts(backend Backend, msg Decoder, peer *Peer) error {</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gi">+func handleReceipts68(backend Backend, msg Decoder, peer *Peer) error {</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w"> </span>   // A batch of receipts arrived to one of our previous requests
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gd">-   res := new(ReceiptsPacket)</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gi">+   res := new(ReceiptsPacket68)</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w"> </span>   if err := msg.Decode(res); err != nil {
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gd">-       return fmt.Errorf(&quot;%w: message %v: %v&quot;, errDecode, msg, err)</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gi">+       return err</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span>   }
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="gi">+</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="gi">+   tresp := tracker.Response{ID: res.RequestId, MsgCode: ReceiptsMsg, Size: res.List.Len()}</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="gi">+   if err := peer.tracker.Fulfil(tresp); err != nil {</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gi">+       return fmt.Errorf(&quot;Receipts: %w&quot;, err)</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gi">+   }</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gi">+</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gi">+   // Assign temporary hashing buffer to each list item, the same buffer is shared</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gi">+   // between all receipt list instances.</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="gi">+   receiptLists, err := res.List.Items()</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gi">+   if err != nil {</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gi">+       return fmt.Errorf(&quot;Receipts: %w&quot;, err)</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="gi">+   }</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="gi">+   buffers := new(receiptListBuffers)</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="gi">+   for i := range receiptLists {</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="gi">+       receiptLists[i].setBuffers(buffers)</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="gi">+   }</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="gi">+</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w"> </span>   metadata := func() interface{} {
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w"> </span>       hasher := trie.NewStackTrie(nil)
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="gd">-       hashes := make([]common.Hash, len(res.ReceiptsResponse))</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="gd">-       for i, receipt := range res.ReceiptsResponse {</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="gd">-           hashes[i] = types.DeriveSha(types.Receipts(receipt), hasher)</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="gi">+       hashes := make([]common.Hash, len(receiptLists))</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="gi">+       for i := range receiptLists {</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="gi">+           hashes[i] = types.DeriveSha(receiptLists[i].Derivable(), hasher)</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="w"> </span>       }
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w"> </span>       return hashes
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="w"> </span>   }
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="gi">+   var enc ReceiptsRLPResponse</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="gi">+   for i := range receiptLists {</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="gi">+       encReceipts, err := receiptLists[i].EncodeForStorage()</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="gi">+       if err != nil {</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="gi">+           return fmt.Errorf(&quot;Receipts: invalid list %d: %v&quot;, i, err)</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="gi">+       }</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="gi">+       enc = append(enc, encReceipts)</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="gi">+   }</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="w"> </span>   return peer.dispatchResponse(&amp;Response{
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="w"> </span>       id:   res.RequestId,
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="w"> </span>       code: ReceiptsMsg,
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="gd">-       Res:  &amp;res.ReceiptsResponse,</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="gi">+       Res:  &amp;enc,</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="w"> </span>   }, metadata)
+<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="w"> </span>}
+</code></pre></div>
 
 </details>
 

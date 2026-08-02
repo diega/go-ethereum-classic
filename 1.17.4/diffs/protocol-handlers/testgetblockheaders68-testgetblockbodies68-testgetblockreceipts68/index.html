@@ -9,28 +9,24 @@
       
       
       
-        <link rel="prev" href="../subsystem-sync-and-downloader/">
-      
-      
-        <link rel="next" href="../subsystem-eth-service/">
       
       
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>eth Protocol - Go Ethereum Classic — Fork Documentation</title>
+        <title>TestGetBlockHeaders68 / TestGetBlockBodies68 / TestGetBlockReceipts68 - Go Ethereum Classic — Fork Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,9 +45,9 @@
       
     
     
-      <link rel="stylesheet" href="../stylesheets/etc.css">
+      <link rel="stylesheet" href="../../../stylesheets/etc.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -89,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#eth-protocol" class="md-skip">
+        <a href="#testgetblockheaders68-testgetblockbodies68-testgetblockreceipts68" class="md-skip">
           Skip to content
         </a>
       
@@ -109,7 +105,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Go Ethereum Classic — Fork Documentation" class="md-header__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
+    <a href="../../.." title="Go Ethereum Classic — Fork Documentation" class="md-header__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -129,7 +125,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              eth Protocol
+              TestGetBlockHeaders68 / TestGetBlockBodies68 / TestGetBlockReceipts68
             
           </span>
         </div>
@@ -247,7 +243,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Go Ethereum Classic — Fork Documentation" class="md-nav__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
+    <a href="../../.." title="Go Ethereum Classic — Fork Documentation" class="md-nav__button md-logo" aria-label="Go Ethereum Classic — Fork Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -277,7 +273,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -358,7 +354,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fork-architecture/" class="md-nav__link">
+      <a href="../../../fork-architecture/" class="md-nav__link">
         
   
   
@@ -386,7 +382,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../upstream-purges/" class="md-nav__link">
+      <a href="../../../upstream-purges/" class="md-nav__link">
         
   
   
@@ -418,8 +414,6 @@
       
   
   
-    
-  
   
   
     
@@ -432,11 +426,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
@@ -457,7 +453,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -475,7 +471,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../code-changes/" class="md-nav__link">
+      <a href="../../../code-changes/" class="md-nav__link">
         
   
   
@@ -503,7 +499,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subsystem-consensus-and-ethash/" class="md-nav__link">
+      <a href="../../../subsystem-consensus-and-ethash/" class="md-nav__link">
         
   
   
@@ -531,7 +527,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subsystem-total-difficulty-td/" class="md-nav__link">
+      <a href="../../../subsystem-total-difficulty-td/" class="md-nav__link">
         
   
   
@@ -559,7 +555,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subsystem-core-and-evm/" class="md-nav__link">
+      <a href="../../../subsystem-core-and-evm/" class="md-nav__link">
         
   
   
@@ -587,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subsystem-sync-and-downloader/" class="md-nav__link">
+      <a href="../../../subsystem-sync-and-downloader/" class="md-nav__link">
         
   
   
@@ -612,37 +608,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    eth Protocol
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../subsystem-eth-protocol/" class="md-nav__link">
         
   
   
@@ -658,59 +627,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#revived-from-upstream-pre-purge" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🔄 Revived (from upstream pre-purge)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#in-place-modified-on-upstream" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ✏️ In-place (modified on upstream)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#new-fork-only" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🆕 New (fork-only)
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -723,7 +639,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subsystem-eth-service/" class="md-nav__link">
+      <a href="../../../subsystem-eth-service/" class="md-nav__link">
         
   
   
@@ -751,7 +667,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subsystem-miner/" class="md-nav__link">
+      <a href="../../../subsystem-miner/" class="md-nav__link">
         
   
   
@@ -779,7 +695,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subsystem-mess/" class="md-nav__link">
+      <a href="../../../subsystem-mess/" class="md-nav__link">
         
   
   
@@ -807,7 +723,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subsystem-rpc-and-api/" class="md-nav__link">
+      <a href="../../../subsystem-rpc-and-api/" class="md-nav__link">
         
   
   
@@ -835,7 +751,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subsystem-cli-config-and-genesis/" class="md-nav__link">
+      <a href="../../../subsystem-cli-config-and-genesis/" class="md-nav__link">
         
   
   
@@ -863,7 +779,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subsystem-build-and-meta/" class="md-nav__link">
+      <a href="../../../subsystem-build-and-meta/" class="md-nav__link">
         
   
   
@@ -891,7 +807,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../coverage/" class="md-nav__link">
+      <a href="../../../coverage/" class="md-nav__link">
         
   
   
@@ -919,7 +835,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fork-only/" class="md-nav__link">
+      <a href="../../../fork-only/" class="md-nav__link">
         
   
   
@@ -947,7 +863,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../extension-points/" class="md-nav__link">
+      <a href="../../../extension-points/" class="md-nav__link">
         
   
   
@@ -975,7 +891,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../version-comparison/" class="md-nav__link">
+      <a href="../../../version-comparison/" class="md-nav__link">
         
   
   
@@ -1064,7 +980,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ecip-1017-monetary-policy/" class="md-nav__link">
+      <a href="../../../ecip-1017-monetary-policy/" class="md-nav__link">
         
   
   
@@ -1092,7 +1008,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mess-artificial-finality/" class="md-nav__link">
+      <a href="../../../mess-artificial-finality/" class="md-nav__link">
         
   
   
@@ -1120,7 +1036,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../etc-forks/" class="md-nav__link">
+      <a href="../../../etc-forks/" class="md-nav__link">
         
   
   
@@ -1148,7 +1064,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../migrating-from-core-geth/" class="md-nav__link">
+      <a href="../../../migrating-from-core-geth/" class="md-nav__link">
         
   
   
@@ -1237,7 +1153,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../test-status/" class="md-nav__link">
+      <a href="../../../test-status/" class="md-nav__link">
         
   
   
@@ -1292,32 +1208,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#revived-from-upstream-pre-purge" class="md-nav__link">
+  <a href="#3-way-merge-purge-getc-upstream" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🔄 Revived (from upstream pre-purge)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#in-place-modified-on-upstream" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ✏️ In-place (modified on upstream)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#new-fork-only" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🆕 New (fork-only)
+        3-way merge — purge → getc ← upstream
       
     </span>
   </a>
@@ -1344,433 +1238,44 @@
   
 
 
-<h1 id="eth-protocol">eth Protocol<a class="headerlink" href="#eth-protocol" title="Permanent link">&para;</a></h1>
-<p>The eth/68 wire protocol: message types, handshake with TD exchange, peer handling, and the devp2p test suite.</p>
+<h1 id="testgetblockheaders68-testgetblockbodies68-testgetblockreceipts68">TestGetBlockHeaders68 / TestGetBlockBodies68 / TestGetBlockReceipts68<a class="headerlink" href="#testgetblockheaders68-testgetblockbodies68-testgetblockreceipts68" title="Permanent link">&para;</a></h1>
 <table>
 <thead>
 <tr>
-<th>Nature</th>
-<th style="text-align: right;">Count</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>🔄 Revived (from upstream pre-purge)</td>
-<td style="text-align: right;">36</td>
-</tr>
-<tr>
-<td>✏️ In-place (modified on upstream)</td>
-<td style="text-align: right;">9</td>
-</tr>
-<tr>
-<td>🆕 New (fork-only, no upstream pedigree)</td>
-<td style="text-align: right;">6</td>
-</tr>
-</tbody>
-</table>
-<h2 id="revived-from-upstream-pre-purge">🔄 Revived (from upstream pre-purge)<a class="headerlink" href="#revived-from-upstream-pre-purge" title="Permanent link">&para;</a></h2>
-<p>Code upstream deleted, transplanted back from the commit just before its removal.</p>
-<table>
-<thead>
-<tr>
-<th>Change</th>
-<th>Kind</th>
-<th>Origin</th>
-<th>Δ vs origin</th>
 <th></th>
+<th>Source (upstream pre-purge)</th>
+<th>Current</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>BlockBodiesResponse.Unpack</code></td>
-<td>symbol</td>
-<td>purge_msgdecode</td>
-<td><strong>+8 -10</strong></td>
-<td><a href="../diffs/protocol-types/blockbodiesresponse-unpack/">view</a></td>
+<td>File</td>
+<td><code>eth/protocols/eth/handler_test.go</code></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handler_pow_test.go"><code>handler_pow_test.go</code></a></td>
 </tr>
 <tr>
-<td><code>Chain.TD</code></td>
-<td>symbol</td>
-<td>purge4</td>
-<td>✅</td>
-<td><a href="../diffs/protocol-tests-ethtest/chain-td/">view</a></td>
+<td>Symbol</td>
+<td><code>TestGetBlockReceipts68</code></td>
+<td><code>TestGetBlockReceipts68</code></td>
 </tr>
 <tr>
-<td><code>ETH68 const + protocolLengths</code></td>
-<td>symbol</td>
-<td>purge_eth68</td>
-<td><strong>+1 -5</strong></td>
-<td><a href="../diffs/protocol-types/eth68-const-%2B-protocollengths/">view</a></td>
-</tr>
-<tr>
-<td><code>GetReceiptsPacket</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td>✅</td>
-<td><a href="../diffs/protocol-types/getreceiptspacket/">view</a></td>
-</tr>
-<tr>
-<td><code>NewBlockHashesPacket</code></td>
-<td>symbol</td>
-<td>purge_eth68</td>
-<td><strong>+1 -1</strong></td>
-<td><a href="../diffs/protocol-types/newblockhashespacket/">view</a></td>
-</tr>
-<tr>
-<td><code>NewBlockPacket</code></td>
-<td>symbol</td>
-<td>purge_eth68</td>
-<td><strong>+3 -1</strong></td>
-<td><a href="../diffs/protocol-types/newblockpacket/">view</a></td>
-</tr>
-<tr>
-<td><code>Peer.AsyncSendNewBlock</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+2 -2</strong></td>
-<td><a href="../diffs/protocol-peers/peer-asyncsendnewblock/">view</a></td>
-</tr>
-<tr>
-<td><code>Peer.AsyncSendNewBlockHash</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+2 -2</strong></td>
-<td><a href="../diffs/protocol-peers/peer-asyncsendnewblockhash/">view</a></td>
-</tr>
-<tr>
-<td><code>Peer.Handshake68PoW</code></td>
-<td>symbol</td>
-<td>purge_eth68</td>
-<td><strong>+16 -11</strong></td>
-<td><a href="../diffs/protocol-handshake/peer-handshake68pow/">view</a></td>
-</tr>
-<tr>
-<td><code>Peer.Head</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+4 -4</strong></td>
-<td><a href="../diffs/protocol-peers/peer-head/">view</a></td>
-</tr>
-<tr>
-<td><code>Peer.InitPoWExtension</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+10 -1</strong></td>
-<td><a href="../diffs/protocol-peers/peer-initpowextension/">view</a></td>
-</tr>
-<tr>
-<td><code>Peer.KnownBlock</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+1 -1</strong></td>
-<td><a href="../diffs/protocol-peers/peer-knownblock/">view</a></td>
-</tr>
-<tr>
-<td><code>Peer.ReplyReceiptsRLP</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td>✅</td>
-<td><a href="../diffs/protocol-peers/peer-replyreceiptsrlp/">view</a></td>
-</tr>
-<tr>
-<td><code>Peer.SendNewBlock</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+1 -1</strong></td>
-<td><a href="../diffs/protocol-peers/peer-sendnewblock/">view</a></td>
-</tr>
-<tr>
-<td><code>Peer.SendNewBlockHashes</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+1 -1</strong></td>
-<td><a href="../diffs/protocol-peers/peer-sendnewblockhashes/">view</a></td>
-</tr>
-<tr>
-<td><code>Peer.SetHead</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+4 -4</strong></td>
-<td><a href="../diffs/protocol-peers/peer-sethead/">view</a></td>
-</tr>
-<tr>
-<td><code>Peer.broadcastBlocksPoW</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+4 -4</strong></td>
-<td><a href="../diffs/protocol-peers/peer-broadcastblockspow/">view</a></td>
-</tr>
-<tr>
-<td><code>Peer.markBlock</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+1 -1</strong></td>
-<td><a href="../diffs/protocol-peers/peer-markblock/">view</a></td>
-</tr>
-<tr>
-<td><code>Peer.readStatus68</code></td>
-<td>symbol</td>
-<td>purge_eth68</td>
-<td><strong>+6 -0</strong></td>
-<td><a href="../diffs/protocol-handshake/peer-readstatus68/">view</a></td>
-</tr>
-<tr>
-<td><code>PoWPeerExtension</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+4 -0</strong></td>
-<td><a href="../diffs/protocol-peers/powpeerextension/">view</a></td>
-</tr>
-<tr>
-<td><code>ReceiptList68 and eth/68 receipt codec</code></td>
-<td>symbol</td>
-<td>purge_eth68</td>
-<td>✅</td>
-<td><a href="../diffs/protocol-handlers/receiptlist68-and-eth-68-receipt-codec/">view</a></td>
-</tr>
-<tr>
-<td><code>ReceiptsPacket68</code></td>
-<td>symbol</td>
-<td>purge_eth68</td>
-<td><strong>+3 -3</strong></td>
-<td><a href="../diffs/protocol-types/receiptspacket68/">view</a></td>
-</tr>
-<tr>
-<td><code>ReceiptsRLPPacket</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td>✅</td>
-<td><a href="../diffs/protocol-types/receiptsrlppacket/">view</a></td>
-</tr>
-<tr>
-<td><code>ServiceGetReceiptsQuery68</code></td>
-<td>symbol</td>
-<td>purge_eth68</td>
-<td><strong>+1 -0</strong></td>
-<td><a href="../diffs/protocol-handlers/servicegetreceiptsquery68/">view</a></td>
-</tr>
-<tr>
-<td><code>StatusPacket68</code></td>
-<td>symbol</td>
-<td>purge_eth68</td>
-<td><strong>+2 -1</strong></td>
-<td><a href="../diffs/protocol-types/statuspacket68/">view</a></td>
-</tr>
-<tr>
-<td><code>TestGetBlockHeaders68 / TestGetBlockBodies68 / TestGetBlockReceipts68</code></td>
-<td>symbol</td>
-<td>purge_eth68</td>
-<td><strong>+1 -1</strong></td>
-<td><a href="../diffs/protocol-handlers/testgetblockheaders68-testgetblockbodies68-testgetblockreceipts68/">view</a></td>
-</tr>
-<tr>
-<td><code>TestMessages68 / TestEmptyMessages68</code></td>
-<td>symbol</td>
-<td>purge_eth68</td>
-<td><strong>+2 -92</strong></td>
-<td><a href="../diffs/protocol-handlers/testmessages68-testemptymessages68/">view</a></td>
-</tr>
-<tr>
-<td><code>blockPropagation</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td>✅</td>
-<td><a href="../diffs/protocol-peers/blockpropagation/">view</a></td>
-</tr>
-<tr>
-<td><code>ethtest testdata</code></td>
-<td>file</td>
-<td>purge1</td>
-<td><strong>+22 -9</strong></td>
-<td><a href="../diffs/protocol-tests-ethtest/ethtest-testdata/">view</a></td>
-</tr>
-<tr>
-<td><code>handleGetReceipts68</code></td>
-<td>symbol</td>
-<td>purge_eth68</td>
-<td>✅</td>
-<td><a href="../diffs/protocol-handlers/handlegetreceipts68/">view</a></td>
-</tr>
-<tr>
-<td><code>handleNewBlockPow</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+34 -12</strong></td>
-<td><a href="../diffs/protocol-handlers/handlenewblockpow/">view</a></td>
-</tr>
-<tr>
-<td><code>handleNewBlockhashesPow</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+5 -2</strong></td>
-<td><a href="../diffs/protocol-handlers/handlenewblockhashespow/">view</a></td>
-</tr>
-<tr>
-<td><code>handleReceipts68</code></td>
-<td>symbol</td>
-<td>purge_eth68</td>
-<td><strong>+2 -2</strong></td>
-<td><a href="../diffs/protocol-handlers/handlereceipts68/">view</a></td>
-</tr>
-<tr>
-<td><code>peer PoW consts</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td><strong>+0 -12</strong></td>
-<td><a href="../diffs/protocol-peers/peer-pow-consts/">view</a></td>
-</tr>
-<tr>
-<td><code>peerSet.peerWithHighestTD</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td>✅</td>
-<td><a href="../diffs/peer-set/peerset-peerwithhighesttd/">view</a></td>
-</tr>
-<tr>
-<td><code>peerSet.peersWithoutBlock</code></td>
-<td>symbol</td>
-<td>purge1</td>
-<td>✅</td>
-<td><a href="../diffs/peer-set/peerset-peerswithoutblock/">view</a></td>
+<td>Ref</td>
+<td><a href="https://github.com/ethereum/go-ethereum/commit/723aae2b4e77af7b2a1173280a05382c739ca4e1" title="eth/protocols/eth: drop protocol version eth/68 (#33511)"><code>723aae2b4</code></a><code>~1</code></td>
+<td><code>etc/v1.17.4-full-node</code></td>
 </tr>
 </tbody>
 </table>
-<h2 id="in-place-modified-on-upstream">✏️ In-place (modified on upstream)<a class="headerlink" href="#in-place-modified-on-upstream" title="Permanent link">&para;</a></h2>
-<p>Upstream files the fork edits in place; the diff is against upstream <code>v1.17.4</code>.</p>
-<table>
-<thead>
-<tr>
-<th>Change</th>
-<th>Kind</th>
-<th>Origin</th>
-<th>Δ vs origin</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>cmd/devp2p/internal/ethtest/protocol.go</code></td>
-<td>file</td>
-<td>upstream v1.17.4</td>
-<td><strong>+2 -6</strong></td>
-<td><a href="../file-diffs/protocol-layer/cmd-devp2p-internal-ethtest-protocol-go/">view</a></td>
-</tr>
-<tr>
-<td><code>cmd/devp2p/internal/ethtest/snap.go</code></td>
-<td>file</td>
-<td>upstream v1.17.4</td>
-<td><strong>+15 -15</strong></td>
-<td><a href="../file-diffs/protocol-layer/cmd-devp2p-internal-ethtest-snap-go/">view</a></td>
-</tr>
-<tr>
-<td><code>eth/peerset.go</code></td>
-<td>file</td>
-<td>upstream v1.17.4</td>
-<td><strong>+1 -1</strong></td>
-<td><a href="../file-diffs/protocol-layer/eth-peerset-go/">view</a></td>
-</tr>
-<tr>
-<td><code>eth/protocols/eth/handler.go</code></td>
-<td>file</td>
-<td>upstream v1.17.4</td>
-<td><strong>+12 -4</strong></td>
-<td><a href="../file-diffs/protocol-layer/eth-protocols-eth-handler-go/">view</a></td>
-</tr>
-<tr>
-<td><code>eth/protocols/eth/handshake.go</code></td>
-<td>file</td>
-<td>upstream v1.17.4</td>
-<td><strong>+12 -1</strong></td>
-<td><a href="../file-diffs/protocol-layer/eth-protocols-eth-handshake-go/">view</a></td>
-</tr>
-<tr>
-<td><code>eth/protocols/eth/peer.go</code></td>
-<td>file</td>
-<td>upstream v1.17.4</td>
-<td><strong>+2 -0</strong></td>
-<td><a href="../file-diffs/protocol-layer/eth-protocols-eth-peer-go/">view</a></td>
-</tr>
-<tr>
-<td><code>ethtest conn.go</code></td>
-<td>file</td>
-<td>upstream v1.17.4</td>
-<td><strong>+18 -17</strong></td>
-<td><a href="../diffs/protocol-tests-ethtest/ethtest-conn-go/">view</a></td>
-</tr>
-<tr>
-<td><code>ethtest suite.go</code></td>
-<td>file</td>
-<td>upstream v1.17.4</td>
-<td><strong>+4 -1</strong></td>
-<td><a href="../diffs/protocol-tests-ethtest/ethtest-suite-go/">view</a></td>
-</tr>
-<tr>
-<td><code>ethtest suite_test.go</code></td>
-<td>file</td>
-<td>upstream v1.17.4</td>
-<td><strong>+16 -64</strong></td>
-<td><a href="../diffs/protocol-tests-ethtest/ethtest-suite_test-go/">view</a></td>
-</tr>
-</tbody>
-</table>
-<h2 id="new-fork-only">🆕 New (fork-only)<a class="headerlink" href="#new-fork-only" title="Permanent link">&para;</a></h2>
-<p>Files with no upstream pedigree — the highest-scrutiny changes.</p>
-<table>
-<thead>
-<tr>
-<th>Change</th>
-<th>Kind</th>
-<th>Origin</th>
-<th>Δ vs origin</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>GetProtocolVersions</code></td>
-<td>symbol</td>
-<td>—</td>
-<td>🆕</td>
-<td><a href="../diffs/protocol-types/getprotocolversions/">view</a></td>
-</tr>
-<tr>
-<td><code>eth/protocols/eth/handshake_etc_test.go</code></td>
-<td>file</td>
-<td>—</td>
-<td>🆕</td>
-<td><a href="../file-diffs/protocol-layer/eth-protocols-eth-handshake_etc_test-go/">view</a></td>
-</tr>
-<tr>
-<td><code>eth/protocols/eth/handshake_pow.go</code></td>
-<td>file</td>
-<td>—</td>
-<td>🆕</td>
-<td><a href="../file-diffs/protocol-layer/eth-protocols-eth-handshake_pow-go/">view</a></td>
-</tr>
-<tr>
-<td><code>eth/protocols/eth/protocol_etc_test.go</code></td>
-<td>file</td>
-<td>—</td>
-<td>🆕</td>
-<td><a href="../file-diffs/protocol-layer/eth-protocols-eth-protocol_etc_test-go/">view</a></td>
-</tr>
-<tr>
-<td><code>eth/protocols/eth/protocol_pow.go</code></td>
-<td>file</td>
-<td>—</td>
-<td>🆕</td>
-<td><a href="../file-diffs/protocol-layer/eth-protocols-eth-protocol_pow-go/">view</a></td>
-</tr>
-<tr>
-<td><code>rawNewBlockPacket / rawBlock</code></td>
-<td>symbol</td>
-<td>—</td>
-<td>🆕</td>
-<td><a href="../diffs/protocol-types/rawnewblockpacket-rawblock/">view</a></td>
-</tr>
-</tbody>
-</table>
-<p><a href="../code-changes/">← Code Changes overview</a> · <a href="../coverage/">Coverage</a></p>
+<blockquote>
+<p>The ETH68 instantiations #33511 re-pointed at ETH69. Headers and bodies are the upstream one-liners verbatim, calling the protocol-parameterized bodies that still live in the upstream handler_test.go — the wire format for both is unchanged across 68/69, so no copy is needed. Receipts is different: upstream's testGetBlockReceipts body was hardcoded to the eth/68 types (it was only ever called with ETH68), and #33511 rewrote it in place for eth/69 rather than parameterizing it. So the pre-drop body is revived verbatim as testGetBlockReceipts68, with ReceiptsPacket[*ReceiptList68] monomorphized to ReceiptsPacket68 and the function renamed to avoid colliding with the eth/69 successor. This is the only end-to-end coverage of the serving chain plumbing — handleGetReceipts68 -&gt; ServiceGetReceiptsQuery68 -&gt; GetReceiptsRLP + GetBodyRLP + blockReceiptsToNetwork68 — against an independently built expected response, which the encoding-level tests cannot reach.</p>
+</blockquote>
+<h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
+<div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-fork">fork-only</span></div>
+<div class="tw-code"><div class="tw-inner">
+<div class="purge"><span class="mk"></span>// Tests that the transaction receipts can be retrieved based on hashes.</div>
+<div class="fork"><span class="mk"></span>func TestGetBlockReceipts68(t *testing.T) { testGetBlockReceipts68(t, ETH68) }</div>
+</div></div>
+
+<p><a href="../../../subsystem-eth-protocol/">← eth Protocol</a></p>
 
 
 
@@ -1826,12 +1331,12 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
-        <script src="../javascripts/version-tag.js"></script>
+        <script src="../../../javascripts/version-tag.js"></script>
       
     
   </body>

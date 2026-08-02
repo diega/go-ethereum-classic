@@ -19,7 +19,7 @@
     
     
       
-        <title>handleGetReceiptsPoW - Go Ethereum Classic — Fork Documentation</title>
+        <title>testBroadcastBlock / testEthHandlerPoW - Go Ethereum Classic — Fork Documentation</title>
       
     
     
@@ -85,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#handlegetreceiptspow" class="md-skip">
+        <a href="#testbroadcastblock-testethhandlerpow" class="md-skip">
           Skip to content
         </a>
       
@@ -125,7 +125,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              handleGetReceiptsPoW
+              testBroadcastBlock / testEthHandlerPoW
             
           </span>
         </div>
@@ -1238,7 +1238,7 @@
   
 
 
-<h1 id="handlegetreceiptspow">handleGetReceiptsPoW<a class="headerlink" href="#handlegetreceiptspow" title="Permanent link">&para;</a></h1>
+<h1 id="testbroadcastblock-testethhandlerpow">testBroadcastBlock / testEthHandlerPoW<a class="headerlink" href="#testbroadcastblock-testethhandlerpow" title="Permanent link">&para;</a></h1>
 <table>
 <thead>
 <tr>
@@ -1250,13 +1250,13 @@
 <tbody>
 <tr>
 <td>File</td>
-<td><code>eth/protocols/eth/handlers.go</code></td>
-<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/protocols/eth/handlers_pow.go#L87-L96"><code>handlers_pow.go</code></a></td>
+<td><code>eth/handler_eth_test.go</code></td>
+<td><a href="https://github.com/diega/go-ethereum-classic/blob/etc/v1.17.4-full-node/eth/handler_eth_pow_test.go"><code>handler_eth_pow_test.go</code></a></td>
 </tr>
 <tr>
 <td>Symbol</td>
-<td><code>handleGetReceipts</code></td>
-<td><code>handleGetReceiptsPoW</code></td>
+<td><code>testBroadcastBlock</code></td>
+<td><code>testBroadcastBlock</code></td>
 </tr>
 <tr>
 <td>Ref</td>
@@ -1266,51 +1266,85 @@
 </tbody>
 </table>
 <blockquote>
-<p>Renamed from handleGetReceipts to handleGetReceiptsPoW; <code>return err</code> (no errDecode wrapping) as with the other _pow handlers. ETH68 must serve receipts in the classic WITH-bloom encoding: the eth/69 handler (handleGetReceipts69, wired for ETH68 before this fix) replied with the EIP-7642 bloom-less ReceiptList form that ETH68 / core-geth peers cannot parse, which broke snap sync against the ETC network.</p>
+<p>The block propagation test #29169 deleted, revived with the TestBroadcastBlock<em>N</em>Peers table verbatim. It is the only end-to-end coverage of the PoW block path: a real block crosses a real p2p.MsgPipe as a NewBlockMsg, the sink runs the real protocol handler, so the message goes through handleNewBlockPow's decode, item caps and body verification, and the assembled block is asserted to arrive at the backend with the square-root propagation count. Adapted to the current signatures: newTestHandlerWithBlocks gained a SyncMode parameter, eth.NewPeer gained a chainConfig parameter, and the sink handshake calls Handshake68PoW. Two pieces could not be revived into their upstream homes and are fork-owned instead. testEthHandlerPoW embeds the upstream testEthHandler and adds back the blockBroadcasts feed and the *eth.NewBlockPacket case that #33511 removed, since the upstream struct cannot be extended from another file. newTestHandlerPoWWithBlocks mirrors newTestHandlerWithBlocks with IsPow set: the flag decides what newHandler wires up and which handshake runEthPeer runs, so it cannot be flipped after construction, and the upstream constructor never sets it.</p>
 </blockquote>
 <h3 id="3-way-merge-purge-getc-upstream">3-way merge — purge → getc ← upstream<a class="headerlink" href="#3-way-merge-purge-getc-upstream" title="Permanent link">&para;</a></h3>
-<div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-fork">fork-only</span></div>
+<div class="tw-legend"><span class="l-purge">pre-purge</span><span class="l-adapted">≈ adapted (origin inferred by similarity)</span></div>
 <div class="tw-code"><div class="tw-inner">
-<div class="fork"><span class="mk"></span>// handleGetReceiptsPoW answers a GetReceipts request from an ETH68 (PoW) peer.</div>
-<div class="fork"><span class="mk"></span>func handleGetReceiptsPoW(backend Backend, msg Decoder, peer *Peer) error {</div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L236-L238" title="origin lines 236–238">↗</a></span>    // Decode the block receipts retrieval message</div>
-<div class="purge"><span class="mk"></span>    var query GetReceiptsPacket</div>
-<div class="purge"><span class="mk"></span>    if err := msg.Decode(&amp;query); err != nil {</div>
-<div class="fork"><span class="mk"></span>        return err</div>
-<div class="purge"><span class="mk"><a class="src" href="https://github.com/ethereum/go-ethereum/blob/9a0fa8093ca5f7b896c3f7e849f7ca532d24e2a6/eth/protocols/eth/handlers.go#L240-L243" title="origin lines 240–243">↗</a></span>    }</div>
-<div class="purge"><span class="mk"></span>    response := ServiceGetReceiptsQuery(backend.Chain(), query.GetReceiptsRequest)</div>
-<div class="purge"><span class="mk"></span>    return peer.ReplyReceiptsRLP(query.RequestId, response)</div>
+<div class="purge"><span class="mk"></span>func testBroadcastBlock(t *testing.T, peers, bcasts int) {</div>
+<div class="purge"><span class="mk"></span>    t.Parallel()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Create a source handler to broadcast blocks from and a number of sinks</div>
+<div class="purge"><span class="mk"></span>    // to receive them.</div>
+<div class="purge adapted"><span class="mk"></span>    source := newTestHandlerPoWWithBlocks(1)</div>
+<div class="purge"><span class="mk"></span>    defer source.close()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge adapted"><span class="mk"></span>    sinks := make([]*testEthHandlerPoW, peers)</div>
+<div class="purge"><span class="mk"></span>    for i := 0; i &lt; len(sinks); i++ {</div>
+<div class="purge adapted"><span class="mk"></span>        sinks[i] = new(testEthHandlerPoW)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Interconnect all the sink handlers with the source handler</div>
+<div class="purge"><span class="mk"></span>    var (</div>
+<div class="purge"><span class="mk"></span>        genesis = source.chain.Genesis()</div>
+<div class="purge"><span class="mk"></span>        td      = source.chain.GetTd(genesis.Hash(), genesis.NumberU64())</div>
+<div class="purge"><span class="mk"></span>    )</div>
+<div class="purge"><span class="mk"></span>    for i, sink := range sinks {</div>
+<div class="purge"><span class="mk"></span>        sourcePipe, sinkPipe := p2p.MsgPipe()</div>
+<div class="purge"><span class="mk"></span>        defer sourcePipe.Close()</div>
+<div class="purge"><span class="mk"></span>        defer sinkPipe.Close()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge adapted"><span class="mk"></span>        sourcePeer := eth.NewPeer(eth.ETH68, p2p.NewPeerPipe(enode.ID{byte(i)}, "", nil, sourcePipe), sourcePipe, nil, nil)</div>
+<div class="purge adapted"><span class="mk"></span>        sinkPeer := eth.NewPeer(eth.ETH68, p2p.NewPeerPipe(enode.ID{0}, "", nil, sinkPipe), sinkPipe, nil, nil)</div>
+<div class="purge"><span class="mk"></span>        defer sourcePeer.Close()</div>
+<div class="purge"><span class="mk"></span>        defer sinkPeer.Close()</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>        go source.handler.runEthPeer(sourcePeer, func(peer *eth.Peer) error {</div>
+<div class="purge"><span class="mk"></span>            return eth.Handle((*ethHandler)(source.handler), peer)</div>
+<div class="purge"><span class="mk"></span>        })</div>
+<div class="purge adapted"><span class="mk"></span>        if err := sinkPeer.Handshake68PoW(1, td, genesis.Hash(), genesis.Hash(), forkid.NewIDWithChain(source.chain), forkid.NewFilter(source.chain)); err != nil {</div>
+<div class="purge"><span class="mk"></span>            t.Fatalf("failed to run protocol handshake")</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>        go eth.Handle(sink, sinkPeer)</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Subscribe to all the transaction pools</div>
+<div class="purge"><span class="mk"></span>    blockChs := make([]chan *types.Block, len(sinks))</div>
+<div class="purge"><span class="mk"></span>    for i := 0; i &lt; len(sinks); i++ {</div>
+<div class="purge"><span class="mk"></span>        blockChs[i] = make(chan *types.Block, 1)</div>
+<div class="purge"><span class="mk"></span>        defer close(blockChs[i])</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>        sub := sinks[i].blockBroadcasts.Subscribe(blockChs[i])</div>
+<div class="purge"><span class="mk"></span>        defer sub.Unsubscribe()</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    // Initiate a block propagation across the peers</div>
+<div class="purge"><span class="mk"></span>    time.Sleep(100 * time.Millisecond)</div>
+<div class="purge"><span class="mk"></span>    header := source.chain.CurrentBlock()</div>
+<div class="purge"><span class="mk"></span>    source.handler.BroadcastBlock(source.chain.GetBlock(header.Hash(), header.Number.Uint64()), true)</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>    // Iterate through all the sinks and ensure the correct number got the block</div>
+<div class="purge"><span class="mk"></span>    done := make(chan struct{}, peers)</div>
+<div class="purge"><span class="mk"></span>    for _, ch := range blockChs {</div>
+<div class="purge"><span class="mk"></span>        go func() {</div>
+<div class="purge"><span class="mk"></span>            &lt;-ch</div>
+<div class="purge"><span class="mk"></span>            done &lt;- struct{}{}</div>
+<div class="purge"><span class="mk"></span>        }()</div>
+<div class="purge"><span class="mk"></span>    }</div>
+<div class="purge"><span class="mk"></span>    var received int</div>
+<div class="purge"><span class="mk"></span>    for {</div>
+<div class="purge"><span class="mk"></span>        select {</div>
+<div class="purge"><span class="mk"></span>        case &lt;-done:</div>
+<div class="purge"><span class="mk"></span>            received++</div>
+<div class="blank"><span class="mk"></span> </div>
+<div class="purge"><span class="mk"></span>        case &lt;-time.After(100 * time.Millisecond):</div>
+<div class="purge"><span class="mk"></span>            if received != bcasts {</div>
+<div class="purge"><span class="mk"></span>                t.Errorf("broadcast count mismatch: have %d, want %d", received, bcasts)</div>
+<div class="purge"><span class="mk"></span>            }</div>
+<div class="purge"><span class="mk"></span>            return</div>
+<div class="purge"><span class="mk"></span>        }</div>
+<div class="purge"><span class="mk"></span>    }</div>
 <div class="purge"><span class="mk"></span>}</div>
 </div></div>
 
-<details>
-<summary>core-geth validation — +3 -2</summary>
-
-| | |
-|---|---|
-| File | [`handlers.go`](https://github.com/etclabscore/core-geth/blob/v1.12.20/eth/protocols/eth/handlers.go) |
-| Symbol | `handleGetReceipts` |
-| Ref | `v1.12.20` |
-
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gd">--- a/core-geth/eth/protocols/eth/handlers.go</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gi">+++ b/etc/eth/protocols/eth/handlers_pow.go</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">@@ -1,8 +1,9 @@</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gd">-func handleGetReceipts(backend Backend, msg Decoder, peer *Peer) error {</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gi">+// handleGetReceiptsPoW answers a GetReceipts request from an ETH68 (PoW) peer.</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gi">+func handleGetReceiptsPoW(backend Backend, msg Decoder, peer *Peer) error {</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span>   // Decode the block receipts retrieval message
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w"> </span>   var query GetReceiptsPacket
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w"> </span>   if err := msg.Decode(&amp;query); err != nil {
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gd">-       return fmt.Errorf(&quot;%w: message %v: %v&quot;, errDecode, msg, err)</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gi">+       return err</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w"> </span>   }
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w"> </span>   response := ServiceGetReceiptsQuery(backend.Chain(), query.GetReceiptsRequest)
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w"> </span>   return peer.ReplyReceiptsRLP(query.RequestId, response)
-</code></pre></div>
-
-</details>
-
-<p><a href="../../../subsystem-eth-protocol/">← eth Protocol</a></p>
+<p><a href="../../../subsystem-eth-service/">← Eth Service</a></p>
 
 
 
